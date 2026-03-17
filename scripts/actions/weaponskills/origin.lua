@@ -18,7 +18,7 @@ weaponskillObject.onUseWeaponSkill = function(player, target, wsID, tp, primary,
     params.str_wsc = 0.6
     params.int_wsc = 0.6
     params.multiHitfTP = true
-    
+
     local targetHP = target:getHP()
     local targetMP = target:getMP()
 
