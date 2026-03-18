@@ -1,6 +1,6 @@
 -----------------------------------
 -- Zone: Escha - Zi'Tah (288)
-local controller = require("scripts/globals/di_controller")
+--local controller = require("scripts/globals/di_controller")
 -----------------------------------
 ---@type TZone
 local zoneObject = {}

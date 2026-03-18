@@ -1,6 +1,6 @@
 -----------------------------------
 -- Zone: Escha_RuAun (289)
-local controller = require("scripts/globals/di_controller")
+--local controller = require("scripts/globals/di_controller")
 -----------------------------------
 ---@type TZone
 local zoneObject = {}

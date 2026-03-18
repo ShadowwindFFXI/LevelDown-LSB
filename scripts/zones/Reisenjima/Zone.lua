@@ -1,6 +1,6 @@
 -----------------------------------
 -- Zone: Reisenjima (291)
-local controller = require("scripts/globals/di_controller")
+--local controller = require("scripts/globals/di_controller")
 -----------------------------------
 ---@type TZone
 local zoneObject = {}
