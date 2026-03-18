@@ -470,6 +470,10 @@ UPDATE mob_spawn_points SET pos_x=-700.000, pos_y=-13.270, pos_z=-140.000, pos_r
 DELETE FROM mob_skill_lists WHERE skill_list_id=784 AND mob_skill_id=2146;
 DELETE FROM mob_skill_lists WHERE skill_list_id=784 AND mob_skill_id=2145;
 
+--Removes void of repentance and gospel of the lost from low HP skill list
+DELETE FROM mob_skill_lists WHERE skill_list_id=785 AND mob_skill_id=2146;
+DELETE FROM mob_skill_lists WHERE skill_list_id=785 AND mob_skill_id=2145;
+
 -- Set skills AOE radius and make them the correct AOE status (or conal for Divine Spear)
 UPDATE mob_skills SET mob_skill_aoe_radius = 12, mob_skill_aoe = 4 WHERE mob_skill_id = 2144; --Divine Spear
 UPDATE mob_skills SET mob_skill_aoe_radius = 12, mob_skill_aoe = 1 WHERE mob_skill_id = 2141; --Radiant Sacrament
