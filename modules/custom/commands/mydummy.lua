@@ -45,7 +45,7 @@ local function onTrigger(player, argString)
         end
     end
 
-    if player:getCharVar("DummyActive") == 1 then
+    if player:getLocalVar("DummyActive") == 1 then
         player:printToPlayer("You already have a dummy spawned.", xi.msg.channel.SYSTEM_3)
         return
     end
@@ -134,7 +134,7 @@ local function onTrigger(player, argString)
             mob:setHP(mob:getMaxHP())
 
             mob:timer(30000, function(m)
-                if m and m:isSpawned() and not m:isEngaged() then
+                if m and m:isSpawned() and m:getTarget() == nil then
                     DespawnMob(m:getID())
                 end
             end)
@@ -161,7 +161,7 @@ local function onTrigger(player, argString)
             local creatorID = mob:getLocalVar("CreatorID")
             local creator = GetPlayerByID(creatorID)
             if creator then
-                creator:setCharVar("DummyActive", 0)
+                creator:setLocalVar("DummyActive", 0)
             end
         end
     })
@@ -169,7 +169,7 @@ local function onTrigger(player, argString)
     if dummy then
         dummy:setSpawn(spawnX, pY, spawnZ, (pRot + 128) % 256)
         dummy:spawn()
-        player:setCharVar("DummyActive", 1)
+        player:setLocalVar("DummyActive", 1)
         player:printToPlayer(string.format("Spawned Level %d Striking Dummy.", level), xi.msg.channel.SYSTEM_3)
     else
         player:printToPlayer("Failed to spawn dummy.", xi.msg.channel.SYSTEM_3)
