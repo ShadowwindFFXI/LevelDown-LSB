@@ -4,6 +4,10 @@
 -----------------------------------
 local entity = {}
 
+entity.onMobSpawn = function(mob)
+    mob:setUntargetable(false)
+end
+
 entity.onMobDeath = function(mob, player, optParams)
     local ID = zones[player:getZoneID()]
     local party = player:getParty()
