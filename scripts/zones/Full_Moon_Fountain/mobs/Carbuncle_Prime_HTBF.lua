@@ -46,7 +46,6 @@ entity.onMobSpawn = function(mob)
         mob:addStatusEffect(xi.effect.REGEN,  { power = 25, tick = 3, duration = 0, origin = mob})
         mob:addStatusEffect(xi.effect.REGAIN,  { power = 10, tick = 3, duration = 0, origin = mob})
         mob:setLocalVar('numAdds', 6)
-        battlefield:setLocalVar('[RemoveImmortal]', 1)
 
     xi.mix.jobSpecial.config(mob, {
         specials =
@@ -79,7 +78,6 @@ entity.onMobFight = function(mob, target)
                 avatar:setPos(mob:getXPos(), mob:getYPos(), mob:getZPos())
                 mob:setLocalVar('add'..g, 1)
                 mob:setLocalVar('numAdds', numAdds - 1)
-                battlefield:setLocalVar('[RemoveImmortal]', 1)
                 mob:addStatusEffect(xi.effect.PHYSICAL_SHIELD, { power = 1, origin = mob, icon = 0 })
                 mob:addStatusEffect(xi.effect.ARROW_SHIELD, { power = 1, origin = mob, icon = 0 })
                 mob:addStatusEffect(xi.effect.MAGIC_SHIELD, { power = 1, origin = mob, icon = 0 })
@@ -88,11 +86,21 @@ entity.onMobFight = function(mob, target)
         end
     end
 
-    if battlefield:getLocalVar('[RemoveImmortal]') == 0 then
-                mob:delStatusEffect(xi.effect.PHYSICAL_SHIELD)
-                mob:delStatusEffect(xi.effect.ARROW_SHIELD)   
-                mob:delStatusEffect(xi.effect.MAGIC_SHIELD)
-       battlefield:setLocalVar('[RemoveImmortal]', 2)
+    local addsAlive = false
+    for i = 1, 6 do
+        if mob:getLocalVar('add'..i) == 1 then
+            local avatar = GetMobByID(ID.mob.CARBUNCLE_PRIME_HTBF + i)
+            if avatar and avatar:isSpawned() and avatar:isAlive() then
+                addsAlive = true
+                break
+            end
+        end
+    end
+
+    if not addsAlive and mob:hasStatusEffect(xi.effect.PHYSICAL_SHIELD) then
+        mob:delStatusEffect(xi.effect.PHYSICAL_SHIELD)
+        mob:delStatusEffect(xi.effect.ARROW_SHIELD)
+        mob:delStatusEffect(xi.effect.MAGIC_SHIELD)
     end
        
 end
