@@ -19,7 +19,7 @@ end
 
 spellObject.onSpellCast 	= function(caster, target, spell)
     local params = {}
-    params.ecosystem 		= xi.ecosystem.DRAGON
+    params.ecosystem 		= xi.ecosystem.DEMON
     params.effect 			= xi.effect.DOOM
     params.power 			= 10
     params.tick 			= 3
@@ -29,7 +29,7 @@ spellObject.onSpellCast 	= function(caster, target, spell)
     params.isConal 			= false
 
 	if target:isNM() then
-        skill:setMsg(xi.msg.basic.SKILL_MISS)
+        spell:setMsg(xi.msg.basic.MAGIC_NO_EFFECT)
     else
 		return xi.spells.blue.useEnfeeblingSpell(caster, target, spell, params)
     end
