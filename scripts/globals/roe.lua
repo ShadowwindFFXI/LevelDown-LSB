@@ -134,6 +134,7 @@ local defaults =
                                 --                   Does not count towards completed record count.
     reqs = {},                  -- Other requirements. List of function names from above, with required values.
     reward = {},                -- Reward parameters give on completion. (See completeRecord directly below.)
+    repeatItem = false,         -- Set to true to reward items on every completion of a repeatable record.
 }
 
 xi.roe.initialize = function()
@@ -182,7 +183,7 @@ local function completeRecord(player, record)
     local recordFlags = recordEntry.flags
     local rewards = recordEntry.reward
 
-    if not player:getEminenceCompleted(record) and rewards['item'] then
+    if rewards['item'] and (not player:getEminenceCompleted(record) or recordEntry.repeatItem) then
         if not npcUtil.giveItem(player, rewards['item'], { silent = true }) then
             player:messageBasic(xi.msg.basic.ROE_UNABLE_BONUS_ITEM)
             return false
@@ -213,7 +214,7 @@ local function completeRecord(player, record)
 
     -- NOTE: To preserve retail order, messaging is here, but item is given if able at the beginning of this
     -- function, since if it fails, it will need to bail out.
-    if rewards['item'] then
+    if rewards['item'] and (not player:getEminenceCompleted(record) or recordEntry.repeatItem) then
         local itemQty   = type(rewards['item'][1]) == 'table' and rewards['item'][1][2] or 1
         local itemId    = type(rewards['item'][1]) == 'table' and rewards['item'][1][1] or rewards['item'][1]
         local messageId = itemQty > 1 and xi.msg.basic.ROE_BONUS_ITEM_PLURAL or xi.msg.basic.ROE_BONUS_ITEM

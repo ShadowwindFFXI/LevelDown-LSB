@@ -5005,6 +5005,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Yztarg' }, zone = set { 288 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [886] =
@@ -5014,6 +5015,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Bugard' }, zone = set { 288 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [887] =
@@ -5023,6 +5025,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Tarichuk' }, zone = set { 288 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [888] =
@@ -5032,6 +5035,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Shadow_Dragon' }, zone = set { 288 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [889] =
@@ -5068,6 +5072,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Ilaern' }, zone = set { 289 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [904] =
@@ -5086,6 +5091,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Euvhi' }, zone = set { 289 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [906] =
@@ -5104,6 +5110,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Hpemde' }, zone = set { 289 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [908] =
@@ -5122,6 +5129,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Xzomit' }, zone = set { 289 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [910] =
@@ -5140,6 +5148,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Eschan_Ghrah' }, zone = set { 289 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [912] =
@@ -5170,6 +5179,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Snaggletoothed_Tiger' }, zone = set { 291 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [945] =
@@ -5188,6 +5198,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Indomitable_Faaz' }, zone = set { 291 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [947] =
@@ -5206,6 +5217,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Devouring_Mosquito' }, zone = set { 291 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [949] =
@@ -5224,6 +5236,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Quarrelsome_Hippogryph' }, zone = set { 291 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [951] =
@@ -5242,6 +5255,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Glowering_Ladybug' }, zone = set { 291 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     [953] =
@@ -5251,6 +5265,7 @@ xi.roe.records =
         reqs = { mobName = set { 'Lucani' }, zone = set { 291 } },
         flags = set { 'repeat' },
         reward = { sparks = 300, exp = 900, capacity = 150, accolades = 30, item = { xi.item.SILT_POUCH } },
+        repeatItem = true,
     },
 
     -----------------------------------
@@ -10098,7 +10113,7 @@ xi.roe.records =
     },
 
     [924] =
-    { -- Subjugation: Tumult Curator *
+    { -- Subjugation: Tumult Curatorï¿½*
         trigger = xi.roeTrigger.DEFEAT_MOB,
         reqs = { mobName = set { 'Tumult_Curator' } },
         flags = set { 'repeat' },
