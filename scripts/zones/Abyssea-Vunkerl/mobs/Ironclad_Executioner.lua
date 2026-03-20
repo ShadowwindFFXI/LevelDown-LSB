@@ -5,8 +5,6 @@
 local entity = {}
 
 entity.onMobSpawn = function(mob)
-end
-entity.onMobSpawn = function(mob)
     mob:hideName(true)
     mob:setAnimationSub(5)
     mob:wait(500)
@@ -17,6 +15,7 @@ end
 entity.onMobEngage = function(mob, target)
     mob:hideName(false)
     mob:setAnimationSub(4)
+    mob:setUntargetable(false)
     mob:wait(500)
 end
 

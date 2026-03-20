@@ -4,6 +4,8 @@
 -- Spawns Cirein-Croin
 -- !pos 39.146 -15.500 519.988 216
 -----------------------------------
+local ID = zones[xi.zone.ABYSSEA_MISAREAUX]
+-----------------------------------
 ---@type TNpcEntity
 local entity = {}
 
@@ -11,7 +13,7 @@ entity.onTrade = function(player, npc, trade)
 end
 
 entity.onTrigger = function(player, npc)
-    xi.abyssea.qmOnTrigger(player, npc, ID.mob.CIREIN_CROIN, { xi.ki.GLISTENING_OROBON_LIVER, xi.ki.DOFFED_POROGGO_HAT })
+    xi.abyssea.qmOnTrigger(player, npc, ID.mob.CIREIN_CROIN_OFFSET, { xi.ki.GLISTENING_OROBON_LIVER, xi.ki.DOFFED_POROGGO_HAT })
 end
 
 entity.onEventUpdate = function(player, csid, option, npc)

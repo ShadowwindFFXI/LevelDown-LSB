@@ -4,6 +4,8 @@
 -- Spawns Sobek
 -- !pos 428 23 -376 216
 -----------------------------------
+local ID = zones[xi.zone.ABYSSEA_MISAREAUX]
+-----------------------------------
 ---@type TNpcEntity
 local entity = {}
 
@@ -11,7 +13,7 @@ entity.onTrade = function(player, npc, trade)
 end
 
 entity.onTrigger = function(player, npc)
-    xi.abyssea.qmOnTrigger(player, npc, ID.mob.SOBEK, { xi.ki.BLOODSTAINED_BUGARD_FANG, xi.ki.GNARLED_LIZARD_NAIL, xi.ki.MOLTED_PEISTE_SKIN })
+    xi.abyssea.qmOnTrigger(player, npc, ID.mob.SOBEK_OFFSET, { xi.ki.BLOODSTAINED_BUGARD_FANG, xi.ki.GNARLED_LIZARD_NAIL, xi.ki.MOLTED_PEISTE_SKIN })
 end
 
 entity.onEventUpdate = function(player, csid, option, npc)

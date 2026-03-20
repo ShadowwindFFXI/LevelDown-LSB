@@ -21,4 +21,14 @@ entity.onMobDeath = function(mob, player, optParams)
     end
 end
 
+zoneObject.onGameHour = function(zone)
+    if VanadielHour() == 3 then
+        local sippoyId = zones[xi.zone.ABYSSEA_VUNKERL].mob.SIPPOY
+        local sippoy = GetMobByID(sippoyId)
+        if sippoy and not sippoy:isSpawned() then
+            SpawnMob(sippoyId)
+        end
+    end
+end
+
 return entity
