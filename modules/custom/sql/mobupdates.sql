@@ -1462,3 +1462,5 @@ INSERT INTO mob_skill_lists VALUES('Tchakka_Melee', 50009, 3009);
 INSERT INTO mob_skill_lists VALUES('Tchakka_Melee', 50009, 3010);
 
 UPDATE `mob_groups` SET `groupid`=23, `poolid`=2366, `zoneid`=54, `name`='Lamie_No8', `respawntime`=259200, `spawntype`=0, `dropid`=3310, `HP`=0, `MP`=0, `allegiance`=0, `content_tag`=NULL WHERE `zoneid`=54 AND `groupid`=23;
+UPDATE `mob_groups` SET `groupid`=33, `poolid`=2069, `zoneid`=253, `name`='Impervious_Chariot', `respawntime`=600, `spawntype`=0, `dropid`=1360, `HP`=115000, `MP`=0, `allegiance`=0, `content_tag`=NULL WHERE `zoneid`=253 AND `groupid`=33;
+UPDATE `mob_groups` SET `groupid`=52, `poolid`=2302, `zoneid`=216, `name`='Kutharei', `respawntime`=1200, `spawntype`=0, `dropid`=1471, `HP`=115000, `MP`=999, `allegiance`=0, `content_tag`=NULL WHERE `zoneid`=216 AND `groupid`=52;
