@@ -1841,7 +1841,10 @@ xi.custom_quest.onMobDeathEx = function(mob, player, isKiller, isWeaponSkillKill
             elseif questId >= 133 and
                    questId <= 134 then
                        local range  = player:getStorageItem(0, 0, xi.slot.RANGED) -- archery 25, marksmenship 26
-                       local rangeskilltype = range:getSkillType()
+                       local rangeskilltype = 0
+                       if range ~= nil then
+                           rangeskilltype = range:getSkillType()
+                       end
                             if isWeaponSkillKill == true and 
                                rangeskilltype == customQuestId[questId][2] then
                                 if questCount < 50 then
