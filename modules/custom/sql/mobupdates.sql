@@ -1460,3 +1460,5 @@ INSERT INTO mob_skill_lists VALUES('Yumcax_Melee', 50008, 3056);
 INSERT INTO mob_skill_lists VALUES('Tchakka_Melee', 50009, 3008);
 INSERT INTO mob_skill_lists VALUES('Tchakka_Melee', 50009, 3009);
 INSERT INTO mob_skill_lists VALUES('Tchakka_Melee', 50009, 3010);
+
+UPDATE `mob_groups` SET `groupid`=23, `poolid`=2366, `zoneid`=54, `name`='Lamie_No8', `respawntime`=259200, `spawntype`=0, `dropid`=3310, `HP`=0, `MP`=0, `allegiance`=0, `content_tag`=NULL WHERE `zoneid`=54 AND `groupid`=23;
