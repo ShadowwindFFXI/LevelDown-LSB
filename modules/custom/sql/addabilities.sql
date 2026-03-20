@@ -34,3 +34,5 @@ UPDATE abilities SET recastTime = "300" WHERE name = "call_wyvern";
 UPDATE abilities SET recastTime = "300" WHERE name = "activate";
 UPDATE abilities SET recastTime = "600" WHERE name = "random_deal";
 UPDATE abilities SET recastTime = "600" WHERE name = "bestial_loyalty";
+
+UPDATE abilities SET validTarget = 3 WHERE name = 'cutting_cards';
