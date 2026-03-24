@@ -169,8 +169,14 @@ void CAbilityState::ApplyEnmity()
             if (PTarget->objtype == TYPE_MOB && !(m_PAbility->getCE() == 0 && m_PAbility->getVE() == 0))
             {
                 CMobEntity* mob = (CMobEntity*)PTarget;
-                mob->PEnmityContainer->UpdateEnmity(m_PEntity, m_PAbility->getCE(), m_PAbility->getVE(), false, m_PAbility->getID() == ABILITY_CHARM);
-                battleutils::ClaimMob(mob, m_PEntity);
+                
+                // FIX: Ensure the mob is still alive and the enmity container exists 
+                // before trying to apply enmity or claim the mob.
+                if (mob->isAlive() && mob->PEnmityContainer != nullptr)
+                {
+                    mob->PEnmityContainer->UpdateEnmity(m_PEntity, m_PAbility->getCE(), m_PAbility->getVE(), false, m_PAbility->getID() == ABILITY_CHARM);
+                    battleutils::ClaimMob(mob, m_PEntity);
+                }
             }
         }
         else if (PTarget->allegiance == m_PEntity->allegiance)
@@ -202,16 +208,29 @@ bool CAbilityState::Update(timer::time_point tick)
         if (CanUseAbility())
         {
             action_t action{};
-            m_PEntity->OnAbility(*this, action);
-            m_PEntity->PAI->EventHandler.triggerListener("ABILITY_USE", m_PEntity, GetTarget(), m_PAbility.get(), &action);
+            
+            // Extract pointers before OnAbility might delete 'this'
+            CBattleEntity* PEntity = m_PEntity;
+            CAbility* PAbility = m_PAbility.get();
+            CBaseEntity* PTarget = GetTarget();
+            
+            PEntity->OnAbility(*this, action);
+
+            // FIX: Abort immediately if the Lua script caused the state to be deleted
+            if (!PEntity->isAlive() || PEntity->status == STATUS_TYPE::DISAPPEAR || PEntity->PAI->GetCurrentState() != this)
+            {
+                return false;
+            }
+
+            PEntity->PAI->EventHandler.triggerListener("ABILITY_USE", PEntity, PTarget, PAbility, &action);
             // Only send packet if action was populated (e.g. interrupts return early)
             if (!action.targets.empty())
             {
-                m_PEntity->loc.zone->PushPacket(m_PEntity, CHAR_INRANGE_SELF, std::make_unique<GP_SERV_COMMAND_BATTLE2>(action));
+                PEntity->loc.zone->PushPacket(PEntity, CHAR_INRANGE_SELF, std::make_unique<GP_SERV_COMMAND_BATTLE2>(action));
             }
-            if (auto* target = GetTarget())
+            if (PTarget != nullptr)
             {
-                target->PAI->EventHandler.triggerListener("ABILITY_TAKE", m_PEntity, target, m_PAbility.get(), &action);
+                PTarget->PAI->EventHandler.triggerListener("ABILITY_TAKE", PEntity, PTarget, PAbility, &action);
             }
         }
 

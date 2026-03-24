@@ -2314,6 +2314,11 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
         {
             damage = luautils::OnSpellCast(this, PTarget, PSpell);
 
+            if (!this->isAlive() || this->status == STATUS_TYPE::DISAPPEAR || this->PAI->GetCurrentState() != &state)
+            {
+                return;
+            }
+
             // Remove Saboteur
             if (PSpell->getSkillType() == SKILLTYPE::SKILL_ENFEEBLING_MAGIC)
             {
@@ -2378,6 +2383,12 @@ void CBattleEntity::OnCastFinished(CMagicState& state, action_t& action)
             msg != MsgBasic::SHADOW_ABSORB) // If message isn't the shadow loss message, because I had to move this outside of the above check for it.
         {
             luautils::OnMagicHit(this, PTarget, PSpell);
+
+            // FIX: Ensure the state instance wasn't deleted during OnMagicHit
+            if (!this->isAlive() || this->status == STATUS_TYPE::DISAPPEAR || this->PAI->GetCurrentState() != &state)
+            {
+                return;
+            }
         }
 
         // The entity under consideration for RoE objective credit

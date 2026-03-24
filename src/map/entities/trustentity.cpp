@@ -167,6 +167,12 @@ void CTrustEntity::OnAbility(CAbilityState& state, action_t& action)
 
                 int32 value = luautils::OnUseAbility(this, PTargetFound, PAbility, &action);
 
+                // FIX 1: Abort if the Lua script wiped the state object
+                if (!this->isAlive() || this->status == STATUS_TYPE::DISAPPEAR || this->PAI->GetCurrentState() != &state)
+                {
+                    return;
+                }
+
                 if (prevMsg == MsgBasic::NONE) // get default message for the first target
                 {
                     actionResult.messageID = PAbility->getMessage();
@@ -198,6 +204,13 @@ void CTrustEntity::OnAbility(CAbilityState& state, action_t& action)
             auto prevMsg                  = actionResult.messageID;
 
             int32 value = luautils::OnUseAbility(this, PTarget, PAbility, &action);
+            
+            // FIX 2: Abort if the Lua script wiped the state object
+            if (!this->isAlive() || this->status == STATUS_TYPE::DISAPPEAR || this->PAI->GetCurrentState() != &state)
+            {
+                return;
+            }
+
             if (prevMsg == actionResult.messageID)
             {
                 actionResult.messageID = PAbility->getMessage();
@@ -467,6 +480,12 @@ void CTrustEntity::OnCastFinished(CMagicState& state, action_t& action)
     // TODO: Calling a grand-parent's impl. of an overridden function is bad
     CBattleEntity::OnCastFinished(state, action);
 
+    // FIX: If the parent call executed a Lua script that wiped the state (like Utsusemi), abort!
+    if (!this->isAlive() || this->status == STATUS_TYPE::DISAPPEAR || this->PAI->GetCurrentState() != &state)
+    {
+        return;
+    }
+
     auto* PSpell = state.GetSpell();
 
     PRecastContainer->Add(RECAST_MAGIC, static_cast<Recast>(PSpell->getID()), action.recast);
@@ -483,12 +502,14 @@ void CTrustEntity::OnWeaponSkillFinished(CWeaponSkillState& state, action_t& act
     // TODO: Calling a grand-parent's impl. of an overridden function is bad
     CBattleEntity::OnWeaponSkillFinished(state, action);
 
-    auto* PWeaponSkill  = state.GetSkill();
-    auto* PBattleTarget = dynamic_cast<CBattleEntity*>(state.GetTarget());
-    if (!PBattleTarget)
+    // FIX: If the parent call executed a Lua script that wiped the state, abort!
+    if (!this->isAlive() || this->status == STATUS_TYPE::DISAPPEAR || this->PAI->GetCurrentState() != &state)
     {
         return;
     }
+
+    auto* PWeaponSkill  = state.GetSkill();
+    auto* PBattleTarget = dynamic_cast<CBattleEntity*>(state.GetTarget());
 
     int16 tp = state.GetSpentTP();
     tp       = battleutils::CalculateWeaponSkillTP(this, PWeaponSkill, tp);

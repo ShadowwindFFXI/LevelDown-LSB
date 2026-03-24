@@ -264,6 +264,13 @@ auto CItemState::CanChangeState() -> bool
 void CItemState::TryInterrupt(CBattleEntity* PTarget)
 {
     // todo: interrupt on being hit
+    
+    // Safety check: Ensure the item pointer exists before evaluating targets
+    if (m_PItem == nullptr)
+    {
+        m_interrupted = true;
+        return;
+    }
 
     if (PTarget)
     {
