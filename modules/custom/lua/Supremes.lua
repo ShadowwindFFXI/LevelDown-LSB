@@ -2652,7 +2652,7 @@ m:addOverride('xi.zones.Misareaux_Coast.Zone.onInitialize',function(zone)
         onTrigger = function(player, npc)
             local killCount = player:getCharVar('Supremes')
 
-            if killCount ~= 7 then
+            if killCount ~= 14 then
                 player:printToPlayer('An aura of irrepressible might threatens to overwhelm you...', xi.msg.channel.NS_SAY)
             else
                 player:timer(250, function(playerArg)
