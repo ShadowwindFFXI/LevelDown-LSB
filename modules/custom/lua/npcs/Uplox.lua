@@ -109,6 +109,14 @@ local categories = {
             { name = "Raaz Hide", id = xi.item.RAAZ_HIDE },
             { name = "Raaz Leather", id = xi.item.SQUARE_OF_RAAZ_LEATHER },
             { name = "Maliya. Coral Orb", id = xi.item.MALIYAKALEYA_ORB },
+			{ name = "Waktza Crest", id = xi.item.WAKTZA_CREST },
+            { name = "Yggdreant Root", id = xi.item.YGGDREANT_ROOT },
+            { name = "Gabbrath Meat", id = xi.item.SLICE_OF_GABBRATH_MEAT },
+            { name = "Cehuetzi Ice", id = xi.item.CEHUETZI_ICE_SHARD },
+            { name = "Cehuetzi Pelt", id = xi.item.CEHUETZI_PELT },
+            { name = "Bztavian Wing", id = xi.item.BZTAVIAN_WING },
+            { name = "Rockfin Fin", id = xi.item.ROCKFIN_FIN },
+            { name = "Sif's Lock", id = xi.item.SIFS_LOCK },
         }
     },
     {
