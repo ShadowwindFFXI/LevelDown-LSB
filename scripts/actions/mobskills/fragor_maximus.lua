@@ -1,7 +1,10 @@
 -----------------------------------
 -- Fragor Maximus
--- AoE (damage?) and weakness
--- Type: Physical (AoE)
+--
+-- Description: Deals light damage to a single target.
+-- Type: Magical
+-- Utsusemi/Blink absorb: Ignores shadows
+-- Range: Single Target
 -----------------------------------
 ---@type TMobSkill
 local mobskillObject = {}
@@ -11,17 +14,10 @@ mobskillObject.onMobSkillCheck = function(target, mob, skill)
 end
 
 mobskillObject.onMobWeaponSkill = function(target, mob, skill)
-    local numhits = 1
-    local accmod = 2
-    local dmgmod = 0.3
-    local info = xi.mobskills.mobPhysicalMove(mob, target, skill, numhits, accmod, mob:getWeaponDmg() * dmgmod, xi.mobskills.magicalTpBonus.NO_EFFECT)
-    local dmg = xi.mobskills.mobFinalAdjustments(info.dmg, mob, skill, target, xi.attackType.PHYSICAL, xi.damageType.PIERCING, info.hitslanded)
-
-    target:dispelStatusEffect()
-    target:takeDamage(dmg, mob, xi.attackType.PHYSICAL, xi.damageType.PIERCING)
-
-    xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.WEAKNESS, 50, 0, 60)
-
+    local dmgmod = 4.0
+    local info = xi.mobskills.mobMagicalMove(mob, target, skill, dmgmod, xi.mobskills.magicalTpBonus.NO_EFFECT, 1)
+    local dmg = xi.mobskills.mobFinalAdjustments(info, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.LIGHT, xi.mobskills.shadowBehavior.IGNORE_SHADOWS)
+    target:takeDamage(dmg, mob, xi.attackType.MAGICAL, xi.damageType.LIGHT)
     return dmg
 end
 
