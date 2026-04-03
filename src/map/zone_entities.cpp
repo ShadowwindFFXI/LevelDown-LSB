@@ -980,12 +980,6 @@ void CZoneEntities::SpawnPCs(CCharEntity* PChar)
 {
     TracyZoneScoped;
 
-    // TODO: This is a temporary fix so that Feretory and Mog Garden _seem_ like a solo zones.
-    if (PChar->loc.zone->GetID() == ZONE_FERETORY || PChar->loc.zone->GetID() == ZONE_MOG_GARDEN)
-    {
-        return;
-    }
-
     // Provide bonus score to characters targeted by spawned mobs or other conflict players, if in conflict
     std::unordered_map<uint32, float> scoreBonus = std::unordered_map<uint32, float>();
 
