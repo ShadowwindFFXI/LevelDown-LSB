@@ -40,20 +40,22 @@ local ITEMS_PER_PAGE = 3
 -- Centralized table for all campaign teleport locations.
 local WarpLocations = {
     { name = 'West Sarutabaruta [S]',    zone = xi.zone.WEST_SARUTABARUTA_S,    x = -19.5262, y = -13.0901, z = 307.3373, rot = 252, zoneid = 95 },
-    { name = 'East Ronfaure [S]',        zone = xi.zone.EAST_RONFAURE_S,        x = 320.8822, y = -30,      z = -120.46,  rot = 157, zoneid = 81 },
-    { name = 'North Gustaberg [S]',      zone = xi.zone.NORTH_GUSTABERG_S,      x = -543.2109,y = 41.9802,  z = 65.2432,  rot = 129, zoneid = 88 },
-    { name = 'Fort Karugo-Narugo [S]',   zone = xi.zone.FORT_KARUGO_NARUGO_S,   x = -97.4075, y = -79.0452, z = 0.9719,   rot = 127, zoneid = 96 },
-    { name = 'Jugner Forest [S]',        zone = xi.zone.JUGNER_FOREST_S,        x = 73.2172,  y = 0.2277,   z = -5.8201,  rot = 88,  zoneid = 82 },
-    { name = 'Grauberg [S]',             zone = xi.zone.GRAUBERG_S,             x = 302.18,   y = -48.9102, z = 100.70,   rot = 0,   zoneid = 89 },
-    { name = 'Meriphataud Mountains [S]',zone = xi.zone.MERIPHATAUD_MOUNTAINS_S,x = -307.4041,y = 18.0515,  z = 429.0015, rot = 253, zoneid = 97 },
+    { name = 'East Ronfaure [S]',        zone = xi.zone.EAST_RONFAURE_S,        x = 302.5910, y = -39.8077,      z = -44.8278,  rot = 54, zoneid = 81 },
+    { name = 'North Gustaberg [S]',      zone = xi.zone.NORTH_GUSTABERG_S,      x = -511.3840,y = 39.5350,  z = 129.7692, rot = 80,  zoneid = 88 },
+    { name = 'Fort Karugo-Narugo [S]',   zone = xi.zone.FORT_KARUGO_NARUGO_S,   x = -119.6682, y = -75.5869, z = 62.4991,   rot = 60, zoneid = 96 },
+    { name = 'Jugner Forest [S]',        zone = xi.zone.JUGNER_FOREST_S,        x = 121.9537, y = -5.5615,  z = 80.0524,  rot = 78,  zoneid = 82 },
+    { name = 'Grauberg [S]',             zone = xi.zone.GRAUBERG_S,             x = 331.5478,   y = -44.4304, z = 201.8819,   rot = 67,   zoneid = 89 },
+    { name = 'Meriphataud Mountains [S]',zone = xi.zone.MERIPHATAUD_MOUNTAINS_S,x = -353.6488,y = 0.2865,   z = 361.4388, rot = 226, zoneid = 97 },
     { name = 'Pashhow Marshlands [S]',   zone = xi.zone.PASHHOW_MARSHLANDS_S,   x = 498.6725, y = 25.00,    z = 647.8894, rot = 93,  zoneid = 90 },
-    { name = 'Vunkerl Inlet [S]',        zone = xi.zone.VUNKERL_INLET_S,        x = -185.1144,y = -39.6465, z = -279.82,  rot = 125, zoneid = 83 },
-    { name = 'Sauromugue Champaign [S]', zone = xi.zone.SAUROMUGUE_CHAMPAIGN_S, x = -31.3777, y = 25.2828,  z = 219.4237, rot = 127, zoneid = 98 },
-    { name = 'Rolanberry Fields [S]',    zone = xi.zone.ROLANBERRY_FIELDS_S,    x = 233.8327, y = 8.1201,   z = 219.2024, rot = 254, zoneid = 91 },
-    { name = 'Batallia Downs [S]',       zone = xi.zone.BATALLIA_DOWNS_S,       x = 225.2325, y = 8.6223,   z = 49.7229,  rot = 72,  zoneid = 84 },
-    { name = 'Beaucedine Glacier [S]',   zone = xi.zone.BEAUCEDINE_GLACIER_S,   x = 71.5509,  y = -59.9720, z = -47.6743, rot = 3,   zoneid = 136 },
+    { name = 'Vunkerl Inlet [S]',        zone = xi.zone.VUNKERL_INLET_S,        x = -139.8103,y = -42.5665, z = -369.6393,  rot = 188, zoneid = 83 },
+    { name = 'Sauromugue Champaign [S]', zone = xi.zone.SAUROMUGUE_CHAMPAIGN_S, x = 5.2874,   y = 23.9838,  z = 195.0126, rot = 131, zoneid = 98 },
+    { name = 'Rolanberry Fields [S]',    zone = xi.zone.ROLANBERRY_FIELDS_S,    x = 174.8713, y = 16.3695,  z = 243.6093, rot = 14,  zoneid = 91 },
+    { name = 'Batallia Downs [S]',       zone = xi.zone.BATALLIA_DOWNS_S,       x = 171.1624, y = 1.3046,   z = 82.4930,  rot = 23,  zoneid = 84 },
+    { name = 'Beaucedine Glacier [S]',   zone = xi.zone.BEAUCEDINE_GLACIER_S,   x = 124.6844, y = -60.2925, z = -29.7187, rot = 109, zoneid = 136 },
     { name = 'Xarcabard [S]',            zone = xi.zone.XARCABARD_S,            x = 206.0252, y = -23.6727, z = -205.8567,rot = 168, zoneid = 137 },
 }
+
+
 
 -- Table of temporary items available for purchase during campaign battles.
 local CampaignTempItems = {
