@@ -5222,12 +5222,19 @@ uint16 AddCapacityBonus(CCharEntity* PChar, uint16 capacityPoints)
         CStatusEffect* commitment = PChar->StatusEffectContainer->GetStatusEffect(EFFECT_COMMITMENT);
         int16          percentage = commitment->GetPower();
         int16          cap        = commitment->GetSubPower();
-        rawBonus += std::clamp<int32>(((capacityPoints * percentage) / 100), 0, cap);
-        commitment->SetSubPower(cap -= rawBonus);
-
-        if (cap <= 0)
+        if (cap == -1)
         {
-            PChar->StatusEffectContainer->DelStatusEffect(EFFECT_COMMITMENT);
+            rawBonus += std::max<int32>(((capacityPoints * percentage) / 100), 0);
+        }
+        else
+        {
+            rawBonus += std::clamp<int32>(((capacityPoints * percentage) / 100), 0, cap);
+            commitment->SetSubPower(cap -= rawBonus);
+
+            if (cap <= 0)
+            {
+                PChar->StatusEffectContainer->DelStatusEffect(EFFECT_COMMITMENT);
+            }
         }
     }
 
@@ -6554,12 +6561,19 @@ float AddExpBonus(CCharEntity* PChar, float exp)
         CStatusEffect* dedication = PChar->StatusEffectContainer->GetStatusEffect(EFFECT_DEDICATION);
         int16          percentage = dedication->GetPower();
         int16          cap        = dedication->GetSubPower();
-        bonus += std::clamp<int32>((int32)((exp * percentage) / 100), 0, cap);
-        dedication->SetSubPower(cap -= bonus);
-
-        if (cap <= 0)
+        if (cap == -1)
         {
-            PChar->StatusEffectContainer->DelStatusEffect(EFFECT_DEDICATION);
+            bonus += std::max<int32>((int32)((exp * percentage) / 100), 0);
+        }
+        else
+        {
+            bonus += std::clamp<int32>((int32)((exp * percentage) / 100), 0, cap);
+            dedication->SetSubPower(cap -= bonus);
+
+            if (cap <= 0)
+            {
+                PChar->StatusEffectContainer->DelStatusEffect(EFFECT_DEDICATION);
+            }
         }
     }
 
