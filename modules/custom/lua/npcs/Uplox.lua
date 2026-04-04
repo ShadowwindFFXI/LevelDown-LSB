@@ -114,6 +114,7 @@ local categories = {
             { name = "Gabbrath Meat", id = xi.item.SLICE_OF_GABBRATH_MEAT },
             { name = "Cehuetzi Ice", id = xi.item.CEHUETZI_ICE_SHARD },
             { name = "Cehuetzi Pelt", id = xi.item.CEHUETZI_PELT },
+			{ name = "Cehuetzi Claw", id = xi.item.CEHUETZI_CLAW },
             { name = "Bztavian Wing", id = xi.item.BZTAVIAN_WING },
             { name = "Rockfin Fin", id = xi.item.ROCKFIN_FIN },
             { name = "Sif's Lock", id = xi.item.SIFS_LOCK },
