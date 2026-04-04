@@ -52,17 +52,18 @@ entity.onMobInitialize = function(mob)
 end
 
 entity.onMobSpawn = function(mob)
-    mob:setHP(mob:getMaxHP() / 2)
-    mob:setUnkillable(true)
+    mob:setHP(mob:getMaxHP())
+    mob:setUnkillable(false)
+    mob:setAnimationSub(0)
 
-    mob:setMod(xi.mod.REGEN, 50)
+    mob:setMod(xi.mod.REGEN, 10)
     mob:setMod(xi.mod.UDMGBREATH, -10000) -- Immune to breath damage
 
     mob:setLocalVar('[rage]timer', 3600) -- 60 minutes
 
     mob:setLocalVar('headTimer', GetSystemTime() + math.random(90, 210))
-    mob:setLocalVar('head2Regeneration', 0)
-    mob:setLocalVar('head3Regeneration', 0)
+    mob:setLocalVar('head2Regeneration', 1)
+    mob:setLocalVar('head3Regeneration', 1)
 
     -- Number of crits to lose a head
     mob:setLocalVar('criticalsThreshold', math.random(10, 30))
