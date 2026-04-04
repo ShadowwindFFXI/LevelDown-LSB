@@ -17,11 +17,13 @@ end
 
 commandObj.onTrigger = function(player)
     if player:getSpeed() == 80 then
-       player:printToPlayer('Your Speed has been reset to retail')
-       player:setSpeed(50)
+       player:printToPlayer('Your Speed has been reset to the Default LD speed')
+       player:setMod(xi.mod.MOVE_SPEED_OVERRIDE, 0)
+       player:recalculateStats()
     else
-       player:printToPlayer('Your Speed has been reset to LevelDown')
-       player:setSpeed(80)
+       player:printToPlayer('Your Speed has been reset to retail')
+       player:setMod(xi.mod.MOVE_SPEED_OVERRIDE, 80)
+       player:recalculateStats()
     end
 end
 return commandObj
