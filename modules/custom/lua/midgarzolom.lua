@@ -131,7 +131,7 @@ for _, entry in pairs(Zolom) do
                         target:getLocalVar('supreme_procm') == 0
                     then
                         target:weaknessTrigger(2) -- Red proc
-                        target:addStatusEffect(xi.effect.TERROR, { power = 0, tick = 0, duration = 15 })
+                        target:addStatusEffect(xi.effect.TERROR, { power = 0, tick = 0, duration = 15, origin = target })
                         target:setLocalVar('supreme_procm', 1)
                     end
                 end)
@@ -144,7 +144,7 @@ for _, entry in pairs(Zolom) do
                             procjobs[user:getMainJob()] == 'ws'
                         then
                             target:weaknessTrigger(0) -- Blue proc
-                            target:addStatusEffect(xi.effect.TERROR, { power = 0, tick = 0, duration = 15 })
+                            target:addStatusEffect(xi.effect.TERROR, { power = 0, tick = 0, duration = 15, origin = target })
                             target:setLocalVar('supreme_procw', 1)
                         end
                     end
@@ -161,7 +161,7 @@ for _, entry in pairs(Zolom) do
                         mob:delStatusEffect(xi.effect.REGEN)
                         mob:delStatusEffect(xi.effect.REGAIN)
                         mob:delStatusEffect(xi.effect.ENFIRE_II)
-                        mob:addStatusEffect(xi.effect.TERROR, { power = 0, tick = 0, duration = 15 })
+                        mob:addStatusEffect(xi.effect.TERROR, { power = 0, tick = 0, duration = 15, origin = mob })
                         mob:setLocalVar('supreme_proca', 1)
                     end
                 end)
