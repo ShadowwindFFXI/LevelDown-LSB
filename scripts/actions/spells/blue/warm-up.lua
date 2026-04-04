@@ -34,8 +34,8 @@ spellObject.onSpellCast = function(caster, target, spell)
         caster:delStatusEffect(xi.effect.DIFFUSION)
     end
 
-    local actionOne = target:addStatusEffect(xi.effect.ACCURACY_BOOST, { power = 100, duration = duration, origin = caster })
-    local actionTwo = target:addStatusEffect(xi.effect.EVASION_BOOST, { power = 100, duration = duration, origin = caster })
+    local actionOne = target:addStatusEffect(xi.effect.ACCURACY_BOOST, { power = 10, duration = duration, origin = caster })
+    local actionTwo = target:addStatusEffect(xi.effect.EVASION_BOOST, { power = 10, duration = duration, origin = caster })
 
     if not actionOne and not actionTwo then -- both statuses fail to apply
         spell:setMsg(xi.msg.basic.MAGIC_NO_EFFECT)
