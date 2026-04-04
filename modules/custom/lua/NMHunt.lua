@@ -323,6 +323,27 @@ local mobAdjustment =
 
 local m = Module:new('NMHunt')
 
+local function broadcastnmhuntAnnouncement(message)
+    -- Iterate through all possible zones
+    for i = 1, 299 do
+        local zone = GetZone(i)
+        if zone then
+            local zonex = zone:getPlayers()
+            for _, member in pairs(zonex) do
+                -- Check for the specific NM Hunt message suppression setting ('NMHuntMessage')
+                local huntSetting = member:getCharVar("NMHuntMessage")
+                local suppressNMHunt = tonumber(huntSetting) or 0
+
+                -- Announce only if suppression variable is NOT set to 1
+                if suppressNMHunt ~= 1 then
+                    -- Send the actual message
+                    member:printToPlayer(message, xi.msg.channel.SYSTEM_3)
+                end
+            end
+        end
+    end
+end
+
 for _,  entry in pairs(nmHuntMobs) do
     m:addOverride(string.format('xi.zones.%s.Zone.onInitialize', entry[10]), function(zone)
         super(zone)
@@ -350,6 +371,7 @@ for _,  entry in pairs(nmHuntMobs) do
                 mob:setMod(xi.mod.HP, 9 * mob:getMainLvl())
                 mob:updateHealth()
                 mob:addHP(mob:getMaxHP())
+                mob:setLocalVar("death_processed", 0)
             end,
 
             onMobFight  =  function(mob, target)
@@ -362,16 +384,24 @@ for _,  entry in pairs(nmHuntMobs) do
                 local spawnTimer = math.random(mobAdjustment[entry[11]].mobRespawn[1] * 1000, mobAdjustment[entry[11]].mobRespawn[2] * 1000)
                 local rewardAmount = math.random(mobAdjustment[entry[11]].reward[1], mobAdjustment[entry[11]].reward[2])
 
+                if mob:getLocalVar("death_processed") == 0 then
+                    local minMinutes = mobAdjustment[entry[11]].mobRespawn[1] / 60
+                    local maxMinutes = mobAdjustment[entry[11]].mobRespawn[2] / 60
+                    local announcement = string.format("[NMHunt] %s has been defeated! It will respawn in %d-%d minutes.", entry[1], minMinutes, maxMinutes)
+                    broadcastnmhuntAnnouncement(announcement)
+
+                    mob:timer(spawnTimer, function(m)
+                        m:spawn()
+                    end)
+                    mob:setLocalVar("death_processed", 1)
+                end
+
                 if killcount == 0 then
                     playerArg:setCharVar(entry[11], totalkill + 1)
                 end
 
                 playerArg:setCharVar(varName,   killcount + 1)
                 npcUtil.giveItem(playerArg, { { 4049, rewardAmount } } )
-
-                mob:timer(spawnTimer, function(mob)
-                    mob:spawn()
-                end)
             end,
         })
         mob:setSpawn(entry[6], entry[7], entry[8], entry[9], entry[5])
