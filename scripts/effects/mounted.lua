@@ -1,10 +1,31 @@
------------------------------------
+-----------------------------
 -- xi.effect.MOUNTED
 -----------------------------------
 ---@type TEffect
 local effectObject = {}
 
 effectObject.onEffectGain = function(target, effect)
+    -- Escha Silt check
+    if target:isPC() then
+        local eschaZones = {
+            [xi.zone.ESCHA_ZITAH] = true,
+            [xi.zone.ESCHA_RUAUN] = true,
+            [xi.zone.REISENJIMA] = true,
+        }
+        local zoneId = target:getZoneID()
+
+        if eschaZones[zoneId] then
+            local siltCost = 1000
+            if target:getCurrency('escha_silt') < siltCost then
+                target:printToPlayer("You do not have enough Escha silt to summon a mount here.", xi.msg.channel.SYSTEM_3)
+                return false -- This will prevent the effect from being applied.
+            else
+                target:delCurrency('escha_silt', siltCost)
+                target:printToPlayer(string.format("You spend %d Escha silt to summon your mount.", siltCost), xi.msg.channel.SYSTEM_3)
+            end
+        end
+    end
+
     local mountId = effect:getPower()
     -- Retail sends a music change packet (packet ID 0x5F) in both cases.
 
