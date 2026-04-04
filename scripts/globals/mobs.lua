@@ -1,4 +1,4 @@
------------------------------------
+------------------------------------
 -- Global version of onMobDeath
 -----------------------------------
 require('scripts/globals/magic')
@@ -23,7 +23,7 @@ local function lotteryPrimed(phList, nmId)
 
     for k, v in pairs(phList) do
         nm = GetMobByID(v)
-        if v == nmId and nm ~= nil and (nm:isSpawned() or nm:getRespawnTime() ~= 0) then
+        if v == nmId and nm ~= nil and (nm:isSpawned() or nm:getRespawnTime() ~= 0 or nm:getLocalVar('lottery_primed') == 1) then
             return true
         end
     end
@@ -146,18 +146,28 @@ xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
     end
 
     local pop = nm:getLocalVar('pop')
+    local phRespawnTime = GetMobRespawnTime(phId)
 
     chance = math.ceil(chance * 10) -- chance / 1000.
 
+    local isLotteryPrimed = lotteryPrimed(phList, nmId)
+
     if
         GetSystemTime() <= pop or
-        lotteryPrimed(phList, nmId) or
+        isLotteryPrimed or
         math.random(1, 1000) > chance
     then
+        -- Ensure PH respawns when lottery fails for any reason
+        -- (cooldown, NM already primed, random chance)
+        if phRespawnTime > 0 then
+            DisallowRespawn(phId, false)
+            ph:setRespawnTime(phRespawnTime)
+        end
+
         return false
     end
 
-    local nextRepopTime = VanadielTime() + GetMobRespawnTime(phId)
+    local nextRepopTime = VanadielTime() + phRespawnTime
     local nextRepopHour = math.floor((nextRepopTime % xi.vanaTime.DAY) / xi.vanaTime.HOUR)
     -- If the NM is day only and spawn would happen during the night, bail out
     if
@@ -165,6 +175,8 @@ xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
         nextRepopHour < 4 and
         nextRepopHour >= 20
     then
+        DisallowRespawn(phId, false)
+        ph:setRespawnTime(phRespawnTime)
         return false
     -- If the NM is night only and spawn would happen during the day, bail out
     elseif
@@ -172,6 +184,8 @@ xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
         nextRepopHour >= 4 and
         nextRepopHour < 20
     then
+        DisallowRespawn(phId, false)
+        ph:setRespawnTime(phRespawnTime)
         return false
     end
 
@@ -184,11 +198,14 @@ xi.mob.phOnDespawn = function(ph, phNmId, chance, cooldown, params)
         xi.mob.updateNMSpawnPoint(nm, params.spawnPoints or nil)
     end
 
+    nm:setLocalVar('lottery_primed', 1)
+
     -- if params.immediate is true, spawn the nm params.immediately (1ms) else use placeholder's timer
-    nm:setRespawnTime(params.immediate and 1 or GetMobRespawnTime(phId))
-    local phRespawnTime = GetMobRespawnTime(phId)
+    nm:setRespawnTime(params.immediate and 1 or phRespawnTime)
 
     nm:addListener('DESPAWN', 'DESPAWN_' .. nmId, function(m)
+        m:setLocalVar('lottery_primed', 0)
+
         -- on NM death, replace NM repop with PH repop
         DisallowRespawn(nmId, true)
         if not params.doNotEnablePhSpawn then
