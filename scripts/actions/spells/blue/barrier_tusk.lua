@@ -18,7 +18,7 @@ spellObject.onMagicCastingCheck = function(caster, target, spell)
 end
 
 spellObject.onSpellCast = function(caster, target, spell)
-    local power = 57.5 -- 57.5%
+    local power = 15 -- 15%
     local duration = 90
 	
 	if caster:hasStatusEffect(xi.effect.DIFFUSION) then
@@ -31,11 +31,11 @@ spellObject.onSpellCast = function(caster, target, spell)
         caster:delStatusEffect(xi.effect.DIFFUSION)
     end
 
-    if not target:addStatusEffect(xi.effect.DEFENSE_BOOST, { power = power, duration = duration, origin = caster }) then
+    if not target:addStatusEffect(xi.effect.PHALANX, { power = power, subPower = 1, duration = duration, origin = caster }) then
         spell:setMsg(xi.msg.basic.MAGIC_NO_EFFECT)
     end
 
-    return xi.effect.DEFENSE_BOOST
+    return xi.effect.PHALANX
 end
 
 return spellObject
