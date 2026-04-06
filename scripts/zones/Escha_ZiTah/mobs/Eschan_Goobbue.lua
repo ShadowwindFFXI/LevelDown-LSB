@@ -15,9 +15,15 @@ entity.onMobDeath = function(mob, player, optParams)
         spawnPoints = { { x = mob:getXPos(), y = mob:getYPos(), z = mob:getZPos() } }
     }
 
-    local rareEnemyMod = 10 + player:getCharVar('[Vorseal]Rare Enemy')
+    local rareEnemyMod = 10
+    local hasMollifier = false
 
-    if not player:hasKeyItem(xi.ki.MOLLIFIER) then
+    if player then
+        rareEnemyMod = rareEnemyMod + player:getCharVar('[Vorseal]Rare Enemy')
+        hasMollifier = player:hasKeyItem(xi.ki.MOLLIFIER)
+    end
+
+    if not hasMollifier then
         xi.mob.phOnDespawn(mob, ID.mob.KEEPER_OF_HEILIGTUM, rareEnemyMod, 180, params)
     end
 end
