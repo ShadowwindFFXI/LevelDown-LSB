@@ -13,7 +13,7 @@ mobskillObject.onMobWeaponSkill = function(target, mob, skill)
     skill:setMsg(xi.msg.basic.SELF_HEAL)
 
     -- Todo: verify/correct maths
-    return xi.mobskills.mobHealMove(mob, math.floor(mob:getHP() / 7) * 2)
+    return xi.mobskills.mobHealMove(target, math.floor(mob:getHP() / 7) * 2)
 end
 
 return mobskillObject
