@@ -1509,7 +1509,7 @@ m:addOverride("xi.zones.Selbina.Zone.onInitialize", function(zone)
 
             local title = string.format("Points: %d. Attempts: %d.", points, attempts)
             if availableRewards > 0 then
-                title = title .. string.format(" You have %d free KI(s) available!", availableRewards)
+                title = title .. string.format("%d free KI(s)!", availableRewards)
             else
                 title = title .. string.format(" 10pts/KI", points)
             end
@@ -1521,7 +1521,7 @@ m:addOverride("xi.zones.Selbina.Zone.onInitialize", function(zone)
 
             if availableRewards > 0 then
                 table.insert(menu.options, {
-                    "Claim Milestone Reward (Free KI)",
+                    "Claim Free KI",
                     function(p)
                         local rewardMenu = { title = "Select a Key Item:", options = {} }
                         for id, config in pairs(battlefieldConfig) do
