@@ -18,3 +18,9 @@
 UPDATE npc_list SET status = 0 WHERE npcid = 17662578; -- correct Sodek Aby Misx npc
 UPDATE npc_list SET status = 0 WHERE polutils_name = 'Atmacite Refiner';
 UPDATE npc_list SET look = 0x0100060800106620003002400250006000700000 WHERE polutils_name = 'Ornery Dhole';
+
+--Fix for Aby Misx Dilapidated Gates
+UPDATE npc_list SET name = 'Dilapidated_Gate_1' WHERE npcid = 17662739;
+UPDATE npc_list SET name = 'Dilapidated_Gate_2' WHERE npcid = 17662740;
+UPDATE npc_list SET name = 'Dilapidated_Gate_3' WHERE npcid = 17662741;
+UPDATE npc_list SET name = 'Dilapidated_Gate_4' WHERE npcid = 17662742;
