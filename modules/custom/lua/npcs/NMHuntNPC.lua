@@ -1705,7 +1705,7 @@ page67 =
          end
     },
     {
-        'Spell: Ulima',
+        'Spell: Ulmia',
          function(player)
            player:setLocalVar('NMSTrustSpell', 914)
            menu.options = page36
