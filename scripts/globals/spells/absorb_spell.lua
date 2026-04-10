@@ -4,6 +4,7 @@
 -----------------------------------
 require('scripts/globals/combat/magic_hit_rate')
 require('scripts/globals/spells/damage_spell')
+require('scripts/globals/magicburst')
 -----------------------------------
 xi = xi or {}
 xi.spells = xi.spells or {}
@@ -56,10 +57,17 @@ xi.spells.absorb.doAbsorbStatSpell = function(caster, target, spell)
 
     local finalDuration = math.floor(baseDuration * darkDurationMultiplier * durationGearMultiplier) + caster:getMod(xi.mod.ENHANCES_ABSORB_EFFECTS) -- Assume additive. TODO: Testing needed.
 
+    local _, skillchainCount = xi.magicburst.formMagicBurst(target, xi.element.DARK)
+
     -- Apply debuff and buff if needed. Absorb effects can be overwriten via higher potency.
     if target:addStatusEffect(enfeeblingEffect, { power = finalPotency, duration = finalDuration, origin = caster }) then
-        -- Set associated message.
-        spell:setMsg(absorbStatData[spellId].msg)
+        if skillchainCount > 0 then
+            caster:triggerRoeEvent(xi.roeTrigger.MAGIC_BURST)
+            spell:setMsg(xi.msg.basic.MAGIC_BURST_ENFEEB)
+        else
+            -- Set associated message.
+            spell:setMsg(absorbStatData[spellId].msg)
+        end
 
         -- Force-overwrite associated buff.
         caster:delStatusEffect(enhancingEffect)
@@ -138,6 +146,14 @@ xi.spells.absorb.doDrainingSpell = function(caster, target, spell)
         netherVoidMultiplier = 1 + caster:getStatusEffect(xi.effect.NETHER_VOID):getPower() / 100
     end
 
+    local magicBurst             = 1
+    local magicBurstBonus        = 1
+    local _, skillchainCount     = xi.magicburst.formMagicBurst(target, xi.element.DARK)
+    if skillchainCount > 0 then
+        magicBurst      = xi.spells.damage.calculateIfMagicBurst(target, xi.element.DARK, skillchainCount)
+        magicBurstBonus = xi.spells.damage.calculateIfMagicBurstBonus(caster, target, spellId, xi.skill.DARK_MAGIC, xi.element.DARK)
+    end
+
     -- Operations.
     finalDamage = math.floor(baseDamage * resistTier)
     finalDamage = math.floor(finalDamage * additionalResistTier)
@@ -148,6 +164,8 @@ xi.spells.absorb.doDrainingSpell = function(caster, target, spell)
     finalDamage = math.floor(finalDamage * absorbMultiplier)
     finalDamage = math.floor(finalDamage * liberatorMultiplier)
     finalDamage = math.floor(finalDamage * netherVoidMultiplier)
+    finalDamage = math.floor(finalDamage * magicBurst)
+    finalDamage = math.floor(finalDamage * magicBurstBonus)
 
     -- Final operations.
     if modAbsorbed == xi.mod.HP then
@@ -211,11 +229,21 @@ xi.spells.absorb.doDrainingSpell = function(caster, target, spell)
     -- Displayed damage in log is the amount the player heals by, not the damage actually done.
     local displayDamage = utils.clamp(finalDamage, 0, displayCap)
 
+    if skillchainCount > 0 then
+        caster:triggerRoeEvent(xi.roeTrigger.MAGIC_BURST)
+        if modAbsorbed == xi.mod.MP then
+            spell:setMsg(xi.msg.basic.MAGIC_BURST_DAMAGE)
+        else
+            spell:setModifier(xi.msg.actionModifier.MAGIC_BURST)
+        end
+    end
+
     return displayDamage
 end
 
 xi.spells.absorb.doAbsorbTPSpell = function(caster, target, spell)
     local finalDamage = 0
+    local spellId     = spell:getID()
 
     -- Early return: Target absorbs or nullifies dark.
     if
@@ -246,6 +274,14 @@ xi.spells.absorb.doAbsorbTPSpell = function(caster, target, spell)
     local absorbTpMultiplier   = 1 + caster:getMod(xi.mod.AUGMENTS_ABSORB_TP) / 100 -- TODO: Additive with aug abs or multiplicative?
     local liberatorMultiplier  = 1 + caster:getMod(xi.mod.AUGMENTS_ABSORB_LIBERATOR) / 100
 
+    local magicBurst             = 1
+    local magicBurstBonus        = 1
+    local _, skillchainCount     = xi.magicburst.formMagicBurst(target, xi.element.DARK)
+    if skillchainCount > 0 then
+        magicBurst      = xi.spells.damage.calculateIfMagicBurst(target, xi.element.DARK, skillchainCount)
+        magicBurstBonus = xi.spells.damage.calculateIfMagicBurstBonus(caster, target, spellId, xi.skill.DARK_MAGIC, xi.element.DARK)
+    end
+
     -- Operations.
     finalDamage = math.floor(baseDamage * resistTier)
     finalDamage = math.floor(finalDamage * additionalResistTier)
@@ -255,12 +291,19 @@ xi.spells.absorb.doAbsorbTPSpell = function(caster, target, spell)
     finalDamage = math.floor(finalDamage * absorbMultiplier)
     finalDamage = math.floor(finalDamage * absorbTpMultiplier)
     finalDamage = math.floor(finalDamage * liberatorMultiplier)
+    finalDamage = math.floor(finalDamage * magicBurst)
+    finalDamage = math.floor(finalDamage * magicBurstBonus)
 
     -- Clamp
     finalDamage = utils.clamp(finalDamage, 0, 3000)
 
-    -- Set proper message.
-    spell:setMsg(xi.msg.basic.MAGIC_ABSORB_TP)
+    if skillchainCount > 0 then
+        caster:triggerRoeEvent(xi.roeTrigger.MAGIC_BURST)
+        spell:setMsg(xi.msg.basic.MAGIC_BURST_DAMAGE)
+    else
+        -- Set proper message.
+        spell:setMsg(xi.msg.basic.MAGIC_ABSORB_TP)
+    end
 
     -- Perform drain.
     caster:addTP(finalDamage)
@@ -273,6 +316,8 @@ xi.spells.absorb.doAbsorbAttriSpell = function(caster, target, spell)
     local count       = 0
     local effectFirst = caster:stealStatusEffect(target, xi.effectFlag.DISPELABLE)
 
+    local _, skillchainCount = xi.magicburst.formMagicBurst(target, xi.element.DARK)
+
     if effectFirst ~= 0 then
         count = 1
 
@@ -284,6 +329,11 @@ xi.spells.absorb.doAbsorbAttriSpell = function(caster, target, spell)
         end
 
         spell:setMsg(xi.msg.basic.MAGIC_STEAL)
+
+        if skillchainCount > 0 then
+            caster:triggerRoeEvent(xi.roeTrigger.MAGIC_BURST)
+            spell:setModifier(xi.msg.actionModifier.MAGIC_BURST)
+        end
 
         return count
     else
