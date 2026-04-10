@@ -73,6 +73,9 @@ local CAMPAIGN_REWARDS = {
             {"Liij-Vok", xi.item.LIIJ_VOKS_GRAND_COFFER, grand_coffer_price},
             {"Gramk-Droog", xi.item.GRAMK_DROOGS_GRAND_COFFER, grand_coffer_price},
         },
+        ["Special Services"] = {
+            {"Reset Gorpa", "charvar", "Ambuscade_Reset_Token", 200000},
+        },
     },
     ["Mega Boss Rewards"] = {
         ["Avatar Rings"] = {
@@ -731,7 +734,7 @@ function showItemSelectionMenu(player, npc, categoryName, setName, page)
         
         -- Display only the piece name and the final cost
         local optionText
-        if setName == "Empy +1 Mats" or setName == "WoE +1" or setName == "Avatar Rings" then
+        if setName == "Empy +1 Mats" or setName == "WoE +1" or setName == "Avatar Rings" or setName == "Special Services" then
             optionText = pieceName
         else
             optionText = string.format("%s (%d %s)", pieceName, modifiedCost, TEXT_CURRENCY_NAME)
@@ -870,6 +873,8 @@ function showSetSelectionMenu(player, npc, categoryName, page)
             displayName = setName .. " (10 Kills)"
         elseif setName == "WoE +1" then
             displayName = setName .. " (30 Kills)"
+        elseif setName == "Special Services" then
+            displayName = setName .. " (10 Kills)"
         end
         
         table.insert(setMenu.options, {
@@ -1011,7 +1016,8 @@ end
 function handleRewardPurchase(player, npc, itemData, baseCost, itemName, categoryName, setName, page, quantity)
     local npcName = npc:getPacketName()
     local currentNotes = player:getCurrency(CURRENCY_NAME) or 0
-    local isCurrencyReward = (categoryName == "Special" and #itemData == 4)
+    local isCharVarReward = (categoryName == "Special" and #itemData == 4 and itemData[2] == "charvar")
+    local isCurrencyReward = (categoryName == "Special" and #itemData == 4 and not isCharVarReward)
     local killCost = 0 -- for avatar rings
 
     -- New requirement check for Avatar Rings
@@ -1037,6 +1043,15 @@ function handleRewardPurchase(player, npc, itemData, baseCost, itemName, categor
     elseif setName == "WoE +1" then
         local bossKills = player:getCharVar('StrongholdMegaBossKills') or 0
         killCost = 30 * quantity
+
+        if bossKills < killCost then
+            player:printToPlayer(string.format(MESSAGES.notEnoughKills, killCost, bossKills), 0, npcName)
+            m:logDebug("FAIL: Player %s has %d StrongholdMegaBossKills, needs %d.", player:getName(), bossKills, killCost)
+            return
+        end
+    elseif setName == "Special Services" and itemData[1] == "Reset Gorpa" then
+        local bossKills = player:getCharVar('StrongholdMegaBossKills') or 0
+        killCost = 10 * quantity
 
         if bossKills < killCost then
             player:printToPlayer(string.format(MESSAGES.notEnoughKills, killCost, bossKills), 0, npcName)
@@ -1072,7 +1087,7 @@ function handleRewardPurchase(player, npc, itemData, baseCost, itemName, categor
 	-- 3. All checks passed, execute the transaction
 	player:delCurrency(CURRENCY_NAME, totalCost)
 
-    if setName == "Avatar Rings" or setName == "Empy +1 Mats" or setName == "WoE +1" then
+    if setName == "Avatar Rings" or setName == "Empy +1 Mats" or setName == "WoE +1" or (setName == "Special Services" and itemData[1] == "Reset Gorpa") then
         local bossKills = player:getCharVar('StrongholdMegaBossKills') or 0
         player:setCharVar('StrongholdMegaBossKills', bossKills - killCost)
         m:logDebug("SUCCESS: Deducted %d StrongholdMegaBossKills from %s. New total: %d.", killCost, player:getName(), bossKills - killCost)
@@ -1085,6 +1100,13 @@ function handleRewardPurchase(player, npc, itemData, baseCost, itemName, categor
 		player:addCurrency(currencyKey, currencyAmount)
 
 		m:logDebug("SUCCESS: %d %s deducted. %d %s added.", totalCost, CURRENCY_NAME, currencyAmount, currencyKey)
+		player:printToPlayer(string.format("You have exchanged %d %s for the reward.", totalCost, TEXT_CURRENCY_NAME), 0, npcName)
+	elseif isCharVarReward then
+		local charVarName = itemData[3]
+		local currentVal = player:getCharVar(charVarName)
+		player:setCharVar(charVarName, currentVal + quantity)
+
+		m:logDebug("SUCCESS: %d %s deducted. CharVar %s increased by %d.", totalCost, CURRENCY_NAME, charVarName, quantity)
 		player:printToPlayer(string.format("You have exchanged %d %s for the reward.", totalCost, TEXT_CURRENCY_NAME), 0, npcName)
 	else
 		-- Standard Item Reward
