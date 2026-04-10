@@ -76,7 +76,7 @@ local pTable =
     -- March
     [xi.magic.spell.ADVANCING_MARCH   ] = { 1, xi.effect.MARCH,     xi.mod.AUGMENT_SONG_STAT, xi.mod.MARCH_EFFECT,    0,                        0,                   35, 200, 108,  11,  7, true  },
     [xi.magic.spell.VICTORY_MARCH     ] = { 2, xi.effect.MARCH,     xi.mod.AUGMENT_SONG_STAT, xi.mod.MARCH_EFFECT,    0,                        0,                   43, 300, 163,  16,  7, true  },
-    [xi.magic.spell.HONOR_MARCH       ] = { 3, xi.effect.MARCH,     xi.mod.AUGMENT_SONG_STAT, xi.mod.MARCH_EFFECT,    0,                        0,                   24, 400, 126,  12,  7, true  }, -- Not an error. It is weaker.
+    [xi.magic.spell.HONOR_MARCH       ] = { 3, xi.effect.MARCH,     xi.mod.AUGMENT_SONG_STAT, xi.mod.MARCH_EFFECT,    0,                        0,                  126,   0, 126,  12,  0, true  },
     -- Minne: Skill Caps unknown?
     [xi.magic.spell.KNIGHTS_MINNE     ] = { 1, xi.effect.MINNE,     xi.mod.AUGMENT_SONG_STAT, xi.mod.MINNE_EFFECT,    xi.merit.MINNE_EFFECT,    xi.jp.MINNE_EFFECT,   8,   0,  30,   3, 10, true  },
     [xi.magic.spell.KNIGHTS_MINNE_II  ] = { 2, xi.effect.MINNE,     xi.mod.AUGMENT_SONG_STAT, xi.mod.MINNE_EFFECT,    xi.merit.MINNE_EFFECT,    xi.jp.MINNE_EFFECT,  12,   0,  69,   7, 10, true  },
@@ -290,6 +290,11 @@ xi.spells.enhancing.useEnhancingSong = function(caster, target, spell)
     -- EXCEPTION: Tier 2 Ettudes Fourth Parameter.
     if songEffect == xi.effect.ETUDE and tier == 2 then
         paramFour = 10
+    end
+
+    -- EXCEPTION: Pass spell ID for Honor March to uniquely identify it in the effect script
+    if spellId == xi.magic.spell.HONOR_MARCH then
+        paramFour = spellId
     end
 
     -- EXCEPTION: March Songs effect conversion.

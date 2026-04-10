@@ -6,6 +6,10 @@
 local spellObject = {}
 
 spellObject.onMagicCastingCheck = function(caster, target, spell)
+    if caster:getEquipID(xi.slot.RANGED) ~= xi.item.MARSYAS then
+        return caster:messageBasic(xi.msg.basic.MAGIC_CANNOT_CAST,'Honor March')
+    end
+
     return 0
 end
 
