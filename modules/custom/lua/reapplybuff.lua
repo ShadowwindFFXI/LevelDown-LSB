@@ -55,14 +55,24 @@ end)
 m:addOverride("xi.effects.dedication.onEffectLose", function(target,effect)
 super(target,effect)
 if target:getCharVar('Buff') == 1 then
-   target:addStatusEffect(xi.effect.DEDICATION, {power = 500, tick = 3, duration = 0, origin = target, subpower = 30000}) -- max 30000 or server crash
+   local expPower = 500
+   local jobNameByNum = {}
+   for k, v in pairs(xi.job) do jobNameByNum[v] = k end
+   local paragon = target:getCharVar('[ParagonQuest]'..jobNameByNum[target:getMainJob()])
+   if paragon == 10 then expPower = 350
+   elseif paragon == 20 then expPower = 250
+   elseif paragon == 30 then expPower = 100 end
+
+   target:addStatusEffect(xi.effect.DEDICATION, {power = expPower, tick = 3, duration = 0, origin = target, subPower = 30000}) -- max 30000 or server crash
+   target:printToPlayer('===>>> !Buff Reapplied Automatically', xi.msg.channel.SYSTEM_3)
 end
 end)
 
 m:addOverride("xi.effects.commitment.onEffectLose", function(target,effect)
 super(target,effect)
 if target:getCharVar('Buff') == 2 then
-   target:addStatusEffect(xi.effect.COMMITMENT, { power = 40, duration = 0, origin = target, subpower = 30000}) -- max 30000 or server crash
+   target:addStatusEffect(xi.effect.COMMITMENT, { power = 200, duration = 0, origin = target, subPower = 30000}) -- max 30000 or server crash
+   target:printToPlayer('===>>> !Buff Reapplied Automatically', xi.msg.channel.SYSTEM_3)
 end
 end)
 

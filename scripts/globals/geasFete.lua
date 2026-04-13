@@ -2595,6 +2595,47 @@ local function hasCompletedZone(player, zone)
     return bitmask >= maxValue
 end
 
+local zoneMax =
+{
+    [xi.zone.ESCHA_RUAUN] = 4294967295,
+    [xi.zone.ESCHA_ZITAH] = 134217727,
+    [xi.zone.REISENJIMA]  = 268435455,
+}
+
+local removableKeyItems =
+{
+    xi.ki.RADIALENS,
+    xi.ki.MOLLIFIER,
+}
+
+-- Remove KIs
+local function removeGeasFeteKIs(player)
+    for _, keyItem in ipairs(removableKeyItems) do
+        if player:hasKeyItem(keyItem) then
+            player:delKeyItem(keyItem)
+        end
+    end
+end
+
+-- Helper: check if player has completed zone
+local function addGeasFeteKIs(player)
+        if not player:hasKeyItem(xi.ki.RADIALENS) then
+            player:addKeyItem(xi.ki.RADIALENS)
+        end
+end
+
+local function hasCompletedZone(player, zone)
+    local maxValue = zoneMax[zone]
+    if not maxValue then
+        return false
+    end
+
+    local varName = '[RoD]GeaFetesDefeated' .. zone
+    local bitmask = player:getCharVar(varName)
+
+    return bitmask >= maxValue
+end
+
 xi.geasFete.afterZoneIn = function(player)
     local zone = player:getZoneID()
     local isTrackedZone = zoneMax[zone] ~= nil

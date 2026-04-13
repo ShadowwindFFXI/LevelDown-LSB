@@ -21,7 +21,7 @@ xi.extravaganza.campaignActive = function()
     -- such a time that they are reintroduced, or confirmed to be permanently removed.  If this changes,
     -- return to using xi.settings.main.ENABLE_TRUST_ALTER_EGO_EXTRAVAGANZA
 
-    return xi.extravaganza.campaign.NONE
+    return xi.extravaganza.campaign.BOTH
 end
 
 -----------------------------------

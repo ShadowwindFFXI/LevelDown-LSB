@@ -128,7 +128,7 @@ m:addOverride('xi.zones.Lower_Jeuno.Zone.onInitialize', function(zone)
                     player:printToPlayer(string.format('%s %s %s %s %s %s %s ',Sandung, ThiefsK, WhiteRa, Assassi, Plunder, GorneyR, ChaacB), 0, npc:getPacketName())
              elseif player:getCharVar('LionTH') == 14 then
                     player:printToPlayer(string.format('You have made me a better Thief, My current Treasure Hunter is %s,', player:getCharVar('LionTH') + thLevel(player)), 0, npc:getPacketName())
-                    player:printToPlayer(string.format('I do not belive i can exceed my curent limits', player:getCharVar('LionTH')), 0, npc:getPacketName())
+                    player:printToPlayer(string.format('I do not believe i can exceed my current limits', player:getCharVar('LionTH')), 0, npc:getPacketName())
                     player:setCharVar('[LTH]_Sandung', 0)
                     player:setCharVar('[LTH]_ThiefsK', 0)
                     player:setCharVar('[LTH]_WhiteRara', 0)

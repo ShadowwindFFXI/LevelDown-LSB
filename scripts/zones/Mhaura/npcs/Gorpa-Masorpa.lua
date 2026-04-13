@@ -465,6 +465,19 @@ end
 
 
 entity.onTrigger = function(player, npc)
+    local resetToken = player:getCharVar("Ambuscade_Reset_Token")
+    if resetToken > 0 then
+        for i = 1, 24 do
+            player:setCharVar('[AmubHal]ItemsObtainedParam' .. i, 0)
+        end
+        for i = 1, 16 do
+            player:setCharVar('[AmubGal]ItemsObtainedParam' .. i, 0)
+        end
+        player:setCharVar('[AmbusTH]ItemsObtained', 0)
+        player:setCharVar("Ambuscade_Reset_Token", resetToken - 1)
+        player:printToPlayer("Your Ambuscade purchase limits have been reset!", xi.msg.channel.SYSTEM_3)
+    end
+
     local gallantry = player:getCurrency('gallantry')
     local current_hallmarks = player:getCurrency('current_hallmarks')
     local total_hallmarks = player:getCurrency('total_hallmarks')

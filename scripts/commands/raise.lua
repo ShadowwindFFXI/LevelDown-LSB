@@ -54,6 +54,20 @@ commandObj.onTrigger = function(player, arg1, arg2)
     -- raise target
     if targ:isDead() then
         targ:sendRaise(power)
+
+        -- Remove the weakness effect once the player revives
+        local listenerId = 'CMD_RAISE_WEAKNESS_' .. targ:getID()
+        targ:addListener('TICK', listenerId, function(p)
+            if not p:isDead() then
+                p:delStatusEffect(xi.effect.WEAKNESS)
+                p:timer(1000, function(p_timed)
+                    p_timed:setHP(p_timed:getMaxHP())
+                    p_timed:setMP(p_timed:getMaxMP())
+                end)
+                p:removeListener(listenerId)
+            end
+        end)
+
         if targ:getID() ~= player:getID() then
             player:printToPlayer(string.format('Raise %i sent to %s.', power, targ:getName()))
         end

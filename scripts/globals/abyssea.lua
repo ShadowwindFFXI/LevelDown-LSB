@@ -779,12 +779,12 @@ xi.abyssea.giveNMDrops = function(mob, player, ID)
     for _, keyItemId in pairs(normalDrops) do
         if
             playerClaimed and
-            xi.abyssea.canGiveNMKI(mob, 20)
+            xi.abyssea.canGiveNMKI(mob, 100) -- Base chance for the KI to drop at all (default: 20)
         then
             local ally = playerClaimed:getAlliance()
 
             for _, member in ipairs(ally) do
-                if not member:hasKeyItem(keyItemId) and xi.abyssea.canGiveNMKI(mob, 10) then
+                if not member:hasKeyItem(keyItemId) and xi.abyssea.canGiveNMKI(mob, 100) then -- Personal chance for alliance members to receive the KI (default: 10)
                     npcUtil.giveKeyItem(member, keyItemId, ID.text.PLAYER_KEYITEM_OBTAINED)
                 end
             end
@@ -797,7 +797,7 @@ xi.abyssea.giveNMDrops = function(mob, player, ID)
             local ally = playerClaimed:getAlliance()
 
             for _, member in ipairs(ally) do
-                if not member:hasKeyItem(keyItemId) and xi.abyssea.canGiveNMKI(mob, 10) then
+                if not member:hasKeyItem(keyItemId) and xi.abyssea.canGiveNMKI(mob, 100) then -- Personal chance for alliance members to receive the Atma (default: 10)
                     npcUtil.giveKeyItem(member, keyItemId, ID.text.PLAYER_KEYITEM_OBTAINED)
                 end
             end

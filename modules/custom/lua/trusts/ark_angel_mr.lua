@@ -69,8 +69,6 @@ end)
          m:addOverride("xi.actions.mobskills.cloudsplitter.onMobWeaponSkill", function(target, mob, skill)
              local damage = math.floor(mob:getWeaponDmg() * 3)
              local dmgmod = 2
-            damage = xi.mobskills.mobMagicalMove(mob, target, skill, damage, xi.element.THUNDER, dmgmod, xi.mobskills.magicalTpBonus.NO_EFFECT, 1)
-            damage = xi.mobskills.mobFinalAdjustments(damage, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.THUNDER, xi.mobskills.shadowBehavior.WIPE_SHADOWS)
 
             local skillParams = {
                 baseDamage = damage,

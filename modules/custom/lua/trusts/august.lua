@@ -202,13 +202,17 @@ end)
             return 0
         end)
         m:addOverride("xi.actions.mobskills.tartaric_sigil.onMobWeaponSkill", function(target, mob, skill)
-            local damage = math.floor(mob:getWeaponDmg() * 3)
-            local dmgmod = 3.4
-            damage = xi.mobskills.mobMagicalMove(mob, target, skill, damage, xi.element.DARK, dmgmod, xi.mobskills.magicalTpBonus.MAB_BONUS, 1)
-            damage = xi.mobskills.mobFinalAdjustments(damage, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.DARK, xi.mobskills.shadowBehavior.IGNORE_SHADOWS)
-            target:takeDamage(damage, mob, xi.attackType.MAGICAL, xi.damageType.DARK)
+        local skillParams = {
+            baseDamage = math.floor(mob:getWeaponDmg() * 3),
+            element = xi.element.DARK,
+            fTP = { 3.4, 3.4, 3.4 },
+            tpBonus = xi.mobskills.magicalTpBonus.MAB_BONUS,
+            shadowBehavior = xi.mobskills.shadowBehavior.IGNORE_SHADOWS,
+        }
+        local result = xi.mobskills.mobMagicalMove(mob, target, skill, nil, skillParams)
+        target:takeDamage(result.damage, mob, xi.attackType.MAGICAL, xi.damageType.DARK)
 
-            return damage
+        return result.damage
         end)
     -- Null Field
     xi.module.ensureTable("xi.actions.mobskills.null_field")
@@ -217,13 +221,17 @@ end)
             return 0
         end)
         m:addOverride("xi.actions.mobskills.null_field.onMobWeaponSkill", function(target, mob, skill)
-            local damage = math.floor(mob:getWeaponDmg() * 3)
-            local dmgmod = 2
-            damage   = xi.mobskills.mobMagicalMove(mob, target, skill, damage, xi.element.FIRE, dmgmod, xi.mobskills.magicalTpBonus.NO_EFFECT, 1)
-            damage    = xi.mobskills.mobFinalAdjustments(damage, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.FIRE, xi.mobskills.shadowBehavior.WIPE_SHADOWS)
-            target:takeDamage(damage, mob, xi.attackType.MAGICAL, xi.damageType.FIRE)
+        local skillParams = {
+            baseDamage = math.floor(mob:getWeaponDmg() * 3),
+            element = xi.element.FIRE,
+            fTP = { 2, 2, 2 },
+            tpBonus = xi.mobskills.magicalTpBonus.NO_EFFECT,
+            shadowBehavior = xi.mobskills.shadowBehavior.WIPE_SHADOWS,
+        }
+        local result = xi.mobskills.mobMagicalMove(mob, target, skill, nil, skillParams)
+        target:takeDamage(result.damage, mob, xi.attackType.MAGICAL, xi.damageType.FIRE)
 
-            return damage
+        return result.damage
         end)
     -- Fulminous Fury
     xi.module.ensureTable("xi.actions.mobskills.fulminous_fury")
@@ -237,13 +245,17 @@ end)
             xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.SILENCE, 1, 0, 60)
             xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.PARALYSIS, 15, 0, 60)
             xi.mobskills.mobStatusEffectMove(mob, target, xi.effect.BLINDNESS, 15, 0, 60)
-            local damage = math.floor(mob:getWeaponDmg() * 4)
-            local dmgmod = 2
-            damage = xi.mobskills.mobMagicalMove(mob, target, skill, damage, xi.element.THUNDER, dmgmod, xi.mobskills.magicalTpBonus.NO_EFFECT, 1)
-            damage = xi.mobskills.mobFinalAdjustments(damage, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.THUNDER, xi.mobskills.shadowBehavior.WIPE_SHADOWS)
-            target:takeDamage(damage, mob, xi.attackType.MAGICAL, xi.damageType.THUNDER)
+        local skillParams = {
+            baseDamage = math.floor(mob:getWeaponDmg() * 4),
+            element = xi.element.THUNDER,
+            fTP = { 2, 2, 2 },
+            tpBonus = xi.mobskills.magicalTpBonus.NO_EFFECT,
+            shadowBehavior = xi.mobskills.shadowBehavior.WIPE_SHADOWS,
+        }
+        local result = xi.mobskills.mobMagicalMove(mob, target, skill, nil, skillParams)
+        target:takeDamage(result.damage, mob, xi.attackType.MAGICAL, xi.damageType.THUNDER)
 
-            return damage
+        return result.damage
         end)
     -- No Quarter
     xi.module.ensureTable("xi.actions.mobskills.no_quarter")
@@ -306,13 +318,17 @@ end)
             -- Damage taken -50% (Video supports this)
             mob:setMod(xi.mod.DMGPHYS, 50) -- See Module for removal
 
-            local damage = math.floor(mob:getWeaponDmg() * 4)
-            local dmgmod = 3
-            damage   = xi.mobskills.mobMagicalMove(mob, target, skill, damage, xi.element.LIGHT, dmgmod, xi.mobskills.magicalTpBonus.NO_EFFECT, 1)
-            damage    = xi.mobskills.mobFinalAdjustments(damage, mob, skill, target, xi.attackType.MAGICAL, xi.damageType.LIGHT, xi.mobskills.shadowBehavior.WIPE_SHADOWS)
-            target:takeDamage(damage, mob, xi.attackType.MAGICAL, xi.damageType.LIGHT)
+        local skillParams = {
+            baseDamage = math.floor(mob:getWeaponDmg() * 4),
+            element = xi.element.LIGHT,
+            fTP = { 3, 3, 3 },
+            tpBonus = xi.mobskills.magicalTpBonus.NO_EFFECT,
+            shadowBehavior = xi.mobskills.shadowBehavior.WIPE_SHADOWS,
+        }
+        local result = xi.mobskills.mobMagicalMove(mob, target, skill, nil, skillParams)
+        target:takeDamage(result.damage, mob, xi.attackType.MAGICAL, xi.damageType.LIGHT)
 
-            return damage
+        return result.damage
         end)
     -- Noble Frenzy
     xi.module.ensureTable("xi.actions.mobskills.noble_frenzy")
