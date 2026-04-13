@@ -89,12 +89,17 @@ local customQuestId =
     -----------------------------------
     -- KILL_ECOSYSTEM_QTY
     -----------------------------------
-    [089] = {'Turn in Job Points',1,100,2},
-    [090] = {'Kill Supreme Chaos', 1,1,3},
-    [091] = {'Kill Supreme Behemoth', 1,1,3},
-    [092] = {'Kill Supreme Aspid', 1,1,3},
-    [093] = {'Kill Supreme Dragon', 1,1,3},
-    [094] = {'Kill Provenance Watcher', 1,1,3},
+    [084] = {'Turn in Job Points',1,100,2},
+    [085] = {'Kill Warder_of_Dignity', 1,1,3},
+    [086] = {'Kill Warder_of_Faith', 1,1,3},
+    [087] = {'Kill Warder_of_Fortitude', 1,1,3},
+    [088] = {'Kill Warder_of_Hope', 1,1,3},
+    [089] = {'Kill Warder_of_Justice', 1,1,3},
+    [090] = {'Kill Warder_of_Love', 1,1,3},
+    [091] = {'Kill Warder_of_Loyalty', 1,1,3},
+    [092] = {'Kill Warder_of_Mercy', 1,1,3},
+    [093] = {'Kill Warder_of_Prudence', 1,1,3},
+    [094] = {'Kill Warder_of_Temperance', 1,1,3},
     [095] = {'Helm Chocobo Digging',1,10,1},
     [096] = {'Helm Harvesting', 1,10,1},
     [097] = {'Helm Loggin', 1,10,1},
@@ -1036,7 +1041,7 @@ function completeCustomQuest(player, questType)
     local questCount = tonumber(questParams:sub(6,8))
 
     if questVar > 0 then
-        if questId == 89 then
+        if questId == 84 then
             if player:getJobPoints(player:getMainJob()) >= 100 then
                 player:delJobPoints(player:getMainJob(), 100)
                 player:injectActionPacket(player:getID(), 4, customQuestType[questType][3], 0, 0, 0, 10, 1)
@@ -1185,12 +1190,10 @@ local function createAcceptQuestMenu(player, page)
                    player:printToPlayer(string.format('You have activated the quest:'), 0, 'Quest NPC')
                    player:printToPlayer(string.format('%s', customQuestType[questType][1]), 0, 'Quest Type')
                    player:printToPlayer(string.format('%s', customQuestId[questId][1]), 0, 'Quest Name')
-                   if questId == 89 then
+                   if questId == 84 then
                       player:printToPlayer(string.format('Exchange 100 Job Points!'), 0, 'Quest Objective')
-                   elseif questId >= 90 and questId <= 93 then 
+                   elseif questId >= 85 and questId <= 94 then
                           player:printToPlayer(string.format('%s 1 time!', customQuestId[questId][1]), 0, 'Quest Objective')
-                   elseif questId == 94 then 
-                          player:printToPlayer(string.format('Kill Provenance Watcher 1 time!'), 0, 'Quest Objective')
                    elseif questId == 95 then 
                           player:printToPlayer(string.format('Successfully perform Chocobo Digging 10 time!'), 0, 'Quest Objective')
                    elseif questId >= 96 and questId <= 99 then 
@@ -1771,28 +1774,8 @@ xi.custom_quest.onMobDeathEx = function(mob, player, isKiller, isWeaponSkillKill
 -- LS quest to Kill Provenance Water or Supreme
 ----------------------------------------------
     if player then
-        if questId == 90 and
-            mob:getName() == 'DE_Supreme Chaos' then
-                player:setCharVar(varName, questVar +1)
-                player:printToPlayer(string.format('Level Down %s Quest!',customQuestType[questType][1]),8)
-                player:printToPlayer(string.format('%s Count: %s of %s.',customQuestId[questId][1],questCount + 1,customQuestId[questId][3] ),8)
-        elseif questId == 91 and
-            mob:getName() == 'DE_Supreme Behemoth' then
-                player:setCharVar(varName, questVar +1)
-                player:printToPlayer(string.format('Level Down %s Quest!',customQuestType[questType][1]),8)
-                player:printToPlayer(string.format('%s Count: %s of %s.',customQuestId[questId][1],questCount + 1,customQuestId[questId][3] ),8)
-        elseif questId == 92 and
-            mob:getName() == 'DE_Supreme Aspid' then
-                player:setCharVar(varName, questVar +1)
-                player:printToPlayer(string.format('Level Down %s Quest!',customQuestType[questType][1]),8)
-                player:printToPlayer(string.format('%s Count: %s of %s.',customQuestId[questId][1],questCount + 1,customQuestId[questId][3] ),8)
-        elseif questId == 93 and
-            mob:getName() == 'DE_Supreme Dragon' then
-                player:setCharVar(varName, questVar +1)
-                player:printToPlayer(string.format('Level Down %s Quest!',customQuestType[questType][1]),8)
-                player:printToPlayer(string.format('%s Count: %s of %s.',customQuestId[questId][1],questCount + 1,customQuestId[questId][3] ),8)
-        elseif questId == 94 and
-            mob:getName() == 'Provenance_Watcher' then
+        if questId >= 85 and questId <= 94 and
+            mob:getName() == customQuestId[questId][1]:sub(6) then
                 player:setCharVar(varName, questVar +1)
                 player:printToPlayer(string.format('Level Down %s Quest!',customQuestType[questType][1]),8)
                 player:printToPlayer(string.format('%s Count: %s of %s.',customQuestId[questId][1],questCount + 1,customQuestId[questId][3] ),8)
@@ -1963,7 +1946,7 @@ xi.custom_quest.setCurrentQuest = function(player, questId) -- for use of GM Com
     local monthlyQuest = 31000000
     local questIdCalc = questId * 1000
    
-    if questId >= 90 and questId <= 94 then -- monthly
+    if questId >= 85 and questId <= 94 then -- monthly
         player:setCharVar('[LD]CustomQuestMonthly', monthlyQuest + questIdCalc)
     elseif questId >= 100 and questId <= 583 then -- Weekly
         player:setCharVar('[LD]CustomQuestWeekly', weeklyQuest + questIdCalc)
@@ -1971,7 +1954,7 @@ xi.custom_quest.setCurrentQuest = function(player, questId) -- for use of GM Com
         player:setCharVar('[LD]CustomQuestDaily', dailyQuest + questIdCalc)
     elseif questId >= 584 and questId <= 925 then -- daily
         player:setCharVar('[LD]CustomQuestDaily', dailyQuest + questIdCalc)
-    elseif questId == 89 then -- daily
+    elseif questId == 84 then -- daily
         player:setCharVar('[LD]CustomQuestDaily', dailyQuest + questIdCalc)
     end
 end
