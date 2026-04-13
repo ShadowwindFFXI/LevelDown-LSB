@@ -149,19 +149,21 @@ local function completeDominionOp(player, opID)
     player:addCurrency('cruor', dominionOpQuests[opID][3] / 5)
     player:messageSpecial(ID.text.CRUOR_TOTAL, dominionOpQuests[opID][3] / 5, player:getCurrency('cruor'))
     player:addCurrency('dominion_note', dominionOpQuests[opID][3] / 2) -- was 10 changed to 2 to increase the amount of points obtained
-    player:messageSpecial(ID.text.OBTAINS_DOMINION_NOTES, dominionOpQuests[opID][3] / 10, player:getCurrency('dominion_note'))
+    player:messageSpecial(ID.text.OBTAINS_DOMINION_NOTES, dominionOpQuests[opID][3] / 2, player:getCurrency('dominion_note'))
 
     clearOpVars(player, opID)
 end
 
 xi.abyssea.dominionOnMobDeath = function(mob, player, dominionOpID)
-    local progVarName = getProgressVar(dominionOpID)
-    local numDefeated = player:getCharVar(progVarName)
+    if dominionOpQuests[dominionOpID] and player:getCharVar('activeDominionOp') == dominionOpID then
+        local progVarName = getProgressVar(dominionOpID)
+        local numDefeated = player:getCharVar(progVarName)
 
-    if numDefeated < dominionOpQuests[dominionOpID][2] then
-        numDefeated = numDefeated + 1
-        player:messageBasic(xi.msg.basic.FOV_DEFEATED_TARGET, numDefeated, dominionOpQuests[dominionOpID][2])
-        player:setCharVar(progVarName, numDefeated)
+        if numDefeated < dominionOpQuests[dominionOpID][2] then
+            numDefeated = numDefeated + 1
+            player:messageBasic(xi.msg.basic.FOV_DEFEATED_TARGET, numDefeated, dominionOpQuests[dominionOpID][2])
+            player:setCharVar(progVarName, numDefeated)
+        end
     end
 end
 
@@ -220,6 +222,7 @@ xi.abyssea.sergeantOnEventFinish = function(player, csid, option, npc)
 
         player:addQuest(xi.questLog.ABYSSEA, dominionOpQuests[opID][1])
         player:setCharVar('activeDominionOp', opID)
+        player:setCharVar(getProgressVar(opID), 0)
         player:messageSpecial(ID.text.DOMINION_SIGNED_ON)
 
     -- Cancel OP
