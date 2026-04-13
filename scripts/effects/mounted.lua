@@ -5,6 +5,12 @@
 local effectObject = {}
 
 effectObject.onEffectGain = function(target, effect)
+
+    local zoneMax = {
+        [xi.zone.ESCHA_RUAUN] = 4294967295,
+        [xi.zone.ESCHA_ZITAH] = 134217727,
+        [xi.zone.REISENJIMA]  = 268435455,
+    }
     -- Escha Silt check
     if target:isPC() then
         local eschaZones = {
@@ -12,13 +18,23 @@ effectObject.onEffectGain = function(target, effect)
             [xi.zone.ESCHA_RUAUN] = true,
             [xi.zone.REISENJIMA] = true,
         }
+
         local zoneId = target:getZoneID()
 
         if eschaZones[zoneId] then
-            local siltCost = 1000
+            local varName = '[RoD]GeaFetesDefeated' .. zoneId
+            local bitmask = target:getCharVar(varName)
+            local maxValue = zoneMax[zoneId]
+
+            if maxValue and bitmask >= maxValue then
+                target:printToPlayer("Your mastery of this Escha zone allows you to ride freely.", xi.msg.channel.SYSTEM_3)
+                return true
+            end
+
+            local siltCost = 500
             if target:getCurrency('escha_silt') < siltCost then
                 target:printToPlayer("You do not have enough Escha silt to summon a mount here.", xi.msg.channel.SYSTEM_3)
-                return false -- This will prevent the effect from being applied.
+                return false
             else
                 target:delCurrency('escha_silt', siltCost)
                 target:printToPlayer(string.format("You spend %d Escha silt to summon your mount.", siltCost), xi.msg.channel.SYSTEM_3)
