@@ -2562,14 +2562,13 @@ local zoneMax =
     [xi.zone.REISENJIMA]  = 268435455,
 }
 
--- Centralized removable KI list
 local removableKeyItems =
 {
     xi.ki.RADIALENS,
     xi.ki.MOLLIFIER,
 }
 
--- Helper: remove Geas Fete KIs
+-- Remove KIs
 local function removeGeasFeteKIs(player)
     for _, keyItem in ipairs(removableKeyItems) do
         if player:hasKeyItem(keyItem) then
@@ -2578,7 +2577,12 @@ local function removeGeasFeteKIs(player)
     end
 end
 
--- Helper: check if player has completed zone
+local function addGeasFeteKIs(player)
+        if not player:hasKeyItem(xi.ki.RADIALENS) then
+            player:addKeyItem(xi.ki.RADIALENS)
+        end
+end
+
 local function hasCompletedZone(player, zone)
     local maxValue = zoneMax[zone]
     if not maxValue then
@@ -2593,11 +2597,15 @@ end
 
 xi.geasFete.afterZoneIn = function(player)
     local zone = player:getZoneID()
+    local isTrackedZone = zoneMax[zone] ~= nil
 
-    if zoneMax[zone] and not hasCompletedZone(player, zone) then
-        removeGeasFeteKIs(player)
+    if isTrackedZone then
+        if hasCompletedZone(player, zone) then
+            addGeasFeteKIs(player)
+        else
+            removeGeasFeteKIs(player)
+        end
     end
-
 
     if eligibleForVorseal(player) then
         player:addStatusEffect(xi.effect.VORSEAL,
