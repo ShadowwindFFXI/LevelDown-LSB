@@ -547,6 +547,8 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
     end
 
     local selectedMobs = {}
+    npc:setLocalVar('MobCount', 0)
+    npc:setLocalVar('AliveCount', 0)
 
     for _, erKeyItem in pairs(grislyTrinkets[npcZone]) do
         if erKeyItem[1] == npc:getLocalVar('MobKeyItem') then
@@ -557,6 +559,7 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
                         if not mob:isSpawned() then
                             table.insert(selectedMobs, mob)
                             npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') +1)
+                            npc:setLocalVar('AliveCount', npc:getLocalVar('AliveCount') +1)
                             break  -- Only take the first unspawned mob from this group
                         end
                     end
@@ -587,23 +590,32 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
             end
         end)
 
+        local npcId = npc:getID()
         mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg) -- remove count down timer display
             local alliance = player:getAlliance()
+            local qm = GetNPCByID(npcId)
 
-            if npc:getLocalVar('MobCount') == 0 then
-                for _, member in pairs(alliance) do
-                    member:countdown()
-                    member:delStatusEffect(xi.effect.CONFRONTATION)
+            if qm then
+                qm:setLocalVar('AliveCount', qm:getLocalVar('AliveCount') - 1)
+
+                if qm:getLocalVar('AliveCount') == 0 then
+                    for _, member in pairs(alliance) do
+                        member:countdown()
+                        member:delStatusEffect(xi.effect.CONFRONTATION)
+                    end
                 end
             end
         end)
 
         mob:addListener('DESPAWN', 'QM_'..npc:getID(), function(mobArg) -- QM reappear after mob has vanished
-            npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
+            local qm = GetNPCByID(npcId)
+            if qm then
+                qm:setLocalVar('MobCount', qm:getLocalVar('MobCount') - 1)
 
-            if npc:getLocalVar('MobCount') == 0 then
-                -- Directly set the status; do NOT use a timer on a disappeared NPC
-                npc:setStatus(xi.status.NORMAL)
+                if qm:getLocalVar('MobCount') == 0 then
+                    -- Directly set the status; do NOT use a timer on a disappeared NPC
+                    qm:setStatus(xi.status.NORMAL)
+                end
             end
         end)
     end

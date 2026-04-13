@@ -16,6 +16,9 @@ local ENABLE_DEBUG_LOGS = false
 -- Toggle AFK Check
 local ENABLE_AFK_CHECK = false
 
+-- Toggle for specific "Battle Starting" server print (independent of ENABLE_DEBUG_LOGS)
+local ENABLE_BATTLE_START_LOG = true
+
 --In game hour = 2.5 minutes
 --In game day = 57.5 minutes
 
@@ -2248,6 +2251,7 @@ local function spawnArmy(zone, selectedZone, selectedUnit, battleFightStartHour)
                     mob:setMobMod(xi.mobMod.NO_DROPS, 1) 
                     mob:setMobMod(xi.mobMod.CLAIM_TYPE, xi.claimType.UNCLAIMABLE) 
                     mob:setMobMod(xi.mobMod.CHECK_AS_NM, 1)
+                    mob:setMobMod(xi.mobMod.SPELL_LIST, 0) -- Added to see if spells are causing the crash
                                             
                     
                     -- APPLY ENTITY FLAGS (Commander specific)
@@ -2288,7 +2292,7 @@ local function spawnArmy(zone, selectedZone, selectedUnit, battleFightStartHour)
                             -- Check 3: Verify the numerical abilityID is in our specific lookup table (Job Abilities only).
                             if abilityID > 0 and JOB_ABILITIES_TO_TRACK[abilityID] then
                                 -- If the ability is tracked, award the player contribution points.
-                                trackPlayerContribution(caster, CONTRIBUTION_VARS.ABILITY_TAKE, POINT_MULTIPLIERS.ABILITY_TAKE)
+                                trackPlayerContribution(caster, CONTRIBUTION_VARS.ABILITY_USE, POINT_MULTIPLIERS.ABILITY_TAKE)
                             end
                         end)
 ------------------
@@ -2441,6 +2445,7 @@ local function spawnArmy(zone, selectedZone, selectedUnit, battleFightStartHour)
             mob:setMobMod(xi.mobMod.NO_DROPS, 1) 
             mob:setMobMod(xi.mobMod.CLAIM_TYPE, xi.claimType.UNCLAIMABLE) -- Ensure claimable is explicitly set if desired
             mob:setMobMod(xi.mobMod.CHECK_AS_NM, 1) 
+            mob:setMobMod(xi.mobMod.SPELL_LIST, 0) -- Added to see if spells are causing the crash
             mob:spawn()
             
             -- *** UPDATED LOGGING HERE: Showing final planned coordinates ***
@@ -2886,6 +2891,9 @@ m:addOverride('xi.zones.' .. EVENT_HOST_ZONE_NAME .. '.Zone.onGameHour', functio
             if battleZoneObj then
                 -- *** START PREPARATION PHASE (State 1) ***
                 log_debug("[CampaignBattleHandler] Starting PREPARATION PHASE (State 1). Duration: ", PREP_DURATION_HOURS, " hours.")
+                if ENABLE_BATTLE_START_LOG then
+                    print("[Campaign Battle] Battle Preparation Starting!")
+                end
 
                 -- NEW: Select and persist TWO random damage resistances for the battle
                 local resistanceTypes = { "SLASH", "PIERCE", "IMPACT", "HTH" }
