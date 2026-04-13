@@ -322,15 +322,15 @@ local function giveMagianItem(player, itemData, inscribeTrialId)
         end
     end
 
-    player:addItem(unpack(itemParameters))
+    return player:addItem(unpack(itemParameters))
 end
 
 xi.magian.giveRequiredItem = function(player, trialId, inscribeTrialId)
-    giveMagianItem(player, xi.magian.trials[trialId].requiredItem, inscribeTrialId == true and trialId or 0)
+    return giveMagianItem(player, xi.magian.trials[trialId].requiredItem, inscribeTrialId == true and trialId or 0)
 end
 
 xi.magian.giveRewardItem = function(player, trialId)
-    giveMagianItem(player, xi.magian.trials[trialId].rewardItem, false)
+    return giveMagianItem(player, xi.magian.trials[trialId].rewardItem, false)
 end
 
 xi.magian.magianOnTrade = function(player, npc, trade)
@@ -586,9 +586,10 @@ xi.magian.magianOnEventFinish = function(player, csid, option, npc)
             local trialId   = bit.rshift(option, 8)
             local trialInfo = xi.magian.trials[trialId]
 
-            xi.magian.giveRequiredItem(player, trialId, true)
-            player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
-            updatePlayerTrial(player, getAvailableTrialSlot(player), trialId, 0)
+            if xi.magian.giveRequiredItem(player, trialId, true) then
+                player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+                updatePlayerTrial(player, getAvailableTrialSlot(player), trialId, 0)
+            end
 
             player:setLocalVar('storeTrialId', 0)
         elseif
@@ -598,9 +599,9 @@ xi.magian.magianOnEventFinish = function(player, csid, option, npc)
             local trialId       = player:getLocalVar('storeTrialId')
             local trialInfo     = xi.magian.trials[trialId]
 
-            xi.magian.giveRequiredItem(player, trialId, false)
-
-            player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+            if xi.magian.giveRequiredItem(player, trialId, false) then
+                player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+            end
             player:setLocalVar('storeTrialId', 0)
         end
     elseif csid == moogleData[5] then
@@ -614,8 +615,9 @@ xi.magian.magianOnEventFinish = function(player, csid, option, npc)
             local trialId   = player:getLocalVar('storeTrialId')
             local trialInfo = xi.magian.trials[trialId]
 
-            xi.magian.giveRequiredItem(player, trialId, true)
-            player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+            if xi.magian.giveRequiredItem(player, trialId, true) then
+                player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+            end
 
             player:setLocalVar('storeTrialId', 0)
         elseif
@@ -632,8 +634,9 @@ xi.magian.magianOnEventFinish = function(player, csid, option, npc)
                 updatePlayerTrial(player, activeSlot, 0, 0)
             end
 
-            xi.magian.giveRequiredItem(player, trialId, false)
-            player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+            if xi.magian.giveRequiredItem(player, trialId, false) then
+                player:messageSpecial(ruludeID.text.RETURN_MAGIAN_ITEM, trialInfo.requiredItem.itemId)
+            end
         end
     elseif
         csid == moogleData[6] and
@@ -644,12 +647,17 @@ xi.magian.magianOnEventFinish = function(player, csid, option, npc)
         local trialInfo  = xi.magian.trials[trialId]
         local activeSlot = getTrialSlot(player, trialId)
 
-        if activeSlot then
-            updatePlayerTrial(player, activeSlot, 0, 0)
+        -- Verify that the player can receive the reward before clearing their log
+        if xi.magian.giveRewardItem(player, trialId) then
+            if activeSlot then
+                updatePlayerTrial(player, activeSlot, 0, 0)
+            end
+            player:messageSpecial(ruludeID.text.ITEM_OBTAINED, trialInfo.rewardItem.itemId)
+        else
+            -- Delivery failed (e.g. Rare item conflict). Inform player and return original item.
+            player:messageSpecial(ruludeID.text.ITEM_CANNOT_BE_OBTAINED, trialInfo.rewardItem.itemId)
+            xi.magian.giveRequiredItem(player, trialId, true)
         end
-
-        xi.magian.giveRewardItem(player, trialId)
-        player:messageSpecial(ruludeID.text.ITEM_OBTAINED, trialInfo.rewardItem.itemId)
 
         player:setLocalVar('storeTrialId', 0)
     end
