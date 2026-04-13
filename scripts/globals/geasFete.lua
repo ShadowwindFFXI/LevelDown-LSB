@@ -547,8 +547,6 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
     end
 
     local selectedMobs = {}
-    npc:setLocalVar('MobCount', 0)
-    npc:setLocalVar('AliveCount', 0)
 
     for _, erKeyItem in pairs(grislyTrinkets[npcZone]) do
         if erKeyItem[1] == npc:getLocalVar('MobKeyItem') then
@@ -559,7 +557,6 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
                         if not mob:isSpawned() then
                             table.insert(selectedMobs, mob)
                             npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') +1)
-                            npc:setLocalVar('AliveCount', npc:getLocalVar('AliveCount') +1)
                             break  -- Only take the first unspawned mob from this group
                         end
                     end
@@ -590,32 +587,23 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
             end
         end)
 
-        local npcId = npc:getID()
         mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg) -- remove count down timer display
             local alliance = player:getAlliance()
-            local qm = GetNPCByID(npcId)
 
-            if qm then
-                qm:setLocalVar('AliveCount', qm:getLocalVar('AliveCount') - 1)
-
-                if qm:getLocalVar('AliveCount') == 0 then
-                    for _, member in pairs(alliance) do
-                        member:countdown()
-                        member:delStatusEffect(xi.effect.CONFRONTATION)
-                    end
+            if npc:getLocalVar('MobCount') == 0 then
+                for _, member in pairs(alliance) do
+                    member:countdown()
+                    member:delStatusEffect(xi.effect.CONFRONTATION)
                 end
             end
         end)
 
         mob:addListener('DESPAWN', 'QM_'..npc:getID(), function(mobArg) -- QM reappear after mob has vanished
-            local qm = GetNPCByID(npcId)
-            if qm then
-                qm:setLocalVar('MobCount', qm:getLocalVar('MobCount') - 1)
+            npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
 
-                if qm:getLocalVar('MobCount') == 0 then
-                    -- Directly set the status; do NOT use a timer on a disappeared NPC
-                    qm:setStatus(xi.status.NORMAL)
-                end
+            if npc:getLocalVar('MobCount') == 0 then
+                -- Directly set the status; do NOT use a timer on a disappeared NPC
+                npc:setStatus(xi.status.NORMAL)
             end
         end)
     end
@@ -2589,6 +2577,47 @@ local function removeGeasFeteKIs(player)
     end
 end
 
+local function addGeasFeteKIs(player)
+        if not player:hasKeyItem(xi.ki.RADIALENS) then
+            player:addKeyItem(xi.ki.RADIALENS)
+        end
+end
+
+local function hasCompletedZone(player, zone)
+    local maxValue = zoneMax[zone]
+    if not maxValue then
+        return false
+    end
+
+    local varName = '[RoD]GeaFetesDefeated' .. zone
+    local bitmask = player:getCharVar(varName)
+
+    return bitmask >= maxValue
+end
+
+local zoneMax =
+{
+    [xi.zone.ESCHA_RUAUN] = 4294967295,
+    [xi.zone.ESCHA_ZITAH] = 134217727,
+    [xi.zone.REISENJIMA]  = 268435455,
+}
+
+local removableKeyItems =
+{
+    xi.ki.RADIALENS,
+    xi.ki.MOLLIFIER,
+}
+
+-- Remove KIs
+local function removeGeasFeteKIs(player)
+    for _, keyItem in ipairs(removableKeyItems) do
+        if player:hasKeyItem(keyItem) then
+            player:delKeyItem(keyItem)
+        end
+    end
+end
+
+-- Helper: check if player has completed zone
 local function addGeasFeteKIs(player)
         if not player:hasKeyItem(xi.ki.RADIALENS) then
             player:addKeyItem(xi.ki.RADIALENS)
