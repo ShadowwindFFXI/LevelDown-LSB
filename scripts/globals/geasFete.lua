@@ -791,106 +791,7 @@ local tempItemReqs =
         [9] = { param = 2, bitIndex = 15, itemIndex = 47, item = 6478, cost = 600, requirement = { 'Albumen', 'Erinys', 'Onychophora', 'Schah', 'Teles', 'Vinipata', 'Zerde' } }, -- phial of curse buffer
     },
 }
---[[
-local grislyTrinkets = -- WHY DO I HAVE THIS TABLE IN HERE TWICE?????????????????????????????
-{
-    [xi.zone.ESCHA_RUAUN] = -- 32 = 100000
-    {
-        { xi.ki.BIAS_GLOVE, 'Bia' },
-        { xi.ki.RUEAS_STONE, 'Ruea' },
-        { xi.ki.MAS_LANCE, 'Ma' },
-        { xi.ki.KHONS_SCEPTER, 'Khon' },
-        { xi.ki.METS_RING, 'Met' },
-        { xi.ki.KHUNS_CROWN, 'Khun' },
-        { xi.ki.WASSERSPEIERS_HORN, 'Wasserspeier' },
-        { xi.ki.EMPUTAS_WING, 'Emputa' },
-        { xi.ki.PEIRITHOOSS_HOOF, 'Peirithoos' },
-        { xi.ki.ASIDAS_GEL, 'Asida' },
-        { xi.ki.TENODERAS_SCYTHE, 'Tenodera' },
-        { xi.ki.SAVA_SAVANOVICS_CAPE, 'Sava_Savanovic' },
-        { xi.ki.PALILAS_TALON, 'Palila' },
-        { xi.ki.HANBIS_NAIL, 'Hanbi' },
-        { xi.ki.YILANS_SCALE, 'Yilan' },
-        { xi.ki.AMYMONES_TOOTH, 'Amymone' },
-        { xi.ki.NAPHULAS_BRACELET, 'Naphula' },
-        { xi.ki.KAMMAVACAS_BINDING, 'Kammavaca' },
-        { xi.ki.PAKECETS_BLUBBER, 'Pakecet' },
-        { xi.ki.DUKE_VEPARS_SIGNET, 'Duke_Vepar' },
-        { xi.ki.VIRAVAS_STALK, 'Virava' },
-        { xi.ki.BYAKKOS_PRIDE, 'Byakko' },
-        { xi.ki.GENBUS_HONOR, 'Genbu' },
-        { xi.ki.SEIRYUS_NOBILITY, 'Seiryu' },
-        { xi.ki.SUZAKUS_BENEFACTION, 'Suzaku' },
-        { xi.ki.KIRINS_FERVOR, 'Kirin' },
-        { xi.ki.ARK_ANGEL_HMS_COAT, 'Ark_Angel_HM' },
-        { xi.ki.ARK_ANGEL_TTS_NECKLACE, 'Ark_Angel_TT' },
-        { xi.ki.ARK_ANGEL_MRS_BUCKLE, 'Ark_Angel_MR' },
-        { xi.ki.ARK_ANGEL_EVS_SASH, 'Ark_Angel_EV' },
-        { xi.ki.ARK_ANGEL_GKS_BANGLE, 'Ark_Angel_GK' },
-        { xi.ki.PRIMAL_NAZAR, 'Warder_of_Courage' },
-    },
-    [xi.zone.ESCHA_ZITAH] = -- 25 = 11001
-    {
-        {xi.ki.WEPWAWETS_TOOTH, 'Wepwawet' },
-        {xi.ki.LYDIAS_VINE, 'Lustful_Lydia' },
-        {xi.ki.AGLAOPHOTIS_BUD, 'Aglaophotis' },
-        {xi.ki.TANGATAS_WING, 'Tangata_Manu' },
-        {xi.ki.VIDALAS_CLAW, 'Vidala' },
-        {xi.ki.GESTALTS_RETINA, 'Gestalt' },
-        {xi.ki.ANGRBODAS_NECKLACE, 'Angrboda' },
-        {xi.ki.CUNNASTS_TALON, 'Cunnast' },
-        {xi.ki.REVETAURS_HORN, 'Revetaur' },
-        {xi.ki.FERRODONS_SCALE, 'Ferrodon' },
-        {xi.ki.GULLTOPS_SHELL, 'Gulltop' },
-        {xi.ki.VYALAS_PREY, 'Vyala' },
-        {xi.ki.IONOSS_WEBBING, 'Ionos' },
-        {xi.ki.SANDYS_LASHER, 'Sensual_Sandy' },
-        {xi.ki.NOSOIS_FEATHER, 'Nosoi' },
-        {xi.ki.BRITTLISS_RING, 'Brittlis' },
-        {xi.ki.KAMOHOALIIS_FIN, 'Kamohoalii' },
-        {xi.ki.UMDHLEBIS_FLOWER, 'Umdhlebi' },
-        {xi.ki.FLEETSTALKERS_CLAW, 'Fleetstalker' },
-        {xi.ki.SHOCKMAWS_BLUBBER, 'Shockmaw' },
-        {xi.ki.URMAHLULLUS_ARMOR, 'Urmahlulu' },
-        {xi.ki.BLAZEWINGS_PINCER, 'Blazewing' },
-        {xi.ki.COVENS_DUST, 'Alpluachra' }, -- 'Bucca' 'Puca'
-        {xi.ki.PAZUZUS_BLADE_HILT, 'Pazuzu' },
-        {xi.ki.WRATHARES_CARROT, 'Wrathare'}
 
-    },
-    [xi.zone.REISENJIMA] = -- 28 = 11100
-    {
-        {xi.ki.BELPHEGORS_CROWN, 'Belphegor' },
-        {xi.ki.CROM_DUBHS_HELM, 'Crom_Dubh' },
-        {xi.ki.DAZZLING_DOLORESS_VINE, 'Dazzling_Dolores' },
-        {xi.ki.GOLDEN_KISTS_KEY, 'Golden_Kist' },
-        {xi.ki.KABANDHAS_WING, 'Kabandha' },
-        {xi.ki.MAUVE_WRISTED_GOMBERRYS_KNIFE, 'Mauve-wristed_Gomberry' },
-        {xi.ki.ORYXS_PLUMAGE, 'Oryx' },
-        {xi.ki.SABOTENDER_ROYALS_NEEDLE, 'Sabotender_Royal' },
-        {xi.ki.SANG_BUAYAS_TUSK, 'Sang_Buaya' },
-        {xi.ki.SELKITS_PINCER, 'Selkit' },
-        {xi.ki.TAELMOTHS_STAFF, 'Taelmoth_the_Diremaw' },
-        {xi.ki.ZDUHACS_TALON, 'Zduhac' },
-        {xi.ki.BASHMUS_TRINKET, 'Bashmu' },
-        {xi.ki.GAJASIMHAS_MANE , 'Gajasimha' },
-        {xi.ki.IRONSIDES_MAUL, 'Ironside' },
-        {xi.ki.OLD_SHUCKS_TUFT, 'Old_Shuck' },
-        {xi.ki.SARSAOKS_HOARD, 'Sarsaok' },
-        {xi.ki.STROPHADIAS_PEARL, 'Strophadia' },
-        {xi.ki.MAJUS_CLAW, 'Maju' },
-        {xi.ki.NEAKS_TREASURE, 'Neak' },
-        {xi.ki.YAKSHIS_SCROLL, 'Yakshi' },
-        {xi.ki.ALBUMENS_FLOWER , 'Albumen' },
-        {xi.ki.ERINYSS_BEAK , 'Erinys' },
-        {xi.ki.ONYCHOPHORAS_SOIL , 'Onychophora' },
-        {xi.ki.SCHAHS_GAMBIT , 'Schah' },
-        {xi.ki.TELESS_HYMN , 'Teles' },
-        {xi.ki.VINIPATAS_BLADE , 'Vinipata' },
-        {xi.ki.ZERDES_CUP , 'Zerde' },
-    }
-}
-]]--
 local eschaKeyItems =
 {
     [1] = { keyItem = xi.ki.TRIBULENS, cost = 1000, bitIndex = 0, zoneAvailableIn = { xi.zone.ESCHA_RUAUN, xi.zone.ESCHA_ZITAH, xi.zone.REISENJIMA } },
@@ -2666,38 +2567,102 @@ local function isGeaFeteNM(mob)
     return false
 end
 
-xi.geasFete.afterZoneIn = function(player)
-    local vorsealEligibility = eligibleForVorseal(player)
+local zoneMax =
+{
+    [xi.zone.ESCHA_RUAUN] = 4294967295,
+    [xi.zone.ESCHA_ZITAH] = 134217727,
+    [xi.zone.REISENJIMA]  = 268435455,
+}
 
-    if vorsealEligibility then
-        player:addStatusEffect(xi.effect.VORSEAL, { duration = 3600, origin = player, tick = 3, icon = xi.effect.VORSEAL })
+local removableKeyItems =
+{
+    xi.ki.RADIALENS,
+    xi.ki.MOLLIFIER,
+}
+
+-- Remove KIs
+local function removeGeasFeteKIs(player)
+    for _, keyItem in ipairs(removableKeyItems) do
+        if player:hasKeyItem(keyItem) then
+            player:delKeyItem(keyItem)
+        end
+    end
+end
+
+local function addGeasFeteKIs(player)
+        if not player:hasKeyItem(xi.ki.RADIALENS) then
+            player:addKeyItem(xi.ki.RADIALENS)
+        end
+end
+
+local function hasCompletedZone(player, zone)
+    local maxValue = zoneMax[zone]
+    if not maxValue then
+        return false
     end
 
-    player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS', function(playerObj, mobObj, expGained)
-        if not playerObj:isDead() then
-            if isGeaFeteNM(mobObj) then
-                local beadsToAdd = math.floor(expGained / 100) -- 1 bead per 100 exp
+    local varName = '[RoD]GeaFetesDefeated' .. zone
+    local bitmask = player:getCharVar(varName)
 
-                playerObj:addCurrency('escha_beads', beadsToAdd)
+    return bitmask >= maxValue
+end
+
+xi.geasFete.afterZoneIn = function(player)
+    local zone = player:getZoneID()
+    local isTrackedZone = zoneMax[zone] ~= nil
+
+    if isTrackedZone then
+        if hasCompletedZone(player, zone) then
+            addGeasFeteKIs(player)
+        else
+            removeGeasFeteKIs(player)
+        end
+    end
+
+    if eligibleForVorseal(player) then
+        player:addStatusEffect(xi.effect.VORSEAL,
+        {
+            duration = 3600,
+            origin   = player,
+            tick     = 3,
+            icon     = xi.effect.VORSEAL,
+        })
+    end
+
+    player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS',
+        function(playerObj, mobObj, expGained)
+            if playerObj:isDead() then
+                return
+            end
+
+            if isGeaFeteNM(mobObj) then
+                local beadsToAdd = math.floor(expGained / 100)
+                if beadsToAdd > 0 then
+                    playerObj:addCurrency('escha_beads', beadsToAdd)
+                end
             end
         end
-    end)
+    )
 end
 
 xi.geasFete.onZoneOut = function(player)
-    local removableKeyItems = { xi.ki.RADIALENS, xi.ki.MOLLIFIER }
+    local zone = player:getZoneID()
 
     if player:hasStatusEffect(xi.effect.VORSEAL) then
         player:delStatusEffect(xi.effect.VORSEAL)
     end
 
-    for _, keyItem in pairs(removableKeyItems) do
-        if player:hasKeyItem(keyItem) then
-            player:delKeyItem(keyItem)
-        end
+    player:removeListener('ESCHA_BEADS')
+
+    if not zoneMax[zone] then
+        return
     end
 
-    player:removeListener('ESCHA_BEADS')
+    if hasCompletedZone(player, zone) then
+        return
+    end
+
+    removeGeasFeteKIs(player)
 end
 
 xi.geasFete.onEffectGain = function(target, effect)
