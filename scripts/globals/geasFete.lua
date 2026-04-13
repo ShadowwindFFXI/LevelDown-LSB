@@ -2555,38 +2555,78 @@ local function isGeaFeteNM(mob)
     return false
 end
 
-xi.geasFete.afterZoneIn = function(player)
-    local vorsealEligibility = eligibleForVorseal(player)
-
-    if vorsealEligibility then
-        player:addStatusEffect(xi.effect.VORSEAL, { duration = 3600, origin = player, tick = 3, icon = xi.effect.VORSEAL })
-    end
-
-    player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS', function(playerObj, mobObj, expGained)
-        if not playerObj:isDead() then
-            if isGeaFeteNM(mobObj) then
-                local beadsToAdd = math.floor(expGained / 100) -- 1 bead per 100 exp
-
-                playerObj:addCurrency('escha_beads', beadsToAdd)
-            end
-        end
-    end)
-end
-
-local zoneMax = {
+local zoneMax =
+{
     [xi.zone.ESCHA_RUAUN] = 4294967295,
     [xi.zone.ESCHA_ZITAH] = 134217727,
     [xi.zone.REISENJIMA]  = 268435455,
 }
 
-xi.geasFete.onZoneOut = function(player)
-    local removableKeyItems = { xi.ki.RADIALENS, xi.ki.MOLLIFIER }
+-- Centralized removable KI list
+local removableKeyItems =
+{
+    xi.ki.RADIALENS,
+    xi.ki.MOLLIFIER,
+}
 
-    local zone = player:getZoneID()
+-- Helper: remove Geas Fete KIs
+local function removeGeasFeteKIs(player)
+    for _, keyItem in ipairs(removableKeyItems) do
+        if player:hasKeyItem(keyItem) then
+            player:delKeyItem(keyItem)
+        end
+    end
+end
+
+-- Helper: check if player has completed zone
+local function hasCompletedZone(player, zone)
+    local maxValue = zoneMax[zone]
+    if not maxValue then
+        return false
+    end
+
     local varName = '[RoD]GeaFetesDefeated' .. zone
     local bitmask = player:getCharVar(varName)
 
-    local maxValue = zoneMax[zone]
+    return bitmask >= maxValue
+end
+
+xi.geasFete.afterZoneIn = function(player)
+    local zone = player:getZoneID()
+
+    if zoneMax[zone] and not hasCompletedZone(player, zone) then
+        removeGeasFeteKIs(player)
+    end
+
+
+    if eligibleForVorseal(player) then
+        player:addStatusEffect(xi.effect.VORSEAL,
+        {
+            duration = 3600,
+            origin   = player,
+            tick     = 3,
+            icon     = xi.effect.VORSEAL,
+        })
+    end
+
+    player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS',
+        function(playerObj, mobObj, expGained)
+            if playerObj:isDead() then
+                return
+            end
+
+            if isGeaFeteNM(mobObj) then
+                local beadsToAdd = math.floor(expGained / 100)
+                if beadsToAdd > 0 then
+                    playerObj:addCurrency('escha_beads', beadsToAdd)
+                end
+            end
+        end
+    )
+end
+
+xi.geasFete.onZoneOut = function(player)
+    local zone = player:getZoneID()
 
     if player:hasStatusEffect(xi.effect.VORSEAL) then
         player:delStatusEffect(xi.effect.VORSEAL)
@@ -2594,16 +2634,15 @@ xi.geasFete.onZoneOut = function(player)
 
     player:removeListener('ESCHA_BEADS')
 
-    if maxValue and bitmask >= maxValue then
+    if not zoneMax[zone] then
         return
     end
 
-    for _, keyItem in pairs(removableKeyItems) do
-        if player:hasKeyItem(keyItem) then
-            player:delKeyItem(keyItem)
-        end
+    if hasCompletedZone(player, zone) then
+        return
     end
 
+    removeGeasFeteKIs(player)
 end
 
 xi.geasFete.onEffectGain = function(target, effect)
