@@ -119,6 +119,8 @@ player:printToPlayer(string.format('Refresh / Tick: [%i] Regen / Tick: [%i] Rega
 
 player:printToPlayer(string.format('Haste Ability: [%i%%] Haste Magic: [%i%%] Haste Gear: [%i%%] Fast Cast: [%i]', target:getMod(xi.mod.HASTE_ABILITY) * .01, target:getMod(xi.mod.HASTE_MAGIC) * .01, target:getMod(xi.mod.HASTE_GEAR) * .01, target:getMod(xi.mod.FASTCAST)), xi.msg.channel.SYSTEM_3)
 
+player:printToPlayer(string.format('Hasso Haste Ability: [%i%%]', target:getMod(xi.mod.TWOHAND_HASTE_ABILITY) * .01), xi.msg.channel.SYSTEM_3)
+
 player:printToPlayer(string.format('Quick Magic: [%i] Cure Potency: [%i%%] Cure Potency II: [%i%%] Cure Pot Recv: [%i%%] Waltz Potency: [%i%%]', target:getMod(xi.mod.QUICK_MAGIC), target:getMod(xi.mod.CURE_POTENCY), target:getMod(xi.mod.CURE_POTENCY_II), target:getMod(xi.mod.CURE_POTENCY_RCVD), target:getMod(xi.mod.WALTZ_POTENCY)), xi.msg.channel.SYSTEM_3)
 
 player:printToPlayer(string.format('Store TP: [%i] Dual Wield: [%i] Subtle Blow: [%i] Subtle Blow II: [%i] Counter: [%i] Parry Rate: [%i]', target:getMod(xi.mod.STORETP), target:getMod(xi.mod.DUAL_WIELD), target:getMod(xi.mod.SUBTLE_BLOW), target:getMod(xi.mod.SUBTLE_BLOW_II), target:getMod(xi.mod.COUNTER), target:getMod(xi.mod.INQUARTATA)), xi.msg.channel.SYSTEM_3)
