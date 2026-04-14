@@ -1238,7 +1238,7 @@ local function createAcceptQuestMenu(player, page)
 end
 
 local function createMonthlySubQuestMenu(player, page)
-    local mainMSQMenu     = { 'Supreme NM', 'Provenance NM' } --, 'World Boss'} 
+    local mainMSQMenu     = { 'Warder NM' } --, 'World Boss'}
 
     local linesPerPage = 5
     page = page or 1
@@ -1250,18 +1250,20 @@ local function createMonthlySubQuestMenu(player, page)
         table.insert(options, {
             string.format('%s', msQuestMenu),
             function(player)
-            if msQuestMenu == 'Supreme NM' then -- 
-               local questSupreme = math.random(90,93)
-               player:setCharVar('[LD]CustomQuestSelection',player:getCharVar('[LD]CustomQuestSelection') + (questSupreme * 1000) + 1000000)
+            if msQuestMenu == 'Warder NM' then --
+               local questWarders = math.random(85,94)
+               player:setCharVar('[LD]CustomQuestSelection',player:getCharVar('[LD]CustomQuestSelection') + (questWarders * 1000) + 1000000)
                createAcceptQuestMenu(player, page)
+ --[[
             elseif msQuestMenu == 'Provenance NM' then -- 
                local questProvenance = 94
                player:setCharVar('[LD]CustomQuestSelection',player:getCharVar('[LD]CustomQuestSelection') + (questProvenance * 1000) + 1000000)
                createAcceptQuestMenu(player, page)
- --[[           elseif msQuestMenu == 'World Boss' then -- 
+            elseif msQuestMenu == 'World Boss' then --
                local questWB = 90
                player:setCharVar('[LD]CustomQuestSelection',player:getCharVar('[LD]CustomQuestSelection') + (questWB * 1000) + 1000000)
-               createAcceptQuestMenu(player, page) ]]--
+               createAcceptQuestMenu(player, page)
+]]--
             end
         end
         })
@@ -1369,7 +1371,7 @@ local function createDailySubQuestMenu(player, page)
                player:setCharVar('[LD]CustomQuestSelection',player:getCharVar('[LD]CustomQuestSelection') + (questHelm * 1000) + 5000000)
                createAcceptQuestMenu(player, page)
             elseif dsQuestMenu == 'JobPoints' then -- 
-               local questJobPoints = 89
+               local questJobPoints = 84
                player:setCharVar('[LD]CustomQuestSelection',player:getCharVar('[LD]CustomQuestSelection') + (questJobPoints * 1000) + 5000000)
                createAcceptQuestMenu(player, page)
             end
