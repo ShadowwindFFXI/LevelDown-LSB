@@ -2343,6 +2343,137 @@ xi.geasFeteNPC.npcOnTrigger = function(player, npc)
 
 end
 
+
+local function isGeaFeteNM(mob)
+    local zoneId = mob:getZoneID()
+    local mobName = mob:getName()
+
+    local zoneTable = geaFeteNM[zoneId]
+    if not zoneTable then
+        return false
+    end
+
+    for _, entry in ipairs(zoneTable) do
+        if entry[1] == mobName then
+            return true
+        end
+    end
+
+    return false
+end
+
+local zoneMax =
+{
+    [xi.zone.ESCHA_RUAUN] = 4294967295,
+    [xi.zone.ESCHA_ZITAH] = 134217727,
+    [xi.zone.REISENJIMA]  = 268435455,
+}
+
+local removableKeyItems =
+{
+    xi.ki.RADIALENS,
+    xi.ki.MOLLIFIER,
+}
+
+local zoneMax =
+{
+    [xi.zone.ESCHA_RUAUN] = 4294967295,
+    [xi.zone.ESCHA_ZITAH] = 134217727,
+    [xi.zone.REISENJIMA]  = 268435455,
+}
+
+local removableKeyItems =
+{
+    xi.ki.RADIALENS,
+    xi.ki.MOLLIFIER,
+}
+
+-- Remove KIs
+local function removeGeasFeteKIs(player)
+    for _, keyItem in ipairs(removableKeyItems) do
+        if player:hasKeyItem(keyItem) then
+            player:delKeyItem(keyItem)
+        end
+    end
+end
+
+-- Helper: check if player has completed zone
+local function addGeasFeteKIs(player)
+        if not player:hasKeyItem(xi.ki.RADIALENS) then
+            player:addKeyItem(xi.ki.RADIALENS)
+        end
+end
+
+local function hasCompletedZone(player, zone)
+    local maxValue = zoneMax[zone]
+    if not maxValue then
+        return false
+    end
+
+    local varName = '[RoD]GeaFetesDefeated' .. zone
+    local bitmask = player:getCharVar(varName)
+
+    return bitmask >= maxValue
+end
+
+xi.geasFete.afterZoneIn = function(player)
+    local zone = player:getZoneID()
+    local isTrackedZone = zoneMax[zone] ~= nil
+
+    if isTrackedZone then
+        if hasCompletedZone(player, zone) then
+            addGeasFeteKIs(player)
+        else
+            removeGeasFeteKIs(player)
+        end
+    end
+
+    if eligibleForVorseal(player) then
+        player:addStatusEffect(xi.effect.VORSEAL,
+        {
+            duration = 3600,
+            origin   = player,
+            tick     = 3,
+            icon     = xi.effect.VORSEAL,
+        })
+    end
+
+    player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS',
+        function(playerObj, mobObj, expGained)
+            if playerObj:isDead() then
+                return
+            end
+
+            if isGeaFeteNM(mobObj) then
+                local beadsToAdd = math.floor(expGained / 100)
+                if beadsToAdd > 0 then
+                    playerObj:addCurrency('escha_beads', beadsToAdd)
+                end
+            end
+        end
+    )
+end
+
+xi.geasFete.onZoneOut = function(player)
+    local zone = player:getZoneID()
+
+    if player:hasStatusEffect(xi.effect.VORSEAL) then
+        player:delStatusEffect(xi.effect.VORSEAL)
+    end
+
+    player:removeListener('ESCHA_BEADS')
+
+    if not zoneMax[zone] then
+        return
+    end
+
+    if hasCompletedZone(player, zone) then
+        return
+    end
+
+    removeGeasFeteKIs(player)
+end
+
 xi.geasFeteNPC.npcOnEventUpdate = function(player, csid, option, npc)
     local menuSelection = bit.band(option, 0xF)
     local itemSelected = bit.rshift(option, 8)
@@ -2413,18 +2544,26 @@ xi.geasFeteNPC.npcOnEventUpdate = function(player, csid, option, npc)
                     elseif keyItemSelected +1 == 10 then -- 3031 Radialens
                         if npcUtil.giveKeyItem(player, keyItemTable.keyItem,0) then
                             player:delCurrency('escha_silt', keyItemTable.cost)
-                            player:setCharVar('GEASFETE_RADIALENS_ACTIVE', GetSystemTime() + 7200) -- 2 hours
 
-                            player:addListener('TICK', 'GEASFETE_RADIALENS_TICK', function(playerArg)
-                                if playerArg:hasKeyItem(xi.ki.RADIALENS) and
-                                    playerArg:getCharVar('GEASFETE_RADIALENS_ACTIVE') <= GetSystemTime() then
-                                        local textID = geasFeteText[playerArg:getZoneID()]
+                            local zone = player:getZoneID()
+                            local isTrackedZone = zoneMax[zone] ~= nil
 
-                                        playerArg:messageSpecial(textID.LOSE_KEYITEM, xi.ki.RADIALENS)
-                                        playerArg:delKeyItem(xi.ki.RADIALENS)
-                                        playerArg:removeListener('GEASFETE_RADIALENS_TICK')
+                            if isTrackedZone then
+                                if not hasCompletedZone(player, zone) then
+                                    player:addListener('TICK', 'GEASFETE_RADIALENS_TICK', function(playerArg)
+                                        if playerArg:hasKeyItem(xi.ki.RADIALENS) and
+                                            playerArg:getCharVar('GEASFETE_RADIALENS_ACTIVE') <= GetSystemTime() then
+                                                local textID = geasFeteText[playerArg:getZoneID()]
+
+                                                playerArg:messageSpecial(textID.LOSE_KEYITEM, xi.ki.RADIALENS)
+                                                playerArg:delKeyItem(xi.ki.RADIALENS)
+                                                playerArg:removeListener('GEASFETE_RADIALENS_TICK')
+                                        end
+                                    end)
+                                else
+                                    player:setCharVar('GEASFETE_RADIALENS_ACTIVE', GetSystemTime() + 7200) -- 2 hours
                                 end
-                            end)
+                            end
 
                             local dialog = getDialog(player)
                             local currency = player:getCurrency('escha_silt')
@@ -2535,163 +2674,6 @@ xi.geasFeteNPC.npcOnEventFinish = function(player, csid, option, npc)
             return
         end
     end
-end
-
-local function isGeaFeteNM(mob)
-    local zoneId = mob:getZoneID()
-    local mobName = mob:getName()
-
-    local zoneTable = geaFeteNM[zoneId]
-    if not zoneTable then
-        return false
-    end
-
-    for _, entry in ipairs(zoneTable) do
-        if entry[1] == mobName then
-            return true
-        end
-    end
-
-    return false
-end
-
-local zoneMax =
-{
-    [xi.zone.ESCHA_RUAUN] = 4294967295,
-    [xi.zone.ESCHA_ZITAH] = 134217727,
-    [xi.zone.REISENJIMA]  = 268435455,
-}
-
-local removableKeyItems =
-{
-    xi.ki.RADIALENS,
-    xi.ki.MOLLIFIER,
-}
-
--- Remove KIs
-local function removeGeasFeteKIs(player)
-    for _, keyItem in ipairs(removableKeyItems) do
-        if player:hasKeyItem(keyItem) then
-            player:delKeyItem(keyItem)
-        end
-    end
-end
-
-local function addGeasFeteKIs(player)
-        if not player:hasKeyItem(xi.ki.RADIALENS) then
-            player:addKeyItem(xi.ki.RADIALENS)
-        end
-end
-
-local function hasCompletedZone(player, zone)
-    local maxValue = zoneMax[zone]
-    if not maxValue then
-        return false
-    end
-
-    local varName = '[RoD]GeaFetesDefeated' .. zone
-    local bitmask = player:getCharVar(varName)
-
-    return bitmask >= maxValue
-end
-
-local zoneMax =
-{
-    [xi.zone.ESCHA_RUAUN] = 4294967295,
-    [xi.zone.ESCHA_ZITAH] = 134217727,
-    [xi.zone.REISENJIMA]  = 268435455,
-}
-
-local removableKeyItems =
-{
-    xi.ki.RADIALENS,
-    xi.ki.MOLLIFIER,
-}
-
--- Remove KIs
-local function removeGeasFeteKIs(player)
-    for _, keyItem in ipairs(removableKeyItems) do
-        if player:hasKeyItem(keyItem) then
-            player:delKeyItem(keyItem)
-        end
-    end
-end
-
--- Helper: check if player has completed zone
-local function addGeasFeteKIs(player)
-        if not player:hasKeyItem(xi.ki.RADIALENS) then
-            player:addKeyItem(xi.ki.RADIALENS)
-        end
-end
-
-local function hasCompletedZone(player, zone)
-    local maxValue = zoneMax[zone]
-    if not maxValue then
-        return false
-    end
-
-    local varName = '[RoD]GeaFetesDefeated' .. zone
-    local bitmask = player:getCharVar(varName)
-
-    return bitmask >= maxValue
-end
-
-xi.geasFete.afterZoneIn = function(player)
-    local zone = player:getZoneID()
-    local isTrackedZone = zoneMax[zone] ~= nil
-
-    if isTrackedZone then
-        if hasCompletedZone(player, zone) then
-            addGeasFeteKIs(player)
-        else
-            removeGeasFeteKIs(player)
-        end
-    end
-
-    if eligibleForVorseal(player) then
-        player:addStatusEffect(xi.effect.VORSEAL,
-        {
-            duration = 3600,
-            origin   = player,
-            tick     = 3,
-            icon     = xi.effect.VORSEAL,
-        })
-    end
-
-    player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS',
-        function(playerObj, mobObj, expGained)
-            if playerObj:isDead() then
-                return
-            end
-
-            if isGeaFeteNM(mobObj) then
-                local beadsToAdd = math.floor(expGained / 100)
-                if beadsToAdd > 0 then
-                    playerObj:addCurrency('escha_beads', beadsToAdd)
-                end
-            end
-        end
-    )
-end
-
-xi.geasFete.onZoneOut = function(player)
-    local zone = player:getZoneID()
-
-    if player:hasStatusEffect(xi.effect.VORSEAL) then
-        player:delStatusEffect(xi.effect.VORSEAL)
-    end
-
-    player:removeListener('ESCHA_BEADS')
-
-    if not zoneMax[zone] then
-        return
-    end
-
-    if hasCompletedZone(player, zone) then
-        return
-    end
-
-    removeGeasFeteKIs(player)
 end
 
 xi.geasFete.onEffectGain = function(target, effect)

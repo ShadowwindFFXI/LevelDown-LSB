@@ -31,7 +31,7 @@ local geaFeteNM =
         { 'Genbu' },
         { 'Seiryu' },
         { 'Suzaku' },
-        { 'Kirin' },
+        { 'Kouryu' }, -- Kirin
         { 'Ark_Angel_HM' },
         { 'Ark_Angel_TT' },
         { 'Ark_Angel_MR' },
