@@ -6,6 +6,43 @@ require("scripts/globals/npc_util")
 -----------------------------------
 local entity = {}
 
+local ambuscadeItems = {
+    [xi.item.AMBUSCADE_VOUCHER_HEAD] = true,
+    [xi.item.AMBUSCADE_VOUCHER_BODY] = true,
+    [xi.item.AMBUSCADE_VOUCHER_HANDS] = true,
+    [xi.item.AMBUSCADE_VOUCHER_LEGS] = true,
+    [xi.item.AMBUSCADE_VOUCHER_FEET] = true,
+    [xi.item.AMBUSCADE_VOUCHER_HEAD_P1] = true,
+    [xi.item.AMBUSCADE_VOUCHER_BODY_P1] = true,
+    [xi.item.AMBUSCADE_VOUCHER_HANDS_P1] = true,
+    [xi.item.AMBUSCADE_VOUCHER_LEGS_P1] = true,
+    [xi.item.AMBUSCADE_VOUCHER_FEET_P1] = true,
+    [xi.item.AMBUSCADE_VOUCHER_FINGERS] = true,
+    [xi.item.AMBUSCADE_VOUCHER_WEAPON] = true,
+    [xi.item.AMBUSCADE_TOKEN_HEAD] = true,
+    [xi.item.AMBUSCADE_TOKEN_BODY] = true,
+    [xi.item.AMBUSCADE_TOKEN_HANDS] = true,
+    [xi.item.AMBUSCADE_TOKEN_LEGS] = true,
+    [xi.item.AMBUSCADE_TOKEN_FEET] = true,
+    [xi.item.AMBUSCADE_TOKEN_HEAD_P1] = true,
+    [xi.item.AMBUSCADE_TOKEN_BODY_P1] = true,
+    [xi.item.AMBUSCADE_TOKEN_HANDS_P1] = true,
+    [xi.item.AMBUSCADE_TOKEN_LEGS_P1] = true,
+    [xi.item.AMBUSCADE_TOKEN_FEET_P1] = true,
+    [xi.item.AMBUSCADE_TOKEN_FINGERS] = true,
+    [xi.item.AMBUSCADE_CHIT_HEADGEAR] = true,
+    [xi.item.AMBUSCADE_CHIT_BODYGEAR] = true,
+    [xi.item.AMBUSCADE_CHIT_HANDGEAR] = true,
+    [xi.item.AMBUSCADE_CHIT_LEGGEAR] = true,
+    [xi.item.AMBUSCADE_CHIT_FOOTGEAR] = true,
+    [xi.item.AMBUSCADE_CHIT_HEADGEAR_P1] = true,
+    [xi.item.AMBUSCADE_CHIT_BODYGEAR_P1] = true,
+    [xi.item.AMBUSCADE_CHIT_HANDGEAR_P1] = true,
+    [xi.item.AMBUSCADE_CHIT_LEGGEAR_P1] = true,
+    [xi.item.AMBUSCADE_CHIT_FOOTGEAR_P1] = true,
+    [xi.item.AMBUSCADE_CHIT_RING] = true,
+}
+
 local synergyRecipes = {
     {
         name = "Combatant's Torque",
@@ -33,7 +70,166 @@ local synergyRecipes = {
     },
 }
 
+local ambuscadeWeaponsList = {
+    { name = "Karambit", id = xi.item.KARAMBIT },
+    { name = "Tauret", id = xi.item.TAURET },
+    { name = "Naegling", id = xi.item.NAEGLING },
+    { name = "Nandaka", id = xi.item.NANDAKA },
+    { name = "Dolichenus", id = xi.item.DOLICHENUS },
+    { name = "Lycurgos", id = xi.item.LYCURGOS },
+    { name = "Drepanum", id = xi.item.DREPANUM },
+    { name = "Shining One", id = xi.item.SHINING_ONE },
+    { name = "Gokotai", id = xi.item.GOKOTAI },
+    { name = "Hachimonji", id = xi.item.HACHIMONJI },
+    { name = "Maxentius", id = xi.item.MAXENTIUS },
+    { name = "Xoanon", id = xi.item.XOANON },
+    { name = "Ullr", id = xi.item.ULLR },
+    { name = "Khonsu", id = xi.item.KHONSU },
+}
+
+local ambuscadeWeapons = {}
+for _, v in ipairs(ambuscadeWeaponsList) do
+    ambuscadeWeapons[v.id] = true
+end
+
+local showWeaponExchangeMenu
+showWeaponExchangeMenu = function(player, page)
+    local tradedItemId = player:getLocalVar("SynergyAmbuscadeWeaponTrade")
+
+    local availableWeapons = {}
+    for _, weapon in ipairs(ambuscadeWeaponsList) do
+        if weapon.id ~= tradedItemId and not player:hasItem(weapon.id) then
+            table.insert(availableWeapons, weapon)
+        end
+    end
+
+    if #availableWeapons == 0 then
+        player:printToPlayer("You already possess all available exchange weapons.", xi.msg.channel.SYSTEM_3)
+        if tradedItemId > 0 then
+            npcUtil.giveItem(player, tradedItemId)
+            player:setLocalVar("SynergyAmbuscadeWeaponTrade", 0)
+        end
+        return
+    end
+
+    page = page or 1
+    local itemsPerPage = 3
+    local totalItems = #availableWeapons
+    local startIndex = (page - 1) * itemsPerPage + 1
+    local endIndex = math.min(startIndex + itemsPerPage - 1, totalItems)
+
+    local options = {}
+
+    if page > 1 then
+        table.insert(options, { 'Previous Page', function(pArg)
+            pArg:timer(50, function(p) showWeaponExchangeMenu(p, page - 1) end)
+        end })
+    end
+
+    for i = startIndex, endIndex do
+        local weapon = availableWeapons[i]
+        table.insert(options, { weapon.name, function(pArg)
+            if npcUtil.giveItem(pArg, { { weapon.id, 1 } }) then
+                pArg:setLocalVar("SynergyAmbuscadeWeaponTrade", 0)
+            else
+                npcUtil.giveItem(pArg, pArg:getLocalVar("SynergyAmbuscadeWeaponTrade"))
+                pArg:setLocalVar("SynergyAmbuscadeWeaponTrade", 0)
+            end
+        end })
+    end
+
+    if endIndex < totalItems then
+        table.insert(options, { 'Next Page', function(pArg)
+            pArg:timer(50, function(p) showWeaponExchangeMenu(p, page + 1) end)
+        end })
+    end
+
+    table.insert(options, { 'Cancel', function(pArg)
+        local returnedItem = pArg:getLocalVar("SynergyAmbuscadeWeaponTrade")
+        if returnedItem > 0 then
+            npcUtil.giveItem(pArg, returnedItem)
+            pArg:setLocalVar("SynergyAmbuscadeWeaponTrade", 0)
+        end
+    end })
+
+    player:customMenu({
+        title = 'Select a weapon to exchange for:',
+        options = options,
+        onCancelled = function(pArg)
+            local returnedItem = pArg:getLocalVar("SynergyAmbuscadeWeaponTrade")
+            if returnedItem > 0 then
+                npcUtil.giveItem(pArg, returnedItem)
+                pArg:setLocalVar("SynergyAmbuscadeWeaponTrade", 0)
+            end
+        end
+    })
+end
+
 entity.onTrade = function(player, npc, trade)
+    -- Special menu intercept for Ambuscade Vouchers/Chits/Weapons
+    if trade:getItemCount() == 1 then
+        local tradedItemId = trade:getItemId(0)
+        
+        if ambuscadeWeapons[tradedItemId] then
+            player:setLocalVar("SynergyAmbuscadeWeaponTrade", tradedItemId)
+            player:tradeComplete()
+            
+            player:timer(100, function(p)
+                showWeaponExchangeMenu(p, 1)
+            end)
+            return
+        end
+        
+        if ambuscadeItems[tradedItemId] then
+            player:setLocalVar("SynergyAmbuscadeTrade", tradedItemId)
+            player:tradeComplete()
+            
+            player:timer(100, function(p)
+                p:customMenu({
+                    title = 'Select a reward for your Ambuscade item:',
+                    options = {
+                        { '5x Abdhaljs Metal', function(pArg)
+                            if npcUtil.giveItem(pArg, { { xi.item.VIAL_OF_ABDHALJS_METAL, 5 } }) then
+                                pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                            else
+                                npcUtil.giveItem(pArg, pArg:getLocalVar("SynergyAmbuscadeTrade"))
+                                pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                            end
+                        end },
+                        { '5x Abdhaljs Fiber', function(pArg)
+                            if npcUtil.giveItem(pArg, { { xi.item.LOOP_OF_ABDHALJS_FIBER, 5 } }) then
+                                pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                            else
+                                npcUtil.giveItem(pArg, pArg:getLocalVar("SynergyAmbuscadeTrade"))
+                                pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                            end
+                        end },
+                        { '1000 Hallmarks', function(pArg)
+                            pArg:addCurrency("current_hallmarks", 1000)
+                            pArg:printToPlayer("You received 1000 Hallmarks.", xi.msg.channel.SYSTEM_3)
+                            pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                        end },
+                        { 'Cancel', function(pArg)
+                            local returnedItem = pArg:getLocalVar("SynergyAmbuscadeTrade")
+                            if returnedItem > 0 then
+                                npcUtil.giveItem(pArg, returnedItem)
+                                pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                            end
+                        end },
+                    },
+                    onCancelled = function(pArg)
+                        local returnedItem = pArg:getLocalVar("SynergyAmbuscadeTrade")
+                        if returnedItem > 0 then
+                            npcUtil.giveItem(pArg, returnedItem)
+                            pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
+                        end
+                    end
+                })
+            end)
+            return
+        end
+    end
+
     local recipeMatched = nil
     
     -- Identify if trade matches any recipe exactly
