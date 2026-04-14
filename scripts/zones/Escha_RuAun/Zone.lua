@@ -24,7 +24,7 @@ zoneObject.onZoneIn = function(player, prevZone)
 end
 
 zoneObject.afterZoneIn = function(player)
-    --xi.geasFete.afterZoneIn(player)
+    xi.geasFete.afterZoneIn(player)
 end
 
 zoneObject.onZoneOut = function(player)
