@@ -590,7 +590,11 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg) -- remove count down timer display
             local alliance = player:getAlliance()
 
-            if npc:getLocalVar('MobCount') == 0 then
+            npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
+
+            if npc:getLocalVar('MobCount') <= 0 then
+                npc:setLocalVar('MobCount', 0)
+                npc:setStatus(xi.status.NORMAL)
                 for _, member in pairs(alliance) do
                     member:countdown()
                     member:delStatusEffect(xi.effect.CONFRONTATION)
@@ -599,11 +603,12 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         end)
 
         mob:addListener('DESPAWN', 'QM_'..npc:getID(), function(mobArg) -- QM reappear after mob has vanished
-            npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
-
-            if npc:getLocalVar('MobCount') == 0 then
-                -- Directly set the status; do NOT use a timer on a disappeared NPC
-                npc:setStatus(xi.status.NORMAL)
+            if mobArg:getHP() > 0 then -- Only trigger if despawning alive (e.g., timeout)
+                npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
+                if npc:getLocalVar('MobCount') <= 0 then
+                    npc:setLocalVar('MobCount', 0)
+                    npc:setStatus(xi.status.NORMAL)
+                end
             end
         end)
     end
@@ -2375,19 +2380,6 @@ local removableKeyItems =
     xi.ki.MOLLIFIER,
 }
 
-local zoneMax =
-{
-    [xi.zone.ESCHA_RUAUN] = 4294967295,
-    [xi.zone.ESCHA_ZITAH] = 134217727,
-    [xi.zone.REISENJIMA]  = 268435455,
-}
-
-local removableKeyItems =
-{
-    xi.ki.RADIALENS,
-    xi.ki.MOLLIFIER,
-}
-
 -- Remove KIs
 local function removeGeasFeteKIs(player)
     for _, keyItem in ipairs(removableKeyItems) do
@@ -2549,19 +2541,32 @@ xi.geasFeteNPC.npcOnEventUpdate = function(player, csid, option, npc)
                             local isTrackedZone = zoneMax[zone] ~= nil
 
                             if isTrackedZone then
-                                if not hasCompletedZone(player, zone) then
+                                if hasCompletedZone(player, zone) then
+                                    player:setCharVar('GEASFETE_RADIALENS_ACTIVE', 0)
+                                    player:removeListener('GEASFETE_RADIALENS_TICK')
+
+                                else
+
+                                    local expiry = GetSystemTime() + 7200
+                                    player:setCharVar('GEASFETE_RADIALENS_ACTIVE', expiry)
+
+                                    player:removeListener('GEASFETE_RADIALENS_TICK')
+
                                     player:addListener('TICK', 'GEASFETE_RADIALENS_TICK', function(playerArg)
-                                        if playerArg:hasKeyItem(xi.ki.RADIALENS) and
-                                            playerArg:getCharVar('GEASFETE_RADIALENS_ACTIVE') <= GetSystemTime() then
+                                        local expiryTime = playerArg:getCharVar('GEASFETE_RADIALENS_ACTIVE')
+
+                                        if expiryTime > 0 and GetSystemTime() >= expiryTime then
+                                            if playerArg:hasKeyItem(xi.ki.RADIALENS) then
                                                 local textID = geasFeteText[playerArg:getZoneID()]
 
                                                 playerArg:messageSpecial(textID.LOSE_KEYITEM, xi.ki.RADIALENS)
                                                 playerArg:delKeyItem(xi.ki.RADIALENS)
-                                                playerArg:removeListener('GEASFETE_RADIALENS_TICK')
+                                            end
+
+                                            playerArg:setCharVar('GEASFETE_RADIALENS_ACTIVE', 0)
+                                            playerArg:removeListener('GEASFETE_RADIALENS_TICK')
                                         end
                                     end)
-                                else
-                                    player:setCharVar('GEASFETE_RADIALENS_ACTIVE', GetSystemTime() + 7200) -- 2 hours
                                 end
                             end
 
