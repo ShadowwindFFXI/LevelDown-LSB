@@ -7,40 +7,30 @@ require("scripts/globals/npc_util")
 local entity = {}
 
 local ambuscadeItems = {
-    [xi.item.AMBUSCADE_VOUCHER_HEAD] = true,
-    [xi.item.AMBUSCADE_VOUCHER_BODY] = true,
-    [xi.item.AMBUSCADE_VOUCHER_HANDS] = true,
-    [xi.item.AMBUSCADE_VOUCHER_LEGS] = true,
-    [xi.item.AMBUSCADE_VOUCHER_FEET] = true,
-    [xi.item.AMBUSCADE_VOUCHER_HEAD_P1] = true,
-    [xi.item.AMBUSCADE_VOUCHER_BODY_P1] = true,
-    [xi.item.AMBUSCADE_VOUCHER_HANDS_P1] = true,
-    [xi.item.AMBUSCADE_VOUCHER_LEGS_P1] = true,
-    [xi.item.AMBUSCADE_VOUCHER_FEET_P1] = true,
-    [xi.item.AMBUSCADE_VOUCHER_FINGERS] = true,
-    [xi.item.AMBUSCADE_VOUCHER_WEAPON] = true,
-    [xi.item.AMBUSCADE_TOKEN_HEAD] = true,
-    [xi.item.AMBUSCADE_TOKEN_BODY] = true,
-    [xi.item.AMBUSCADE_TOKEN_HANDS] = true,
-    [xi.item.AMBUSCADE_TOKEN_LEGS] = true,
-    [xi.item.AMBUSCADE_TOKEN_FEET] = true,
-    [xi.item.AMBUSCADE_TOKEN_HEAD_P1] = true,
-    [xi.item.AMBUSCADE_TOKEN_BODY_P1] = true,
-    [xi.item.AMBUSCADE_TOKEN_HANDS_P1] = true,
-    [xi.item.AMBUSCADE_TOKEN_LEGS_P1] = true,
-    [xi.item.AMBUSCADE_TOKEN_FEET_P1] = true,
-    [xi.item.AMBUSCADE_TOKEN_FINGERS] = true,
-    [xi.item.AMBUSCADE_CHIT_HEADGEAR] = true,
-    [xi.item.AMBUSCADE_CHIT_BODYGEAR] = true,
-    [xi.item.AMBUSCADE_CHIT_HANDGEAR] = true,
-    [xi.item.AMBUSCADE_CHIT_LEGGEAR] = true,
-    [xi.item.AMBUSCADE_CHIT_FOOTGEAR] = true,
-    [xi.item.AMBUSCADE_CHIT_HEADGEAR_P1] = true,
-    [xi.item.AMBUSCADE_CHIT_BODYGEAR_P1] = true,
-    [xi.item.AMBUSCADE_CHIT_HANDGEAR_P1] = true,
-    [xi.item.AMBUSCADE_CHIT_LEGGEAR_P1] = true,
-    [xi.item.AMBUSCADE_CHIT_FOOTGEAR_P1] = true,
-    [xi.item.AMBUSCADE_CHIT_RING] = true,
+    [xi.item.AMBUSCADE_VOUCHER_HEAD] = 2,
+    [xi.item.AMBUSCADE_VOUCHER_BODY] = 5,
+    [xi.item.AMBUSCADE_VOUCHER_HANDS] = 1,
+    [xi.item.AMBUSCADE_VOUCHER_LEGS] = 3,
+    [xi.item.AMBUSCADE_VOUCHER_FEET] = 1,
+    [xi.item.AMBUSCADE_VOUCHER_BACK] = 3,
+    [xi.item.AMBUSCADE_VOUCHER_HEAD_P1] = 7,
+    [xi.item.AMBUSCADE_VOUCHER_BODY_P1] = 17,
+    [xi.item.AMBUSCADE_VOUCHER_HANDS_P1] = 4,
+    [xi.item.AMBUSCADE_VOUCHER_LEGS_P1] = 11,
+    [xi.item.AMBUSCADE_VOUCHER_FEET_P1] = 2,
+    [xi.item.AMBUSCADE_VOUCHER_FINGERS] = 10,
+    [xi.item.AMBUSCADE_VOUCHER_WEAPON] = 19,
+    [xi.item.AMBUSCADE_CHIT_HEADGEAR] = 2,
+    [xi.item.AMBUSCADE_CHIT_BODYGEAR] = 5,
+    [xi.item.AMBUSCADE_CHIT_HANDGEAR] = 1,
+    [xi.item.AMBUSCADE_CHIT_LEGGEAR] = 3,
+    [xi.item.AMBUSCADE_CHIT_FOOTGEAR] = 1,
+    [xi.item.AMBUSCADE_CHIT_HEADGEAR_P1] = 7,
+    [xi.item.AMBUSCADE_CHIT_BODYGEAR_P1] = 17,
+    [xi.item.AMBUSCADE_CHIT_HANDGEAR_P1] = 4,
+    [xi.item.AMBUSCADE_CHIT_LEGGEAR_P1] = 10,
+    [xi.item.AMBUSCADE_CHIT_FOOTGEAR_P1] = 2,
+    [xi.item.AMBUSCADE_CHIT_RING] = 9,
 }
 
 local synergyRecipes = {
@@ -181,6 +171,7 @@ entity.onTrade = function(player, npc, trade)
         end
         
         if ambuscadeItems[tradedItemId] then
+            local rewardQty = ambuscadeItems[tradedItemId]
             player:setLocalVar("SynergyAmbuscadeTrade", tradedItemId)
             player:tradeComplete()
             
@@ -188,26 +179,27 @@ entity.onTrade = function(player, npc, trade)
                 p:customMenu({
                     title = 'Select a reward for your Ambuscade item:',
                     options = {
-                        { '5x Abdhaljs Metal', function(pArg)
-                            if npcUtil.giveItem(pArg, { { xi.item.VIAL_OF_ABDHALJS_METAL, 5 } }) then
+                        { string.format('%dx Abdhaljs Metal', rewardQty), function(pArg)
+                            if npcUtil.giveItem(pArg, { { xi.item.VIAL_OF_ABDHALJS_METAL, rewardQty } }) then
+                                local hallmarkReward = rewardQty * 100
+                                pArg:addCurrency('current_hallmarks', hallmarkReward)
+                                pArg:printToPlayer(string.format("You receive %d hallmarks.", hallmarkReward), xi.msg.channel.SYSTEM_3)
                                 pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
                             else
                                 npcUtil.giveItem(pArg, pArg:getLocalVar("SynergyAmbuscadeTrade"))
                                 pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
                             end
                         end },
-                        { '5x Abdhaljs Fiber', function(pArg)
-                            if npcUtil.giveItem(pArg, { { xi.item.LOOP_OF_ABDHALJS_FIBER, 5 } }) then
+                        { string.format('%dx Abdhaljs Fiber', rewardQty), function(pArg)
+                            if npcUtil.giveItem(pArg, { { xi.item.LOOP_OF_ABDHALJS_FIBER, rewardQty } }) then
+                                local hallmarkReward = rewardQty * 100
+                                pArg:addCurrency('current_hallmarks', hallmarkReward)
+                                pArg:printToPlayer(string.format("You receive %d hallmarks.", hallmarkReward), xi.msg.channel.SYSTEM_3)
                                 pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
                             else
                                 npcUtil.giveItem(pArg, pArg:getLocalVar("SynergyAmbuscadeTrade"))
                                 pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
                             end
-                        end },
-                        { '1000 Hallmarks', function(pArg)
-                            pArg:addCurrency("current_hallmarks", 1000)
-                            pArg:printToPlayer("You received 1000 Hallmarks.", xi.msg.channel.SYSTEM_3)
-                            pArg:setLocalVar("SynergyAmbuscadeTrade", 0)
                         end },
                         { 'Cancel', function(pArg)
                             local returnedItem = pArg:getLocalVar("SynergyAmbuscadeTrade")
