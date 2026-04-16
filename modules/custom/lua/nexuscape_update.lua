@@ -2,24 +2,28 @@
 require("modules/module_utils")
 -----------------------------------
 
-
 local m = Module:new("nexuscape_update")
 -----------------------------------------------------------------------------------
 --- adjust nexus cape---------------------------------------------
 -----------------------------------------------------------------------------------
 
 m:addOverride("xi.items.nexus_cape.onItemCheck", function(target)
-
-local function player_hate()
-    local party = target:getParty()
-    for _, partyMember in pairs(party) do
-         if partyMember:hasEnmity() then
-            return true
-         end
+    -- Guard against null target from equip/unequip checks
+    if target == nil then
+        return 0 
     end
-    return false
-end
 
+    local function player_hate()
+        local party = target:getParty()
+        if party then
+            for _, partyMember in pairs(party) do
+                 if partyMember:hasEnmity() then
+                    return true
+                 end
+            end
+        end
+        return false
+    end
 
     local result = xi.msg.basic.ITEM_UNABLE_TO_USE
     local leader = target:getPartyLeader()
@@ -40,8 +44,12 @@ end
 end)
 
 m:addOverride("xi.items.nexus_cape.onItemUse", function(target)
+    if target == nil then return end
+    
     local leader = target:getPartyLeader()
-    target:setPos(leader:getXPos(), leader:getYPos(), leader:getZPos(), leader:getRotPos(), leader:getZoneID())
+    if leader ~= nil then
+        target:setPos(leader:getXPos(), leader:getYPos(), leader:getZPos(), leader:getRotPos(), leader:getZoneID())
+    end
 end)
 
 return m

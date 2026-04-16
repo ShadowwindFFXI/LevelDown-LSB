@@ -388,10 +388,12 @@ for _,  entry in pairs(nmHuntMobs) do
                     local minMinutes = mobAdjustment[entry[11]].mobRespawn[1] / 60
                     local maxMinutes = mobAdjustment[entry[11]].mobRespawn[2] / 60
                     local announcement = string.format("[NMHunt] %s has been defeated! It will respawn in %d-%d minutes.", entry[1], minMinutes, maxMinutes)
+                    print(string.format("[NMHunt] %s has been defeated by %s! It will respawn in %d-%d minutes.", entry[1], playerArg:getName(), minMinutes, maxMinutes))
                     broadcastnmhuntAnnouncement(announcement)
 
-                    mob:timer(spawnTimer, function(m)
-                        m:spawn()
+                    mob:timer(spawnTimer, function(mobArg)
+                        mobArg:spawn()
+                        print(string.format("[NMHunt] %s has respawned.", entry[1]))
                     end)
                     mob:setLocalVar("death_processed", 1)
                 end
