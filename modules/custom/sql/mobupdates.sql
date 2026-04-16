@@ -1410,10 +1410,10 @@ UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Warder_of_Loyalty' AN
 UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Warder_of_Mercy' AND zoneid = 289;
 UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Warder_of_Prudence' AND zoneid = 289;
 UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Warder_of_Temperance' AND zoneid = 289;
-UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Genbu' AND zoneid = 289;
-UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Suzaku' AND zoneid = 289;
-UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Seiryu' AND zoneid = 289;
-UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Byakko' AND zoneid = 289;
+UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Genbu-Escha' AND zoneid = 289;
+UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Suzaku-Escha' AND zoneid = 289;
+UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Seiryu-Escha' AND zoneid = 289;
+UPDATE mob_groups SET HP = 165000, MP = 9999 WHERE name = 'Byakko-Escha' AND zoneid = 289;
 UPDATE mob_groups SET HP = 175000, MP = 9999 WHERE name = 'Maju' AND zoneid = 291;
 UPDATE mob_groups SET HP = 175000, MP = 9999 WHERE name = 'Neak' AND zoneid = 291;
 UPDATE mob_groups SET HP = 175000, MP = 9999 WHERE name = 'Yakshi' AND zoneid = 291;
