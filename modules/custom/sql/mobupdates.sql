@@ -1378,6 +1378,7 @@ UPDATE mob_groups SET HP = 135000, MP = 9999 WHERE name = 'Taelmoth_the_Diremaw'
 UPDATE mob_groups SET HP = 135000, MP = 9999 WHERE name = 'Zduhac' AND zoneid = 291;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Alpluachra' AND zoneid = 288;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Blazewing' AND zoneid = 288;
+
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Bucca' AND zoneid = 288;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Fleetstalker' AND zoneid = 288;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Pazuzu' AND zoneid = 288;
@@ -1427,6 +1428,7 @@ UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Teles' AND zoneid = 2
 UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Vinipata' AND zoneid = 291;
 UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Zerde' AND zoneid = 291;
 UPDATE mob_pools SET entityFlags = 131 WHERE poolid = 5693 AND name = 'Kirin_ER';
+UPDATE mob_pools SET mobType = 2 WHERE poolid = 5709 AND name = 'Blazewing';
 -- The Naakuals Wildskeeper Reive
 UPDATE mob_groups SET respawntime = 3600, spawntype = 0, HP = 250000, MP = 9999 WHERE name = 'Colkhab' AND zoneid = 261;
 UPDATE mob_groups SET respawntime = 3600, spawntype = 0, HP = 250000, MP = 9999 WHERE name = 'Tchakka' AND zoneid = 262;
