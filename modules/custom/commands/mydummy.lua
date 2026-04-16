@@ -20,6 +20,26 @@ local statMap = {
     [8]  = { mod = xi.mod.INT,  name = "INT",   func = "getStat" },
     [9]  = { mod = xi.mod.DEX,  name = "DEX",   func = "getStat" },
     [10] = { mod = xi.mod.CHR,  name = "CHR",   func = "getStat" },
+    [11] = { mod = xi.mod.STR,  name = "STR",   func = "getStat" },
+}
+
+local presets = {
+    ["UNM135"] = {
+        level = 130,
+        stats = {
+            [1]  = 875, -- DEF
+            [2]  = 113, -- VIT
+            [3]  = 794, -- EVA
+            [4]  = 573, -- MEVA
+            [5]  = 250, -- MDEF
+            [6]  = 137, -- AGI
+            [7]  = 113, -- MND
+            [8]  = 141, -- INT
+            [9]  = 137, -- DEX
+            [10] = 123, -- CHR
+            [11] = 123, -- STR
+        }
+    }
 }
 
 local allowedZones = {
@@ -55,12 +75,20 @@ local function onTrigger(player, argString)
         for w in argString:gmatch("%S+") do table.insert(args, w) end
     end
 
-    local level = tonumber(args[1])
+    local preset = presets[string.upper(args[1] or "")]
+    local level = nil
+    
+    if preset then
+        level = preset.level
+    else
+        level = tonumber(args[1])
+    end
 
     if not level or level < 1 or level > 199 then
-        player:printToPlayer("Usage: !dummy <level> [stat_id value]...", xi.msg.channel.SYSTEM_3)
+        player:printToPlayer("Usage: !mydummy <level> [stat_id value]... OR !mydummy <preset>", xi.msg.channel.SYSTEM_3)
         player:printToPlayer("Stat IDs: 1=DEF, 2=VIT, 3=EVA, 4=MEVA, 5=MDEF", xi.msg.channel.SYSTEM_3)
-        player:printToPlayer("Stat IDs: 6=AGI, 7=MND, 8=INT, 9=DEX, 10=CHR", xi.msg.channel.SYSTEM_3)
+        player:printToPlayer("Stat IDs: 6=AGI, 7=MND, 8=INT, 9=DEX, 10=CHR, 11=STR", xi.msg.channel.SYSTEM_3)
+        player:printToPlayer("Available Presets: UNM135", xi.msg.channel.SYSTEM_3)
         return
     end
 
@@ -95,25 +123,39 @@ local function onTrigger(player, argString)
             mob:setLocalVar("CreatorID", player:getID())
             
             -- Apply stats
-            for i = 2, #args, 2 do
-                local statId = tonumber(args[i])
-                local statVal = tonumber(args[i+1])
-                
-                if statId and statVal and statMap[statId] then
-                    if statVal > 1999 then
-                        statVal = 1999
-                    end
+            if preset then
+                for statId, statVal in pairs(preset.stats) do
                     local entry = statMap[statId]
                     local current = 0
-                    
                     if entry.func == "getStat" then
                         current = mob:getStat(entry.mod)
                     else
                         current = mob:getMod(entry.mod)
                     end
-                    
                     local diff = statVal - current
                     mob:addMod(entry.mod, diff)
+                end
+            else
+                for i = 2, #args, 2 do
+                    local statId = tonumber(args[i])
+                    local statVal = tonumber(args[i+1])
+                    
+                    if statId and statVal and statMap[statId] then
+                        if statVal > 1999 then
+                            statVal = 1999
+                        end
+                        local entry = statMap[statId]
+                        local current = 0
+                        
+                        if entry.func == "getStat" then
+                            current = mob:getStat(entry.mod)
+                        else
+                            current = mob:getMod(entry.mod)
+                        end
+                        
+                        local diff = statVal - current
+                        mob:addMod(entry.mod, diff)
+                    end
                 end
             end
             
@@ -170,7 +212,11 @@ local function onTrigger(player, argString)
         dummy:setSpawn(spawnX, pY, spawnZ, (pRot + 128) % 256)
         dummy:spawn()
         player:setLocalVar("DummyActive", 1)
-        player:printToPlayer(string.format("Spawned Level %d Striking Dummy.", level), xi.msg.channel.SYSTEM_3)
+        if preset then
+            player:printToPlayer(string.format("Spawned Level %d Striking Dummy with preset '%s'.", level, string.upper(args[1])), xi.msg.channel.SYSTEM_3)
+        else
+            player:printToPlayer(string.format("Spawned Level %d Striking Dummy.", level), xi.msg.channel.SYSTEM_3)
+        end
     else
         player:printToPlayer("Failed to spawn dummy.", xi.msg.channel.SYSTEM_3)
     end
