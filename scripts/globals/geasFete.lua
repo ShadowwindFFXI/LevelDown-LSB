@@ -349,7 +349,7 @@ local function getDeadPlayerCount(player)
     return isDead
 end
 
-local function getTimeOfBattle(mob)
+xi.geasFete.getTimeOfBattle = function(mob)
     local zone = mob:getZoneID()
     local textID = geasFeteText[zone]
     local target = mob:getTarget()
@@ -382,18 +382,18 @@ local function getTimeOfBattle(mob)
 
 end
 
-local function getTimeofBattle(mob)
+xi.geasFete.getTimeofBattle = function(mob)
     -- Deprecated in favor of getTimeOfBattle. This is a compatibility shim.
     -- This can be removed once all calls are updated.
-    getTimeOfBattle(mob)
+    xi.geasFete.getTimeOfBattle(mob)
 end
 
-local function buildFencing(player, mob)
+xi.geasFete.buildFencing = function(player, mob)
 
     local objective = {
         countdown = {
             duration = 900,
-            warbning = 30
+            warning = 30
         },
 
         fence = {
@@ -438,7 +438,7 @@ local function checkPlayerDistance(player) -- possibly move this into the status
     end
 end
 
-local function setCountDown(player, mob, npc)
+xi.geasFete.setCountDown = function(player, mob, npc)
     local zone = player:getZoneID()
     local textID = geasFeteText[zone]
     local leader = GetPlayerByID(player:getLeaderID())
@@ -458,7 +458,7 @@ local function setCountDown(player, mob, npc)
     if type(alliancePartyCheck) == "table" then
         for _, member in pairs(alliancePartyCheck) do
             if member:isPC() then
-                buildFencing(player, mob)
+                xi.geasFete.buildFencing(player, mob)
             end
 
             member:addStatusEffect(xi.effect.CONFRONTATION, { power = 2, origin = member })
@@ -471,7 +471,7 @@ local function setCountDown(player, mob, npc)
             member:addListener('TICK', 'MOB_DESPAWN', function(playerArg) -- clear countdown display in event mob despawns
                 checkPlayerDistance(playerArg)
 
-                if not mob:isAlive() then
+                if not mob:isAlive() and mob:getLocalVar("Transforming") == 0 then
                     if playerArg:isPC() then
                         member:countdown()
                     end
@@ -573,14 +573,15 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         GetMobByID(mob:getID()):setSpawn(dx, dy, dz)
         SpawnMob(mob:getID()):updateClaim(player)
         mob:addStatusEffect(xi.effect.CONFRONTATION,{ power = 2, origin = mob })
-        setCountDown(player,mob)
+    mob:setLocalVar("Transforming", 0)
+        xi.geasFete.setCountDown(player, mob)
 
         mob:setLocalVar('Kill_Timer', os.time() + 900) -- set despawn timer for 15 minutes
         mob:setLocalVar('Kill_Notification', os.time())
         mob:setMobMod(xi.mobMod.IDLE_DESPAWN, 180)
 
         mob:addListener('COMBAT_TICK', 'MOB_TIMER_'..mob:getID(), function(mobArg) -- chat dialog for timer
-            getTimeofBattle(mobArg)
+        xi.geasFete.getTimeofBattle(mobArg)
 
             if mobArg:getLocalVar('Kill_Timer') < os.time() then
                 DespawnMob(mobArg:getID())
@@ -588,22 +589,28 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         end)
 
         mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg) -- remove count down timer display
-            local alliance = player:getAlliance()
-
             npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
 
             if npc:getLocalVar('MobCount') <= 0 then
                 npc:setLocalVar('MobCount', 0)
                 npc:setStatus(xi.status.NORMAL)
-                for _, member in pairs(alliance) do
-                    member:countdown()
-                    member:delStatusEffect(xi.effect.CONFRONTATION)
+
+                local alliance = player:getAlliance()
+                if alliance then
+                    for _, member in pairs(alliance) do
+                        member:countdown()
+                        member:delStatusEffect(xi.effect.CONFRONTATION)
+                    end
+                else
+                    -- Handle solo player
+                    player:countdown()
+                    player:delStatusEffect(xi.effect.CONFRONTATION)
                 end
             end
         end)
 
         mob:addListener('DESPAWN', 'QM_'..npc:getID(), function(mobArg) -- QM reappear after mob has vanished
-            if mobArg:getHP() > 0 then -- Only trigger if despawning alive (e.g., timeout)
+            if mobArg:getHP() > 0 and mobArg:getLocalVar("Transforming") == 0 then -- Only trigger if despawning alive (e.g., timeout)
                 npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
                 if npc:getLocalVar('MobCount') <= 0 then
                     npc:setLocalVar('MobCount', 0)
