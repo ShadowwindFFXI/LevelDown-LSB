@@ -15742,7 +15742,7 @@ INSERT INTO `mob_groups` VALUES (62,5721,288,'Shockmaw',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (63,5722,288,'Urmahlullu',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (64,5699,288,'Azi_Dahaka',0,128,0,200000,99999,0,NULL);
 INSERT INTO `mob_groups` VALUES (65,5700,288,'Azi_Dahakas_Dragon',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (66,0,288,'Mireu',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (66,7337,288,'Mireu',0,128,0,0,0,0,NULL);
 
 -- ------------------------------------------------------------
 -- Escha_RuAun (Zone 289)
@@ -15847,7 +15847,7 @@ INSERT INTO `mob_groups` VALUES (95,5631,289,'Balamor',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (96,5634,289,'Naga_Raja',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (97,5635,289,'Naga_Rajas_Lamia_1',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (98,5636,289,'Naga_Rajas_Lamia_2',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (99,0,289,'Mireu',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (99,7337,289,'Mireu',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (100,6227,289,'Eschan_Ilaern_brd',180,0,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (101,6230,289,'Eschan_Ilaern_nin',180,0,0,0,0,0,NULL);
 
@@ -15954,7 +15954,7 @@ INSERT INTO `mob_groups` VALUES (87,5611,291,'Erinys',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (88,5612,291,'Boobrie',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (89,5613,291,'Quetzalcoatl',0,128,0,0,0,0,NULL);
 INSERT INTO `mob_groups` VALUES (90,5614,291,'Quetzalcoatls_Sibilus',0,128,0,0,0,0,NULL);
-INSERT INTO `mob_groups` VALUES (91,0,291,'Mireu',0,128,0,0,0,0,NULL);
+INSERT INTO `mob_groups` VALUES (91,7337,291,'Mireu',0,128,0,0,0,0,NULL);
 
 -- ------------------------------------------------------------
 -- Reisenjima_Henge (Zone 292)
