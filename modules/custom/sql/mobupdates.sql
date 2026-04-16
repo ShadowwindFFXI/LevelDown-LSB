@@ -1426,6 +1426,7 @@ UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Schah' AND zoneid = 2
 UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Teles' AND zoneid = 291;
 UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Vinipata' AND zoneid = 291;
 UPDATE mob_groups SET HP = 200000, MP = 9999 WHERE name = 'Zerde' AND zoneid = 291;
+UPDATE mob_pools SET entityFlags = 131 WHERE poolid = 5693 AND name = 'Kirin_ER';
 -- The Naakuals Wildskeeper Reive
 UPDATE mob_groups SET respawntime = 3600, spawntype = 0, HP = 250000, MP = 9999 WHERE name = 'Colkhab' AND zoneid = 261;
 UPDATE mob_groups SET respawntime = 3600, spawntype = 0, HP = 250000, MP = 9999 WHERE name = 'Tchakka' AND zoneid = 262;

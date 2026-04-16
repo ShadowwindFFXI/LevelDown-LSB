@@ -209,6 +209,72 @@ local zoneBlessings = -- TODO get verification on adjustments
     [11] = { adjustment = 2, bitIndex = 21 }, -- Courage Increases the "Rare enemy+" effects of Vorseals. ****** Need to confirm rate increase
 }
 
+local function mobScaling(mob)
+    local lvl = mob:getMainLvl()
+    if lvl < 119 then return end
+
+    local delta = lvl - 119 -- adjust deltas below for increased scaling if content level is increased in the future
+
+    local ATT  = 100  + delta * 2
+    local DEF  = 100  + delta * 3
+    local ACC  = 100  + delta * 3
+    local EVA  = 150  + delta * 5
+    local MATT = 150  + delta * 3
+    local MDEF = 150  + delta * 10
+    local MACC = 150  + delta * 8
+    local MEVA = 150  + delta * 6
+    local HASTE = math.floor(5 + delta * 0.5)
+
+    mob:addMod(xi.mod.ATT, ATT)
+    mob:addMod(xi.mod.RATT, ATT)
+    mob:addMod(xi.mod.DEF, DEF)
+    mob:addMod(xi.mod.ACC, ACC)
+    mob:addMod(xi.mod.RACC, ACC)
+    mob:addMod(xi.mod.EVA, EVA)
+    mob:addMod(xi.mod.MATT, MATT)
+    mob:addMod(xi.mod.MDEF, MDEF)
+    mob:addMod(xi.mod.MACC, MACC)
+    mob:addMod(xi.mod.MEVA, MEVA)
+    mob:addMod(xi.mod.HASTE_MAGIC, HASTE)
+
+    local statBonus = math.floor(150 + delta * 10)
+    mob:addMod(xi.mod.STR, statBonus)
+    mob:addMod(xi.mod.DEX, statBonus)
+    mob:addMod(xi.mod.VIT, statBonus)
+    mob:addMod(xi.mod.AGI, statBonus)
+    mob:addMod(xi.mod.INT, statBonus)
+    mob:addMod(xi.mod.MND, statBonus)
+    mob:addMod(xi.mod.CHR, statBonus)
+
+    local statusResMods = {
+        xi.mod.SLEEPRES, xi.mod.POISONRES, xi.mod.PARALYZERES,
+        xi.mod.BLINDRES, xi.mod.SILENCERES, xi.mod.VIRUSRES,
+        xi.mod.PETRIFYRES, xi.mod.BINDRES, xi.mod.CURSERES,
+        xi.mod.GRAVITYRES, xi.mod.SLOWRES, xi.mod.STUNRES,
+        xi.mod.CHARMRES, xi.mod.AMNESIARES, xi.mod.LULLABYRES,
+        xi.mod.DEATHRES, xi.mod.STATUSRES,
+    }
+
+    local baseRes = math.floor(40 + (delta ^ 1.2) * 4)
+
+    for _, mod in ipairs(statusResMods) do
+        mob:addMod(mod, baseRes)
+    end
+
+    if lvl >= 126 then
+        local regen = math.floor((lvl - 125) * 4)
+        mob:addMod(xi.mod.REGEN, regen)
+        mob:addMod(xi.mod.REFRESH, regen)
+        mob:addMod(xi.mod.FASTCAST, math.floor((lvl - 125) * 0.5))
+        mob:addMod(xi.mod.DMG, math.floor((lvl - 125) * 250))
+    end
+
+    if lvl >= 131 then
+        local regain = math.floor((lvl - 130) * 3)
+        mob:addMod(xi.mod.REGAIN, regain)
+    end
+end
+
 local function getInitialKI(player)
     local initialKeyItem = true
     local party = player:getParty()
@@ -570,8 +636,9 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         local dy = player:getYPos()
         local dz = player:getZPos() + math.random(-1, 1)
 
-        GetMobByID(mob:getID()):setSpawn(dx, dy, dz)
+        mob:setSpawn(dx, dy, dz) -- GetMobByID(mob:getID()):setSpawn(dx, dy, dz)
         SpawnMob(mob:getID()):updateClaim(player)
+        mobScaling(mob)
         mob:addStatusEffect(xi.effect.CONFRONTATION,{ power = 2, origin = mob })
     mob:setLocalVar("Transforming", 0)
         xi.geasFete.setCountDown(player, mob)
