@@ -58,7 +58,7 @@ UPDATE `item_equipment` SET `itemId`=26487, `name`='sacro_bulwark', `level`=99, 
 UPDATE item_equipment SET MId = 90 WHERE itemID = 21482 and name = 'compensator';
 UPDATE item_equipment SET ilevel=119, jobs=1589788, MId=456 WHERE itemId=25593;
 
-UPDATE item_weapon SET subskill = 1 WHERE itemId = 19209 AND name = molybdosis;
+UPDATE item_weapon SET subskill = 1 WHERE itemId = 19209 AND name = 'molybdosis';
 
 --slots
 -- two handed 1
