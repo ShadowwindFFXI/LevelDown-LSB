@@ -1378,7 +1378,6 @@ UPDATE mob_groups SET HP = 135000, MP = 9999 WHERE name = 'Taelmoth_the_Diremaw'
 UPDATE mob_groups SET HP = 135000, MP = 9999 WHERE name = 'Zduhac' AND zoneid = 291;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Alpluachra' AND zoneid = 288;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Blazewing' AND zoneid = 288;
-
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Bucca' AND zoneid = 288;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Fleetstalker' AND zoneid = 288;
 UPDATE mob_groups SET HP = 155000, MP = 9999 WHERE name = 'Pazuzu' AND zoneid = 288;
