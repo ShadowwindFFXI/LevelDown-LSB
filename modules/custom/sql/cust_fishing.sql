@@ -31,3 +31,12 @@ INSERT INTO `fishing_bait_affinity` VALUES (17405,6489,3); -- Fly Lure,     Far 
 INSERT INTO `fishing_bait_affinity` VALUES (17399,9200,3); -- Sabiki Rig,            Wasabi,  Power : 3
 INSERT INTO `fishing_bait_affinity` VALUES (17398,9200,3); -- Rogue Rig,             Wasabi,  Power : 3
 INSERT INTO `fishing_bait_affinity` VALUES (17002,9200,2); -- Robber Rig,            Wasabi,  Power : 2
+
+INSERT INTO fishing_bait_affinity VALUES (17396,9146,2); -- Little Worm,   Ashen Crayfish   Power: 2
+INSERT INTO fishing_bait_affinity VALUES (17002,9146,1); -- Robber Rig,    Ashen Crayfish   Power: 1
+INSERT INTO fishing_bait_affinity VALUES (17398,9146,1); -- Rogue Rig,     Ashen Crayfish   Power: 1
+INSERT INTO fishing_bait_affinity VALUES (16994,9146,2); -- Slice of Carp, Ashen Crayfish   Power: 2
+
+INSERT INTO fishing_group VALUES (123,9146,800,245,15);  -- Ashen Crayfish
+
+INSERT INTO fishing_fish VALUES (9146,'Ashen Crayfish',50,2,6,3,1,3,1,0,0,255,255,0,0,3,1,3,0,0,0,1,800,0,'',0,0,0,0);
