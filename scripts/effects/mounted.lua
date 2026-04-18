@@ -12,6 +12,8 @@ effectObject.onEffectGain = function(target, effect)
         [xi.zone.REISENJIMA]  = 268435455,
     }
     -- Escha Silt check
+    local allowMount = true
+
     if target:isPC() then
         local eschaZones = {
             [xi.zone.ESCHA_ZITAH] = true,
@@ -28,18 +30,25 @@ effectObject.onEffectGain = function(target, effect)
 
             if maxValue and bitmask >= maxValue then
                 target:printToPlayer("Your mastery of this Escha zone allows you to ride freely.", xi.msg.channel.SYSTEM_3)
-                return true
-            end
 
-            local siltCost = 500
-            if target:getCurrency('escha_silt') < siltCost then
-                target:printToPlayer("You do not have enough Escha silt to summon a mount here.", xi.msg.channel.SYSTEM_3)
-                return false
             else
-                target:delCurrency('escha_silt', siltCost)
-                target:printToPlayer(string.format("You spend %d Escha silt to summon your mount.", siltCost), xi.msg.channel.SYSTEM_3)
+                local siltCost = 500
+
+                if target:getCurrency('escha_silt') < siltCost then
+                    target:printToPlayer("You do not have enough Escha silt to summon a mount here.", xi.msg.channel.SYSTEM_3)
+                    allowMount = false
+                else
+                    target:delCurrency('escha_silt', siltCost)
+                    target:printToPlayer(string.format("You spend %d Escha silt to summon your mount.", siltCost), xi.msg.channel.SYSTEM_3)
+                end
             end
         end
+    end
+
+    -- Block mount cleanly
+    if not allowMount then
+        target:delStatusEffect(xi.effect.MOUNTED)
+        return
     end
 
     local mountId = effect:getPower()
