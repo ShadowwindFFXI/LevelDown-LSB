@@ -225,6 +225,7 @@ local function mobScaling(mob)
     local MEVA = 150  + delta * 4
     local HASTE = math.floor(6 + delta * 0.5)
 
+    mob:setMobMod(xi.mobMod.IDLE_DESPAWN, 180)
     mob:addMod(xi.mod.ATT, ATT)
     mob:addMod(xi.mod.RATT, ATT)
     mob:addMod(xi.mod.DEF, DEF)
