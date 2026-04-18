@@ -7,7 +7,7 @@ local effectObject = {}
 effectObject.onEffectGain = function(target, effect)
 
     local zoneMax = {
-        [xi.zone.ESCHA_RUAUN] = 4294967295,
+        [xi.zone.ESCHA_RUAUN] = -1,
         [xi.zone.ESCHA_ZITAH] = 134217727,
         [xi.zone.REISENJIMA]  = 268435455,
     }

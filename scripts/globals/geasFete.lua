@@ -213,17 +213,17 @@ local function mobScaling(mob)
     local lvl = mob:getMainLvl()
     if lvl < 119 then return end
 
-    local delta = lvl - 119 -- adjust deltas below for increased scaling if content level is increased in the future
+    local delta = lvl - 117 -- adjust deltas below for increased scaling if content level is increased in the future
 
-    local ATT  = 100  + delta * 2
-    local DEF  = 100  + delta * 3
-    local ACC  = 100  + delta * 3
-    local EVA  = 150  + delta * 5
-    local MATT = 150  + delta * 3
+    local ATT  = 100  + delta * 3
+    local DEF  = 100  + delta * 5
+    local ACC  = 100  + delta * 4
+    local EVA  = 150  + delta * 6
+    local MATT = 150  + delta * 4
     local MDEF = 150  + delta * 10
-    local MACC = 150  + delta * 8
-    local MEVA = 150  + delta * 6
-    local HASTE = math.floor(5 + delta * 0.5)
+    local MACC = 150  + delta * 9
+    local MEVA = 150  + delta * 7
+    local HASTE = math.floor(6 + delta * 0.5)
 
     mob:addMod(xi.mod.ATT, ATT)
     mob:addMod(xi.mod.RATT, ATT)
@@ -236,6 +236,10 @@ local function mobScaling(mob)
     mob:addMod(xi.mod.MACC, MACC)
     mob:addMod(xi.mod.MEVA, MEVA)
     mob:addMod(xi.mod.HASTE_MAGIC, HASTE)
+    mob:addMod(xi.mod.DMG, math.floor((lvl - 118) * 250))
+    mob:setMod(xi.mod.HP, math.floor((delta * 250) * mob:getMainLvl()))
+    mob:updateHealth()
+    mob:addHP(mob:getMaxHP())
 
     local statBonus = math.floor(150 + delta * 10)
     mob:addMod(xi.mod.STR, statBonus)
@@ -266,7 +270,6 @@ local function mobScaling(mob)
         mob:addMod(xi.mod.REGEN, regen)
         mob:addMod(xi.mod.REFRESH, regen)
         mob:addMod(xi.mod.FASTCAST, math.floor((lvl - 125) * 0.5))
-        mob:addMod(xi.mod.DMG, math.floor((lvl - 125) * 250))
     end
 
     if lvl >= 131 then
@@ -640,7 +643,7 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         SpawnMob(mob:getID()):updateClaim(player)
         mobScaling(mob)
         mob:addStatusEffect(xi.effect.CONFRONTATION,{ power = 2, origin = mob })
-    mob:setLocalVar("Transforming", 0)
+        mob:setLocalVar("Transforming", 0)
         xi.geasFete.setCountDown(player, mob)
 
         mob:setLocalVar('Kill_Timer', os.time() + 900) -- set despawn timer for 15 minutes
@@ -654,27 +657,37 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
                 DespawnMob(mobArg:getID())
             end
         end)
+        print("Mob Count: ", npc:getLocalVar('MobCount'))
 
-        mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg) -- remove count down timer display
-            npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
+mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg)
 
-            if npc:getLocalVar('MobCount') <= 0 then
-                npc:setLocalVar('MobCount', 0)
-                npc:setStatus(xi.status.NORMAL)
+    if mobArg:getLocalVar("DeathHandled") == 1 then return end
+    mobArg:setLocalVar("DeathHandled", 1)
 
-                local alliance = player:getAlliance()
-                if alliance then
-                    for _, member in pairs(alliance) do
-                        member:countdown()
-                        member:delStatusEffect(xi.effect.CONFRONTATION)
-                    end
-                else
-                    -- Handle solo player
-                    player:countdown()
-                    player:delStatusEffect(xi.effect.CONFRONTATION)
-                end
+    local count = npc:getLocalVar('MobCount') - 1
+    npc:setLocalVar('MobCount', count)
+
+    print("Mob Count:", count)
+
+    if count == 0 then
+        if npc:getLocalVar("Finished") == 1 then return end
+        npc:setLocalVar("Finished", 1)
+
+        npc:setStatus(xi.status.NORMAL)
+
+        local alliance = player:getAlliance()
+
+        if alliance then
+            for _, member in pairs(alliance) do
+                member:countdown()
+                member:delStatusEffect(xi.effect.CONFRONTATION)
             end
-        end)
+        else
+            player:countdown()
+            player:delStatusEffect(xi.effect.CONFRONTATION)
+        end
+    end
+end)
 
         mob:addListener('DESPAWN', 'QM_'..npc:getID(), function(mobArg) -- QM reappear after mob has vanished
             if mobArg:getHP() > 0 and mobArg:getLocalVar("Transforming") == 0 then -- Only trigger if despawning alive (e.g., timeout)
@@ -764,7 +777,7 @@ xi.registerOfDeeds.npcOnTrigger = function(player, npc)
     local diMireuKills = player:getCharVar('[RoD]Kill_Count_Mireu')
     local playerZone = player:getZoneID()
     local diBossKill = player:getCharVar('[RoD]Kill_Count_'..domainInvasionNM[playerZone][1][1])
-
+    print(nmDefeated)
     player:startEvent(9708,correctedNMDefeatedTotal, nmDefeated, mobDefeatedTotal, diBossKill, 0, diMireuKills)
 
 end
@@ -2443,7 +2456,7 @@ end
 
 local zoneMax =
 {
-    [xi.zone.ESCHA_RUAUN] = 4294967295,
+    [xi.zone.ESCHA_RUAUN] = -1,
     [xi.zone.ESCHA_ZITAH] = 134217727,
     [xi.zone.REISENJIMA]  = 268435455,
 }
