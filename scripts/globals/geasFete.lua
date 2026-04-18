@@ -220,9 +220,9 @@ local function mobScaling(mob)
     local ACC  = 100  + delta * 4
     local EVA  = 150  + delta * 6
     local MATT = 150  + delta * 4
-    local MDEF = 150  + delta * 10
+    local MDEF = 150  + delta * 4
     local MACC = 150  + delta * 9
-    local MEVA = 150  + delta * 7
+    local MEVA = 150  + delta * 4
     local HASTE = math.floor(6 + delta * 0.5)
 
     mob:addMod(xi.mod.ATT, ATT)
