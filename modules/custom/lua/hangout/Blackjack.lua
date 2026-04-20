@@ -21,7 +21,7 @@ local m = Module:new('Blackjack')
 
 local NPC_NAME = "Blackjack"
 local NPC_LOOK = 2359 
-local NPC_POS = { x = 330.7509, y = -3.1422, z = -545.8617, rot = 90 }
+local NPC_POS = { x = 332.10717, y = -3.0141, z = -545.1055, rot = 61 }
 
 -- Server variable to track if the table is in use
 local BLACKJACK_TABLE_BUSY_VAR = 'BlackjackTableBusy'
