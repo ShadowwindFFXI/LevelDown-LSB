@@ -218,7 +218,7 @@ local function mobScaling(mob)
     local ATT  = 100  + delta * 3
     local DEF  = 100  + delta * 5
     local ACC  = 100  + delta * 4
-    local EVA  = 150  + delta * 6
+    local EVA  = 150  + delta * 5
     local MATT = 150  + delta * 4
     local MDEF = 150  + delta * 4
     local MACC = 150  + delta * 9
@@ -617,6 +617,9 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
     end
 
     local selectedMobs = {}
+    
+    npc:setLocalVar('Finished', 0)
+    npc:setLocalVar('MobCount', 0)
 
     for _, erKeyItem in pairs(grislyTrinkets[npcZone]) do
         if erKeyItem[1] == npc:getLocalVar('MobKeyItem') then
@@ -645,6 +648,7 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
         mobScaling(mob)
         mob:addStatusEffect(xi.effect.CONFRONTATION,{ power = 2, origin = mob })
         mob:setLocalVar("Transforming", 0)
+        mob:setLocalVar("DeathHandled", 0)
         xi.geasFete.setCountDown(player, mob)
 
         mob:setLocalVar('Kill_Timer', os.time() + 900) -- set despawn timer for 15 minutes
