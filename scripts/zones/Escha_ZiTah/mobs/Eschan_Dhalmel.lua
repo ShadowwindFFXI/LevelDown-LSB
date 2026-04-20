@@ -24,7 +24,7 @@ entity.onMobDeath = function(mob, player, optParams)
     end
 
     if not hasMollifier then
-        xi.mob.phOnDespawn(mob, ID.mob.SERPOPARD_ISHTAR, rareEnemyMod, 180, params)
+        xi.mob.phOnDespawn(mob, ID.mob.SERPOPARD_NINLIL, rareEnemyMod, 180, params)
     end
 end
 
