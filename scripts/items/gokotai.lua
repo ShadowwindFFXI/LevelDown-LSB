@@ -96,9 +96,7 @@ itemObject.onItemEquip = function(target, item, slot)
 end
 
 itemObject.onItemUnequip = function(target, item, slot)
-    -- Only proceed if we are sure the Main slot was unequipped.
-    -- If slot is nil (ambiguous), we rely on the TICK listener to clean up if necessary.
-    if slot ~= xi.slot.MAIN then
+    if slot ~= nil and slot ~= xi.slot.MAIN then
         return
     end
 
