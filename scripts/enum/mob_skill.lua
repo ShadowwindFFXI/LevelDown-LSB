@@ -409,8 +409,8 @@ xi.mobSkill =
     AJIDO_WARP_OUT                =  977, -- Windurst 9-2 Ajido teleport
     AJIDO_WARP_IN                 =  978, -- Windurst 9-2 Ajido teleport
 
-    STELLAR_BURST_1               =  986,
-    VORTEX_1                      =  987,
+    STELLAR_BURST_1               =  985,
+    VORTEX_1                      =  986,
 
     PHASE_SHIFT_1_EXOPLATES       =  993,
 
