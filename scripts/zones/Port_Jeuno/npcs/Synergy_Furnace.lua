@@ -82,6 +82,100 @@ for _, v in ipairs(ambuscadeWeaponsList) do
     ambuscadeWeapons[v.id] = true
 end
 
+local adoulinRingsList = {
+    { name = "Adoulin Ring +1", id = xi.item.ADOULIN_RING_P1 },
+    { name = "Gorney Ring +1", id = xi.item.GORNEY_RING_P1 },
+    { name = "Haverton Ring +1", id = xi.item.HAVERTON_RING_P1 },
+    { name = "Janniston Ring +1", id = xi.item.JANNISTON_RING_P1 },
+    { name = "Karieyh Ring +1", id = xi.item.KARIEYH_RING_P1 },
+    { name = "Orvail Ring +1", id = xi.item.ORVAIL_RING_P1 },
+    { name = "Renaye Ring +1", id = xi.item.RENAYE_RING_P1 },
+    { name = "Shneddick Ring +1", id = xi.item.SHNEDDICK_RING_P1 },
+    { name = "Thurandaut Ring +1", id = xi.item.THURANDAUT_RING_P1 },
+    { name = "Vocane Ring +1", id = xi.item.VOCANE_RING_P1 },
+    { name = "Weatherspoon Ring +1", id = xi.item.WEATHERSPOON_RING_P1 },
+    { name = "Woltaris Ring +1", id = xi.item.WOLTARIS_RING_P1 },
+}
+
+local adoulinRings = {}
+for _, v in ipairs(adoulinRingsList) do
+    adoulinRings[v.id] = true
+end
+
+local showRingExchangeMenu
+showRingExchangeMenu = function(player, page)
+    local tradedItemId = player:getLocalVar("SynergyAdoulinRingTrade")
+
+    local availableRings = {}
+    for _, ring in ipairs(adoulinRingsList) do
+        if ring.id ~= tradedItemId and not player:hasItem(ring.id) then
+            table.insert(availableRings, ring)
+        end
+    end
+
+    if #availableRings == 0 then
+        player:printToPlayer("You already possess all available exchange rings.", xi.msg.channel.SYSTEM_3)
+        if tradedItemId > 0 then
+            npcUtil.giveItem(player, tradedItemId)
+            player:setLocalVar("SynergyAdoulinRingTrade", 0)
+        end
+        return
+    end
+
+    page = page or 1
+    local itemsPerPage = 3
+    local totalItems = #availableRings
+    local startIndex = (page - 1) * itemsPerPage + 1
+    local endIndex = math.min(startIndex + itemsPerPage - 1, totalItems)
+
+    local options = {}
+
+    if page > 1 then
+        table.insert(options, { 'Previous Page', function(pArg)
+            pArg:timer(50, function(p) showRingExchangeMenu(p, page - 1) end)
+        end })
+    end
+
+    for i = startIndex, endIndex do
+        local ring = availableRings[i]
+        table.insert(options, { ring.name, function(pArg)
+            if npcUtil.giveItem(pArg, { { ring.id, 1 } }) then
+                pArg:setLocalVar("SynergyAdoulinRingTrade", 0)
+                pArg:setCharVar("AdoulinRingExchangeTally", NextConquestTally())
+            else
+                npcUtil.giveItem(pArg, pArg:getLocalVar("SynergyAdoulinRingTrade"))
+                pArg:setLocalVar("SynergyAdoulinRingTrade", 0)
+            end
+        end })
+    end
+
+    if endIndex < totalItems then
+        table.insert(options, { 'Next Page', function(pArg)
+            pArg:timer(50, function(p) showRingExchangeMenu(p, page + 1) end)
+        end })
+    end
+
+    table.insert(options, { 'Cancel', function(pArg)
+        local returnedItem = pArg:getLocalVar("SynergyAdoulinRingTrade")
+        if returnedItem > 0 then
+            npcUtil.giveItem(pArg, returnedItem)
+            pArg:setLocalVar("SynergyAdoulinRingTrade", 0)
+        end
+    end })
+
+    player:customMenu({
+        title = 'Select a ring to exchange for:',
+        options = options,
+        onCancelled = function(pArg)
+            local returnedItem = pArg:getLocalVar("SynergyAdoulinRingTrade")
+            if returnedItem > 0 then
+                npcUtil.giveItem(pArg, returnedItem)
+                pArg:setLocalVar("SynergyAdoulinRingTrade", 0)
+            end
+        end
+    })
+end
+
 local showWeaponExchangeMenu
 showWeaponExchangeMenu = function(player, page)
     local tradedItemId = player:getLocalVar("SynergyAmbuscadeWeaponTrade")
@@ -159,6 +253,22 @@ entity.onTrade = function(player, npc, trade)
     -- Special menu intercept for Ambuscade Vouchers/Chits/Weapons
     if trade:getItemCount() == 1 then
         local tradedItemId = trade:getItemId(0)
+
+        if adoulinRings[tradedItemId] then
+            local nextTally = player:getCharVar("AdoulinRingExchangeTally")
+            if nextTally > os.time() then
+                player:printToPlayer("You can only exchange an Adoulin ring once per conquest tally.", xi.msg.channel.SYSTEM_3)
+                return
+            end
+
+            player:setLocalVar("SynergyAdoulinRingTrade", tradedItemId)
+            player:tradeComplete()
+            
+            player:timer(100, function(p)
+                showRingExchangeMenu(p, 1)
+            end)
+            return
+        end
         
         if ambuscadeWeapons[tradedItemId] then
             player:setLocalVar("SynergyAmbuscadeWeaponTrade", tradedItemId)
