@@ -223,8 +223,9 @@ entity.onTrigger = function(player, npc)
                 player:printToPlayer("Your weapon is ready, but your pockets are full.", 0, "Oboro")
             end
         else
+            player:printToPlayer("Patience is a virtue. I am still working on your steel. Do you wish to abandon this project? Your materials will not be returned.", 0, "Oboro")
             player:customMenu({
-                title = "Patience is a virtue. I am still working on your steel. Do you wish to abandon this project? Your materials will not be returned.",
+                title = "Cancel current weapon?",
                 options = {
                     { "Yes, abandon the project.", function(p)
                         local baseWeapon = p:getCharVar("[Oboro]BaseWeapon")
