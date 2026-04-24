@@ -36,7 +36,6 @@ return {
     ['Naravime']         = { text = ID.text.ARRIVAL_NPC },
     ['Naurmaire']        = { event = 7 },
     ['Nikki']            = { event = 52 },
-    ['Oboro']            = { event = 365 },
     ['Phouminnet']       = { text = ID.text.DEPARTURE_NPC },
     ['Pitantimand']      = { event = 62 },
     ['Pranab']           = { text = ID.text.DEPARTURE_NPC },
