@@ -454,7 +454,10 @@ function npcUtil.giveCurrency(player, currency, amount, useTreasurePoolMsg)
     local currencyTypes =
     {
         ['gil']   = { 'GIL_OBTAINED', xi.settings.main.GIL_RATE },
-        ['bayld'] = { 'BAYLD_OBTAINED', xi.settings.main.BAYLD_RATE }
+        ['bayld'] = { 'BAYLD_OBTAINED', xi.settings.main.BAYLD_RATE },
+        ['domain_points'] = { 'DOMAIN_POINTS_OBTAINED', 1 },
+        ['cruor'] = { 'CRUOR_OBTAINED', 1 },
+        ['domain_points_daily'] = { 'DOMAIN_POINTS_OBTAINED', 1 },
     }
 
     local currencyType = currencyTypes[currency]

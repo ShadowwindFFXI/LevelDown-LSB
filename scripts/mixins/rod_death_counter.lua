@@ -162,17 +162,22 @@ g_mixins.rod_death_counter = function(mob)
 
     local function setGeaFeteNMBit(mob, killer)
         local zone = killer:getZoneID()
-        local table = geaFeteNM[zone]
+        local tbl = geaFeteNM[zone]
 
-        if not table then
+        if not tbl then
             return
         end
 
-        for i = 1, #table do
-            if mob:getName() == table[i][1] then
-                killer:setCharVar('[RoD]GeaFetesDefeated'..killer:getZoneID(), utils.mask.setBit(killer:getCharVar('[RoD]GeaFetesDefeated'..killer:getZoneID()), i -1, true))
+        local varName = '[RoD]GeaFetesDefeated' .. zone
+        local value = killer:getCharVar(varName)
+
+        for i = 1, #tbl do
+            if mob:getName() == tbl[i][1] then
+                value = utils.mask.setBit(value, i - 1, true)
             end
         end
+
+        killer:setCharVar(varName, value)
     end
 
     local function spawnEmblazonedReliquary(mob, killer) -- ***** need to set a variable to not allow player to spawn the same type of chest

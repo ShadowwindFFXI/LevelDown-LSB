@@ -10,7 +10,7 @@ xi.customutil.hasEnmity = function(player)
                      end
                         end
                         return false
-         end 
+         end
 end
 
 xi.customutil.resetJobAbility = function(player)
