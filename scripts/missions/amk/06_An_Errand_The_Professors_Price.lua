@@ -62,36 +62,104 @@ local beginCardianFight = function(player, npc)
         table.insert(cardianIds, cardianId)
     end
 
-    local params = {
-        onWin = function(wPlayer)
-            local messageMob = GetMobByID(cardianIds[1])
-            if messageMob then
-                -- send individually to each confrontation member
-                wPlayer:messageText(messageMob, horutotoID.text.INITIATING_TRANSMISSION)
-            end
+    -- Bypassing the buggy C++ confrontation core completely!
+    -- We will manually spawn the mobs, apply buffs, and use a Lua tracker loop.
+    local confID = npc:getID()
+    local party = player:getParty() or { player }
+    local registeredPlayers = {}
 
-            npcUtil.giveKeyItem(wPlayer, xi.keyItem.RIPE_STARFRUIT)
-            npcUtil.giveKeyItem(wPlayer, xi.keyItem.PEACH_CORAL_KEY)
-        end,
+    for _, member in ipairs(party) do
+        if member:getZoneID() == player:getZoneID() then
+            -- Scrub old buffs and apply fresh ones
+            member:delStatusEffectSilent(xi.effect.CONFRONTATION)
+            member:addStatusEffect(xi.effect.CONFRONTATION, { power = confID, origin = member })
+            member:getStatusEffect(xi.effect.CONFRONTATION):delEffectFlag(xi.effectFlag.DEATH)
+            table.insert(registeredPlayers, member)
+        end
+    end
 
-        -- confrontation gives warning down the stairs, 35 yalms away from starting npc
-        distanceLimit = 35,
-    }
-
-    -- Spawn mobs and start battle
-    xi.confrontation.start(player, npc, cardianIds, params)
-
-    -- Apply mods
-    for _, mobId in pairs(cardianIds) do
+    local spawnedMobs = {}
+    for _, mobId in ipairs(cardianIds) do
         local mob = GetMobByID(mobId)
         if mob then
-            for _, entry in pairs(modsToAdd) do
-                local mod = entry[1]
-                local val = entry[2]
-                mob:setMod(mod, val)
+            if not mob:isSpawned() then
+                SpawnMob(mobId)
             end
         end
     end
+
+    -- Delay slightly to apply mods and begin tracking loop
+    npc:timer(1000, function()
+        for _, mobId in ipairs(cardianIds) do
+            local mob = GetMobByID(mobId)
+            if mob and mob:isSpawned() then
+                -- Explicitly buff the mob
+                mob:delStatusEffectSilent(xi.effect.CONFRONTATION)
+                mob:addStatusEffect(xi.effect.CONFRONTATION, { power = confID, origin = mob })
+                mob:getStatusEffect(xi.effect.CONFRONTATION):delEffectFlag(xi.effectFlag.DEATH)
+
+                for _, entry in ipairs(modsToAdd) do
+                    mob:setMod(entry[1], entry[2])
+                end
+                table.insert(spawnedMobs, mob)
+            end
+        end
+
+        -- Custom Lua Battle Tracker Loop (Similar to Custom HTBF scripts)
+        local function checkBattle()
+            local validPlayerCount = 0
+            local validMobCount = 0
+
+            -- Check active players
+            for _, p in ipairs(registeredPlayers) do
+                if p:getZoneID() == npc:getZoneID() and p:isAlive() and p:hasStatusEffect(xi.effect.CONFRONTATION) then
+                    validPlayerCount = validPlayerCount + 1
+                end
+            end
+
+            -- Check active mobs
+            for _, m in ipairs(spawnedMobs) do
+                if m:isSpawned() and m:isAlive() then
+                    validMobCount = validMobCount + 1
+                end
+            end
+
+            -- Win Condition: All mobs are dead
+            if validMobCount == 0 and validPlayerCount > 0 then
+                for _, p in ipairs(registeredPlayers) do
+                    p:delStatusEffectSilent(xi.effect.CONFRONTATION)
+                    if p:isPC() and p:getZoneID() == npc:getZoneID() then
+                        local messageMob = GetMobByID(cardianIds[1])
+                        if messageMob then
+                            p:messageText(messageMob, horutotoID.text.INITIATING_TRANSMISSION)
+                        end
+                        npcUtil.giveKeyItem(p, xi.ki.RIPE_STARFRUIT)
+                        npcUtil.giveKeyItem(p, xi.ki.PEACH_CORAL_KEY)
+                    end
+                end
+                return -- End loop
+            end
+
+            -- Lose Condition: All players wiped/fled
+            if validPlayerCount == 0 then
+                for _, p in ipairs(registeredPlayers) do
+                    p:delStatusEffectSilent(xi.effect.CONFRONTATION)
+                end
+                for _, m in ipairs(spawnedMobs) do
+                    if m:isSpawned() then
+                        DespawnMob(m:getID())
+                    end
+                end
+                return -- End loop
+            end
+
+            -- Battle is still ongoing, check again in 2 seconds
+            npc:timer(2000, checkBattle)
+        end
+
+        -- Start the tracker
+        checkBattle()
+    end)
 end
 
 mission.sections =
