@@ -6,6 +6,32 @@ require("scripts/globals/remaweapons")
 ---@type TNpcEntity
 local entity = {}
 
+local jseWeapons =
+{
+    [1] = { trade = { xi.item.CEHUETZI_PELT, xi.item.MYTHIC_POLE, xi.item.DARK_STAFF }, reward = xi.item.KALADANDA },
+    [2] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.ADAMAN_KILIJ, xi.item.SHOTEL }, reward = xi.item.MIMESIS },
+    [3] = { trade = { xi.item.CEHUETZI_PELT, xi.item.SHOFAR, xi.item.EBONY_HARP }, reward = xi.item.TERPANDER },
+    [4] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.TABARZIN, xi.item.DARKSTEEL_PICK }, reward = xi.item.ARKTOI },
+    [5] = { trade = { xi.item.CEHUETZI_PELT, xi.item.HEXAGUN, xi.item.MATCHLOCK_GUN }, reward = xi.item.DEATHLOCKE },
+    [6] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.JAMBIYA, xi.item.DARKSTEEL_KUKRI }, reward = xi.item.POLYHYMNIA },
+    [7] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.ORICHALCUM_LANCE, xi.item.DARK_MEZRAQ }, reward = xi.item.AREADBHAR },
+    [8] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.ORICHALCUM_SCYTHE, xi.item.IVORY_SICKLE }, reward = xi.item.CRONUS },
+    [9] = { trade = { xi.item.CEHUETZI_PELT, xi.item.IMPERIAL_WOOTZ_INGOT, xi.item.STAR_SAPPHIRE }, reward = xi.item.DUNNA },
+    [10] = { trade = { xi.item.CEHUETZI_PELT, xi.item.KOENIGS_KNUCKLES, xi.item.BONE_PATAS }, reward = xi.item.NYEPEL },
+    [11] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.HIRENJAKU, xi.item.MUKETSU }, reward = xi.item.SHIGI },
+    [12] = { trade = { xi.item.CEHUETZI_PELT, xi.item.JANUWIYAH, xi.item.DARKSTEEL_SHIELD }, reward = xi.item.PRIWEN },
+    [13] = { trade = { xi.item.CEHUETZI_PELT, xi.item.ADAMAN_SAINTI, xi.item.DARKSTEEL_CLAWS }, reward = xi.item.OHTAS },
+    [14] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.ANELACE, xi.item.SCHLAEGER }, reward = xi.item.EGEKING },
+    [15] = { trade = { xi.item.CEHUETZI_PELT, xi.item.HELLFIRE, xi.item.MATCHLOCK_GUN }, reward = xi.item.LIONSQUALL },
+    [16] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.NAGAN, xi.item.ZWEIHANDER }, reward = xi.item.AETTIR },
+    [17] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.BUTACHI, xi.item.JINDACHI }, reward = xi.item.KURIKARANOTACHI },
+    [18] = { trade = { xi.item.CEHUETZI_PELT, xi.item.MAHOGANY_POLE, xi.item.ICE_STAFF }, reward = xi.item.COEUS },
+    [19] = { trade = { xi.item.CEHUETZI_PELT, xi.item.MAHOGANY_STAFF, xi.item.LIGHT_STAFF }, reward = xi.item.GRIDARVOR },
+    [20] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.MISERICORDE, xi.item.DARKSTEEL_KNIFE }, reward = xi.item.SANDUNG },
+    [21] = { trade = { xi.item.CEHUETZI_CLAW, xi.item.TOPOROK, xi.item.DARKSTEEL_VOULGE }, reward = xi.item.MINOS },
+    [22] = { trade = { xi.item.CEHUETZI_PELT, xi.item.DARKSTEEL_MAUL, xi.item.DARKSTEEL_MACE }, reward = xi.item.SINDRI },
+}
+
 -- Step 1 Upgrade Mapping
 -- Structure: [BaseID] = { upgrade = ResultID, material = MaterialID, qty = RequiredQty, step = 1 or 2 }
 local upgradeMap = {}
@@ -80,6 +106,24 @@ entity.onTrade = function(player, npc, trade)
     if player:getCharVar("[Oboro]UpgradeWeapon") > 0 then
         player:printToPlayer("I can only work on one masterpiece at a time. Finish your current project or abandon it before starting another.", 0, "Oboro")
         return
+    end
+
+    -- Check for JSE Weapon construction (Job-Specific 119 weapons)
+    for _, v in pairs(jseWeapons) do
+        for _, materialId in ipairs({ xi.item.PLUTON, xi.item.BEITETSU, xi.item.RIFTBORN_BOULDER }) do
+            local fullTrade = { { materialId, 150 } }
+            for _, itemId in ipairs(v.trade) do
+                table.insert(fullTrade, { itemId, 1 })
+            end
+
+            if npcUtil.tradeHasExactly(trade, fullTrade) then
+                if npcUtil.giveItem(player, v.reward) then
+                    player:tradeComplete()
+                    player:printToPlayer("This is a fine piece of work. Take it, and may it serve you well.", 0, "Oboro")
+                    return
+                end
+            end
+        end
     end
 
     local remaId = 0
