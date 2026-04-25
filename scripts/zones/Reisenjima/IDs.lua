@@ -13,11 +13,13 @@ zones[xi.zone.REISENJIMA] =
         KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>.
         ITEMS_OBTAINED                = 6400, -- You obtain <number> <item>!
         NOTHING_OUT_OF_ORDINARY       = 6405, -- There is nothing out of the ordinary here.
+        CRUOR_OBTAINED                = 6989, -- Obtained {0} cruor. (Total: {1})<7F31>
         CARRIED_OVER_POINTS           = 7002, -- You have carried over <number> login point[/s].
         LOGIN_CAMPAIGN_UNDERWAY       = 7003, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
         LOGIN_NUMBER                  = 7004, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         MEMBERS_LEVELS_ARE_RESTRICTED = 7024, -- Your party is unable to participate because certain members' levels are restricted.
         YOU_HAVE_USED                 = 7618, -- You have used <item>.
+        DOMAIN_POINTS_OBTAINED        = 7708, -- <1F:79>{player:name} obtained {0} Domain Points!
     },
     mob =
     {
@@ -52,13 +54,15 @@ zones[xi.zone.REISENJIMA] =
         DEVOURING_MOSQUITO     = GetTableOfIDs('Devouring_Mosquito'),
         IGNOBLE_SKELETON       = GetTableOfIDs('Ignoble_Skeleton'),
         PERFERVID_NARAKA       = GetTableOfIDs('Perfervid_Naraka'),
-        OBSTREPEROUS_PANOPT    = GetTableOfIDs('Obstreperous_Panopt'), 
+        OBSTREPEROUS_PANOPT    = GetTableOfIDs('Obstreperous_Panopt'),
         LENTIC_TOAD            = GetTableOfIDs('Lentic_Toad'),
         PORXIE                 = GetTableOfIDs('Porxie'),
         SNAGGLETOOTHED_TIGER   = GetTableOfIDs('Snaggletoothed_Tiger'),
         THUNDER_ELEMENTAL      = GetTableOfIDs('Thunder_Elemental'),
         WANTON_DANAID          = GetTableOfIDs('Wanton_Danaid'),
         OFFICIOUS_UNSEELIE     = GetTableOfIDs('Officious_Unseelie'),
+        MIREU                  = GetFirstID('Mireu'),
+        QUETZALCOATL           = GetFirstID('Quetzalcoatl'),
     },
     npc =
     {

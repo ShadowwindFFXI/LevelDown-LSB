@@ -12,11 +12,13 @@ zones[xi.zone.ESCHA_ZITAH] =
         GIL_OBTAINED                  = 6392, -- Obtained <number> gil.
         KEYITEM_OBTAINED              = 6394, -- Obtained key item: <keyitem>.
         ITEMS_OBTAINED                = 6400, -- You obtain <number> <item>!
+        CRUOR_OBTAINED                = 6989, -- Obtained {0} cruor. (Total: {1})<7F31>
         CARRIED_OVER_POINTS           = 7002, -- You have carried over <number> login point[/s].
         LOGIN_CAMPAIGN_UNDERWAY       = 7003, -- The [/January/February/March/April/May/June/July/August/September/October/November/December] <number> Login Campaign is currently underway!
         LOGIN_NUMBER                  = 7004, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         MEMBERS_LEVELS_ARE_RESTRICTED = 7024, -- Your party is unable to participate because certain members' levels are restricted.
         AFFI_KEYITEM_OBTAINED         = 7473, -- A pleasure. A bloomin' pleasure.<7F31>
+        DOMAIN_POINTS_OBTAINED        = 7659, -- <1F:79>{player:name} obtained {0} Domain Points!
     },
     mob =
     {
@@ -42,6 +44,8 @@ zones[xi.zone.ESCHA_ZITAH] =
         ESCHAN_SHADOW_DRAGON = GetTableOfIDs('Eschan_Shadow_Dragon'),
         ESCHAN_VULTURE       = GetTableOfIDs('Eschan_Vulture'),
         ESCHAN_CRAWLER       = GetTableOfIDs('Eschan_Crawler'),
+        MIREU                = GetFirstID('Mireu'),
+        AZI_DAHAKA           = GetFirstID('Azi_Dahaka'),
     },
     npc =
     {

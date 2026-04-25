@@ -44,6 +44,8 @@ zones[xi.zone.ESCHA_RUAUN] =
         ESCHAN_MUREX         = GetTableOfIDs('Eschan_Murex'),
         ESCHAN_HPEMDE        = GetTableOfIDs('Eschan_Hpemde'),
         ESCHAN_ZDEI          = GetTableOfIDs('Eschan_Zdei'),
+        MIREU                = GetFirstID('Mireu'),
+        NAGA_RAJA            = GetFirstID('Naga_Raja'),
     },
     npc =
     {
