@@ -79,30 +79,8 @@ populateMap(xi.remaWeapons.ergonIDs, xi.item.BEITETSU, 1)
 local function getUpgradeData(itemId)
     return upgradeMap[itemId]
 end
---------------------------------------
----REMOVE THIS SECTION AFTER TESTIUNG
-local allowedNames = {
-    ["Graves"]     = true,
-    ["Comgamer"]   = true,
-    ["Genesis"]    = true,
-    ["Weissening"] = true,
-    ["Aeravis"]    = true,
-}
 
-local function hasPermission(player)
-    return player:getGMLevel() > 0 or allowedNames[player:getName()]
-end
----REMOVE THIS SECTION AFTER TESTIUNG
---------------------------------------
 entity.onTrade = function(player, npc, trade)
---------------------------------------
----REMOVE THIS SECTION AFTER TESTIUNG
-    if not hasPermission(player) then
-        return
-    end
----REMOVE THIS SECTION AFTER TESTIUNG
---------------------------------------
----
     if player:getCharVar("[Oboro]UpgradeWeapon") > 0 then
         player:printToPlayer("I can only work on one masterpiece at a time. Finish your current project or abandon it before starting another.", 0, "Oboro")
         return
@@ -239,15 +217,6 @@ entity.onTrade = function(player, npc, trade)
 end
 
 entity.onTrigger = function(player, npc)
---------------------------------------
----REMOVE THIS SECTION AFTER TESTIUNG
-    if not hasPermission(player) then
-        player:printToPlayer("I am busy. Seek me out another time.", 0, "Oboro")
-        return
-    end
----REMOVE THIS SECTION AFTER TESTIUNG
---------------------------------------
----
     local upgradeWeapon = player:getCharVar("[Oboro]UpgradeWeapon")
     local weaponRegistered = player:getCharVar("[Oboro]WeaponRegistered")
     local upgradeMidnight = player:getCharVar("[Oboro]UpgradeMidnight")
