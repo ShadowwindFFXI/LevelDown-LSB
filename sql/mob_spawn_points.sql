@@ -83514,17 +83514,17 @@ INSERT INTO `mob_spawn_points` VALUES (17957394,0,'Wrathare','Wrathare',54,135,1
 INSERT INTO `mob_spawn_points` VALUES (17957395,0,'Wrathare','Wrathare',54,135,135,-358.466,-0.500,-440.145,63);
 INSERT INTO `mob_spawn_points` VALUES (17957396,0,'Wrathare','Wrathare',54,135,135,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17957397,0,'Azi_Dahaka','Azi Dahaka',64,119,119,-2.000,-0.425,34.500,192);
-INSERT INTO `mob_spawn_points` VALUES (17957398,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-6.980,0.086,29.790,192);
+INSERT INTO `mob_spawn_points` VALUES (17957398,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-12.000,-0.102,29.540,192);
 INSERT INTO `mob_spawn_points` VALUES (17957399,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,3.000,-0.174,29.500,192);
-INSERT INTO `mob_spawn_points` VALUES (17957400,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-7.050,-0.347,39.340,192);
-INSERT INTO `mob_spawn_points` VALUES (17957401,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,3.000,-0.500,39.490,192);
-INSERT INTO `mob_spawn_points` VALUES (17957402,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-12.470,0.353,29.389,192);
-INSERT INTO `mob_spawn_points` VALUES (17957403,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,8.039,-0.761,29.540,192);
-INSERT INTO `mob_spawn_points` VALUES (17957404,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-12.020,-0.097,39.680,192);
+INSERT INTO `mob_spawn_points` VALUES (17957400,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-12.000,-0.347,39.500,192);
+INSERT INTO `mob_spawn_points` VALUES (17957401,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,0.168,-0.365,37.220,192);
+INSERT INTO `mob_spawn_points` VALUES (17957402,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-2.000,-0.266,30.160,192);
+INSERT INTO `mob_spawn_points` VALUES (17957403,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,8.000,-0.761,29.540,192);
+INSERT INTO `mob_spawn_points` VALUES (17957404,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-12.000,-0.405,34.509,192);
 INSERT INTO `mob_spawn_points` VALUES (17957405,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,8.000,-0.300,39.500,192);
-INSERT INTO `mob_spawn_points` VALUES (17957406,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-12.010,0.033,34.490,192);
+INSERT INTO `mob_spawn_points` VALUES (17957406,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-7.564,-0.355,37.220,192);
 INSERT INTO `mob_spawn_points` VALUES (17957407,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,8.000,-0.449,34.509,192);
-INSERT INTO `mob_spawn_points` VALUES (17957408,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-1.363,-0.125,29.786,238);
+INSERT INTO `mob_spawn_points` VALUES (17957408,0,'Azi_Dahakas_Dragon','Azi Dahaka\'s Dragon',65,117,118,-7.000,-0.240,30.043,192);
 INSERT INTO `mob_spawn_points` VALUES (17957409,0,'Mireu','Mireu',66,145,150,-2.000,-0.425,34.500,192);
 
 -- ------------------------------------------------------------
@@ -84209,19 +84209,19 @@ INSERT INTO `mob_spawn_points` VALUES (17961634,0,'Warders_Wynav','Warder\'s Wyn
 INSERT INTO `mob_spawn_points` VALUES (17961635,0,'Warders_Wynav','Warder\'s Wynav',94,145,145,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17961636,0,'Warders_Wynav','Warder\'s Wynav',94,145,145,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17961637,0,'Balamor','Balamor',95,121,122,-1.185,-54.905,-618.450,179);
-INSERT INTO `mob_spawn_points` VALUES (17961638,0,'Naga_Raja','Naga Raja',96,119,119,0.001,-44.099,-210.000,64);
-INSERT INTO `mob_spawn_points` VALUES (17961639,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,0.000,-44.099,-199.000,15);
-INSERT INTO `mob_spawn_points` VALUES (17961640,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,2.000,-44.099,-199.000,30);
-INSERT INTO `mob_spawn_points` VALUES (17961641,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,2.225,-44.099,-198.115,138);
-INSERT INTO `mob_spawn_points` VALUES (17961642,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,-2.360,-44.513,-194.657,20);
-INSERT INTO `mob_spawn_points` VALUES (17961643,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,-2.417,-44.099,-196.376,241);
-INSERT INTO `mob_spawn_points` VALUES (17961644,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,2.412,-44.265,-195.315,129);
-INSERT INTO `mob_spawn_points` VALUES (17961645,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,-0.095,-44.099,-199.063,170);
-INSERT INTO `mob_spawn_points` VALUES (17961646,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,0.892,-44.113,-195.796,105);
-INSERT INTO `mob_spawn_points` VALUES (17961647,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,1.237,-44.099,-198.231,199);
-INSERT INTO `mob_spawn_points` VALUES (17961648,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,0.266,-44.099,-196.860,116);
-INSERT INTO `mob_spawn_points` VALUES (17961649,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,2.330,-44.472,-194.774,10);
-INSERT INTO `mob_spawn_points` VALUES (17961650,0,'Mireu','Mireu',99,145,150,0.001,-44.099,-210.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17961638,0,'Naga_Raja','Naga Raja',96,119,119,0.000,-44.099,-210.000,64);
+INSERT INTO `mob_spawn_points` VALUES (17961639,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,0.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961640,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,2.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961641,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,4.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961642,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,6.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961643,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,8.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961644,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,10.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961645,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,-2.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961646,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,-4.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961647,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,-6.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961648,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',98,119,119,-8.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961649,0,'Naga_Rajas_Lamia','Naga Raja\'s Lamia',97,119,119,-10.000,-44.099,-199.000,66);
+INSERT INTO `mob_spawn_points` VALUES (17961650,0,'Mireu','Mireu',99,145,150,0.000,-44.099,-210.000,64);
 
 -- ------------------------------------------------------------
 -- Desuetia - Empyreal Paradox (Zone 290)
@@ -84953,7 +84953,7 @@ INSERT INTO `mob_spawn_points` VALUES (17969864,0,'Boobrie','Boobrie',88,125,127
 INSERT INTO `mob_spawn_points` VALUES (17969865,0,'Boobrie','Boobrie',88,125,127,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17969866,0,'Boobrie','Boobrie',88,125,127,0.000,0.000,0.000,0);
 INSERT INTO `mob_spawn_points` VALUES (17969867,0,'Boobrie','Boobrie',88,125,127,0.000,0.000,0.000,0);
-INSERT INTO `mob_spawn_points` VALUES (17969868,0,'Quetzalcoatl','Quetzalcoatl',89,119,119,615.200,-372.000,-947.790,225);
+INSERT INTO `mob_spawn_points` VALUES (17969868,0,'Quetzalcoatl','Quetzalcoatl',89,119,119,615.200,-372.084,-947.799,225);
 INSERT INTO `mob_spawn_points` VALUES (17969869,0,'Quetzalcoatls_Sibilus','Quetzalcoatl\'s Sibilus',90,117,117,615.200,-371.934,-945.799,219);
 INSERT INTO `mob_spawn_points` VALUES (17969870,0,'Quetzalcoatls_Sibilus','Quetzalcoatl\'s Sibilus',90,117,117,617.200,-371.934,-945.799,219);
 INSERT INTO `mob_spawn_points` VALUES (17969871,0,'Quetzalcoatls_Sibilus','Quetzalcoatl\'s Sibilus',90,117,117,619.200,-372.000,-945.799,219);
@@ -84965,7 +84965,7 @@ INSERT INTO `mob_spawn_points` VALUES (17969876,0,'Quetzalcoatls_Sibilus','Quetz
 INSERT INTO `mob_spawn_points` VALUES (17969877,0,'Quetzalcoatls_Sibilus','Quetzalcoatl\'s Sibilus',90,117,117,615.200,-371.768,-939.799,231);
 INSERT INTO `mob_spawn_points` VALUES (17969878,0,'Quetzalcoatls_Sibilus','Quetzalcoatl\'s Sibilus',90,117,117,615.200,-371.853,-937.799,231);
 INSERT INTO `mob_spawn_points` VALUES (17969879,0,'Quetzalcoatls_Sibilus','Quetzalcoatl\'s Sibilus',90,117,117,615.200,-371.960,-935.799,231);
-INSERT INTO `mob_spawn_points` VALUES (17969880,0,'Mireu','Mireu',91,145,150,615.200,-372.000,-947.790,225);
+INSERT INTO `mob_spawn_points` VALUES (17969880,0,'Mireu','Mireu',91,145,150,615.200,-372.084,-947.799,225);
 
 -- ------------------------------------------------------------
 -- Reisenjima Henge (Zone 292)
