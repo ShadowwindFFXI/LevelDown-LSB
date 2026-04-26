@@ -14,12 +14,11 @@ mobskillObject.onMobWeaponSkill = function(target, mob, skill, action)
     local params = {}
 
     params.baseDamage     = mob:getMainLvl() + 2
-    params.fTP            = { 4.00, 4.00, 4.00 } -- TODO: Capture fTPs
+    params.fTP            = { 4.00, 5.00, 6.00 }
     params.element        = xi.element.WIND
     params.attackType     = xi.attackType.MAGICAL
     params.damageType     = xi.damageType.WIND
     params.shadowBehavior = xi.mobskills.shadowBehavior.WIPE_SHADOWS
-    -- TODO: Capture knockback range
 
     local info = xi.mobskills.mobMagicalMove(mob, target, skill, action, params)
 
