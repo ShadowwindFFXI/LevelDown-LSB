@@ -123,7 +123,7 @@ local function setFinishingMoves(player, numMoves)
     numMoves              = math.min(numMoves, getMaxFinishingMoves(player))
 
     if finishingEffect then
-        if numMoves == 0 then
+        if numMoves <= 0 then
             player:delStatusEffect(xi.effect.FINISHING_MOVE_1)
         else
             finishingEffect:setPower(numMoves)
@@ -131,7 +131,9 @@ local function setFinishingMoves(player, numMoves)
             finishingEffect:setDuration(2 * 60 * 60 * 1000)
         end
     else
-        player:addStatusEffect(xi.effect.FINISHING_MOVE_1, { power = numMoves, duration = 7200, origin = player, icon = getFinishingMoveIcon(numMoves) })
+        if numMoves > 0 then
+            player:addStatusEffect(xi.effect.FINISHING_MOVE_1, { power = numMoves, duration = 7200, origin = player, icon = getFinishingMoveIcon(numMoves) })
+        end
     end
 end
 
@@ -208,6 +210,11 @@ end
 xi.job_utils.dancer.checkWaltzAbility = function(player, target, ability)
     local waltzInfo = waltzAbilities[ability:getID()]
     local waltzCost = waltzInfo[1] - player:getMod(xi.mod.WALTZ_COST) * 10
+
+    if player:hasStatusEffect(xi.effect.CONTRADANCE) then
+        local jpContradance = player:getJobPointLevel(xi.jp.CONTRADANCE_EFFECT)
+        waltzCost = math.floor(waltzCost * (100 - (jpContradance * 3)) / 100)
+    end
 
     if target:getHP() == 0 then
         return xi.msg.basic.CANNOT_ON_THAT_TARG, 0
@@ -352,10 +359,14 @@ xi.job_utils.dancer.useNoFootRiseAbility = function(player, target, ability, act
 end
 
 xi.job_utils.dancer.useReverseFlourishAbility = function(player, target, ability, action)
-    local reverseFlourishBonus = player:getJobPointLevel(xi.jp.FLOURISH_II_EFFECT)
+    local reverseFlourishBonus = player:getJobPointLevel(xi.jp.FLOURISH_II_EFFECT) * 2
     local numMerits            = player:getMerit(xi.merit.REVERSE_FLOURISH_EFFECT)
     local gearMod              = player:getMod(xi.mod.REVERSE_FLOURISH_EFFECT)
-    local numMoves             = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local numMoves             = 0
+    local fmEffect             = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+    if fmEffect then
+        numMoves = fmEffect:getPower()
+    end
     local tpGained             = 0
 
     local usedMoves = math.min(numMoves, 5)
@@ -369,7 +380,11 @@ end
 
 xi.job_utils.dancer.useAnimatedFlourishAbility = function(player, target, ability, action)
     local jpBonusVE = player:getJobPointLevel(xi.jp.FLOURISH_I_EFFECT) * 10
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local numMoves  = 0
+    local fmEffect  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+    if fmEffect then
+        numMoves = fmEffect:getPower()
+    end
     local veGranted = numMoves >= 2 and 1500 or 1000
     local usedMoves = numMoves >= 2 and 2 or 1
 
@@ -378,7 +393,11 @@ xi.job_utils.dancer.useAnimatedFlourishAbility = function(player, target, abilit
 end
 
 xi.job_utils.dancer.useDesperateFlourishAbility = function(player, target, ability, action)
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local numMoves  = 0
+    local fmEffect  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+    if fmEffect then
+        numMoves = fmEffect:getPower()
+    end
     local infoValue = actionInfo[ability:getID()][1]
 
     setFinishingMoves(player, numMoves - 1)
@@ -416,8 +435,13 @@ end
 
 -- TODO: This ability needs verification
 xi.job_utils.dancer.useViolentFlourishAbility = function(player, target, ability, action)
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
-    local hitRate   = xi.combat.physicalHitRate.getPhysicalHitRate(player, target, 100, xi.attackAnimation.RIGHT_ATTACK, false)
+    local numMoves  = 0
+    local fmEffect  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+    if fmEffect then
+        numMoves = fmEffect:getPower()
+    end
+    local jpBonus   = player:getJobPointLevel(xi.jp.FLOURISH_I_EFFECT)
+    local hitRate   = xi.combat.physicalHitRate.getPhysicalHitRate(player, target, 100 + jpBonus, xi.attackAnimation.RIGHT_ATTACK, false)
     local infoValue = actionInfo[ability:getID()][1]
     setFinishingMoves(player, numMoves - 1)
 
@@ -445,7 +469,7 @@ xi.job_utils.dancer.useViolentFlourishAbility = function(player, target, ability
         action:recordDamage(target, xi.attackType.PHYSICAL, dmg)
 
         -- Effect
-        local bonusMacc  = player:getMod(xi.mod.VFLOURISH_MACC)
+        local bonusMacc  = player:getMod(xi.mod.VFLOURISH_MACC) + jpBonus
         local resistRate = xi.combat.magicHitRate.calculateResistRate(player, target, 0, 0, xi.skillRank.A_PLUS, xi.element.THUNDER, xi.mod.INT, xi.effect.STUN, bonusMacc)
 
         if
@@ -474,16 +498,26 @@ end
 
 xi.job_utils.dancer.useBuildingFlourishAbility = function(player, target, ability)
     local flourishMerits = player:getMerit(xi.merit.BUILDING_FLOURISH_EFFECT)
-    local availableMoves = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local availableMoves = 0
+    local fmEffect       = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+    if fmEffect then
+        availableMoves = fmEffect:getPower()
+    end
     local power          = utils.clamp(availableMoves, 0, 3)
+    local jpBonus        = player:getJobPointLevel(xi.jp.FLOURISH_II_EFFECT)
 
-    player:addStatusEffect(xi.effect.BUILDING_FLOURISH, { power = power, duration = 60, origin = player, subPower = flourishMerits })
+    player:addStatusEffect(xi.effect.BUILDING_FLOURISH, { power = power, duration = 60, origin = player, subPower = flourishMerits, tier = jpBonus })
     setFinishingMoves(player, availableMoves - power)
 end
 
 xi.job_utils.dancer.useWildFlourishAbility = function(player, target, ability, action)
-    local numMoves  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1):getPower()
+    local numMoves  = 0
+    local fmEffect  = player:getStatusEffect(xi.effect.FINISHING_MOVE_1)
+    if fmEffect then
+        numMoves = fmEffect:getPower()
+    end
     local infoValue = actionInfo[ability:getID()][1]
+    local jpBonus   = player:getJobPointLevel(xi.jp.FLOURISH_II_EFFECT)
 
     -- TODO: Wild Flourish can miss
     if
@@ -491,7 +525,7 @@ xi.job_utils.dancer.useWildFlourishAbility = function(player, target, ability, a
         not target:hasStatusEffect(xi.effect.SKILLCHAIN, 0)
     then
         infoValue = actionInfo[ability:getID()][2]
-        target:addStatusEffect(xi.effect.CHAINBOUND, { power = 1, duration = 10, origin = player, icon = 0, subPower = 1 })
+        target:addStatusEffect(xi.effect.CHAINBOUND, { power = 1, duration = 10, origin = player, icon = 0, subPower = 1, tier = jpBonus })
     else
         ability:setMsg(xi.msg.basic.JA_NO_EFFECT)
     end
@@ -516,6 +550,11 @@ xi.job_utils.dancer.useWaltzAbility = function(player, target, ability, action)
     local statMultiplier = waltzInfo[2]
     local amtCured       = 0
 
+    if player:hasStatusEffect(xi.effect.CONTRADANCE) then
+        local jpContradance = player:getJobPointLevel(xi.jp.CONTRADANCE_EFFECT)
+        waltzCost = math.floor(waltzCost * (100 - (jpContradance * 3)) / 100)
+    end
+
     -- Handle TP cost.
     if not player:hasStatusEffect(xi.effect.TRANCE) then
         if
@@ -534,7 +573,9 @@ xi.job_utils.dancer.useWaltzAbility = function(player, target, ability, action)
         statMultiplier = statMultiplier / 2
     end
 
-    amtCured = (target:getStat(xi.mod.VIT) + player:getStat(xi.mod.CHR)) * statMultiplier + waltzInfo[3]
+    local waltzJpBonus = player:getJobPointLevel(xi.jp.WALTZ_POTENCY_BONUS) * 2
+
+    amtCured = (target:getStat(xi.mod.VIT) + player:getStat(xi.mod.CHR)) * statMultiplier + waltzInfo[3] + waltzJpBonus
     amtCured = math.floor(amtCured * (1.0 + (math.min(50, player:getMod(xi.mod.WALTZ_POTENCY)) / 100)))
     -- TODO: Account for Waltz Potency Received
 
