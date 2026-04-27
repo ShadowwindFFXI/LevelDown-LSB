@@ -2635,9 +2635,15 @@ m:addOverride('xi.zones.' .. EVENT_HOST_ZONE_NAME .. '.Zone.onGameHour', functio
                     end
 
                     local isPlayerVictory = false -- Enemy Win/Timeout means players lost
+                    local activePlayers = 0
                     if selectedZone then
                         local battleZoneObj = GetZone(selectedZone.zoneID)
                         if battleZoneObj then
+                            for _, p in pairs(battleZoneObj:getPlayers()) do
+                                if p and p:isPC() then
+                                    activePlayers = activePlayers + 1
+                                end
+                            end
                             debugLogBattleResults(battleZoneObj)
                             awardBattleRewards(battleZoneObj, isPlayerVictory, currentBattleDuration)
                         end
@@ -2649,7 +2655,17 @@ m:addOverride('xi.zones.' .. EVENT_HOST_ZONE_NAME .. '.Zone.onGameHour', functio
                     SetServerVariable(BATTLE_DAMAGE_RES_VAR_2, 0)
                     SetServerVariable(LAST_BATTLE_RESULT_VAR, 2) -- 2 = Enemy Win/Timeout
                     log_debug("[CampaignBattleHandler] BATTLE RESULT LOGGED: Enemy Victory/Timeout (2).")
-                    updateCampaignScore(CAMPAIGN_SCORE_LOSS_MODIFIER)
+                    
+                    local lossModifier = CAMPAIGN_SCORE_LOSS_MODIFIER
+                    if activePlayers == 0 then
+                        lossModifier = 0
+                        log_debug("[CampaignBattleHandler] 0 players present. Campaign Tide loss prevented.")
+                    elseif activePlayers < 4 then
+                        lossModifier = -2
+                        log_debug("[CampaignBattleHandler] " .. activePlayers .. " players present. Campaign Tide loss reduced to -2.")
+                    end
+                    updateCampaignScore(lossModifier)
+                    
                     applyEndOfBattleReductions(false)
                     despawnAllBattleMobs(battleZoneObj)
                     return
@@ -2892,7 +2908,8 @@ m:addOverride('xi.zones.' .. EVENT_HOST_ZONE_NAME .. '.Zone.onGameHour', functio
                 -- *** START PREPARATION PHASE (State 1) ***
                 log_debug("[CampaignBattleHandler] Starting PREPARATION PHASE (State 1). Duration: ", PREP_DURATION_HOURS, " hours.")
                 if ENABLE_BATTLE_START_LOG then
-                    print("[Campaign Battle] Battle Preparation Starting!")
+                    local tideScore = tonumber(GetServerVariable(CAMPAIGN_SCORE_VAR)) or CAMPAIGN_SCORE_NEUTRAL
+                    print(string.format("[Campaign Battle] Battle Preparation Starting! (Tide Score: %d)", tideScore))
                 end
 
                 -- NEW: Select and persist TWO random damage resistances for the battle

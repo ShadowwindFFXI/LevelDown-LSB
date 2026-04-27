@@ -4,28 +4,26 @@ require('scripts/globals/player')
 -----------------------------------
 local m = Module:new('log_in_announcements')
 
-local openingDecoration = '\129\155'
-local mid1Decoration = '\129\154'
+local openingDecoration = '\129\154'
+local mid1Decoration = '\129\155'
 local mid2Decoration = '\129\154'
 local closingDecoration = '\129\154'
 local end1Decoration = '\129\154'
 local end2Decoration = '\129\155'
 
+m:addOverride('xi.player.onGameIn', function(player, firstLogin, zoning)
+        -- Check if it's an initial login before super() clears it to 0
+        local isGameLogin = player:getLocalVar('gameLogin') == 1
 
-local checkWorldServerVar = function(player, varName, worldMessage)
-            super(player)
-    if  player:getLocalVar('gameLogin') == 1 then
-        local decoratedMessage = string.format('%s %s %s %s %s %s %s', openingDecoration, mid1Decoration, mid2Decoration, worldMessage, end1Decoration, end2Decoration, closingDecoration)
-        player:PrintToArea(decoratedMessage, xi.msg.channel.SYSTEM_3, 0, '')
-    end
-end
+        super(player, firstLogin, zoning)
 
-m:addOverride('xi.player.onGameIn', function(player)
-
-        checkWorldServerVar(player,
-        'gameLogin',
-        string.format('%s has logged in!', player:getName()))
-
+        if isGameLogin then
+            player:timer(2500, function(playerArg)
+                local worldMessage = string.format('%s has logged in!', playerArg:getName())
+                local decoratedMessage = string.format('%s %s %s %s %s %s %s', openingDecoration, mid1Decoration, mid2Decoration, worldMessage, end1Decoration, end2Decoration, closingDecoration)
+                playerArg:printToArea(decoratedMessage, xi.msg.channel.SYSTEM_3, 0, '')
+            end)
+        end
 end)
 
 return m

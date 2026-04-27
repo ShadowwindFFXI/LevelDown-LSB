@@ -184,10 +184,10 @@ zone:insertDynamicEntity({
 	objtype    = xi.objType.NPC,
 	name       = "Bentglasstube",
 	look       = '010000085911EB20EB30EB40EB50006000700000',
-	x          = -178,
-	y          =  11,
-	z          =  87,
-	rotation   =  37,
+	x          = -172.1824,
+	y          =  11.0000,
+	z          =  91.5680,
+	rotation   =  38,
 	widescan = 1,
 
 	onTrade = function(player, npc, trade)
