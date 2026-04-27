@@ -51,9 +51,11 @@ for k, v in pairs(xi.mod) do
 end
 
 local remUpgradeItems = {
-    xi.item.RIFTBORN_BOULDER,
-    xi.item.PLUTON,
-    xi.item.BEITETSU,
+    [1] = { xi.item.RIFTBORN_BOULDER, xi.item.PLUTON, xi.item.BEITETSU }, -- Very Easy
+    [2] = { xi.item.RIFTBORN_BOULDER, xi.item.PLUTON, xi.item.BEITETSU }, -- Easy
+    [3] = { xi.item.RIFTBORN_BOULDER, xi.item.PLUTON, xi.item.BEITETSU }, -- Normal
+    [4] = { xi.item.RIFTBORN_BOULDER, xi.item.PLUTON, xi.item.BEITETSU }, -- Difficult
+    [5] = { xi.item.RIFTBORN_BOULDER, xi.item.PLUTON, xi.item.BEITETSU }, -- Very Difficult
 }
 
 local remsTales = {
@@ -189,11 +191,11 @@ local battlefieldConfig = {
             { mod = xi.mod.EVA, val = 1344, target = true },
         },
         difficulties = {
-            { name = "Very Easy (Lvl: 113)",      mobName = "Alexander", mobLevel = 119, hppMod = 0, dropRateBonus = 0, statModMultiplier = 0.5, personalLoot = { remCount = 1, remItemCount = 0 } },
+            { name = "Very Easy (Lvl: 113)",      mobName = "Alexander", mobLevel = 119, hppMod = 0, dropRateBonus = 0, statModMultiplier = 0.5, personalLoot = { remCount = 1, remItemCount = 1 } },
             { name = "Easy (Lvl: 116)",         mobName = "Alexander",  mobLevel = 124, hppMod = 66.7, dropRateBonus = 10, statModMultiplier = 0.6, personalLoot = { remCount = 1, remItemCount = 1 } },
             { name = "Normal (Lvl: 119)",       mobName = "Alexander",  mobLevel = 129, hppMod = 150, dropRateBonus = 20, statModMultiplier = 0.7, personalLoot = { remCount = 2, remItemCount = 1 } },
-            { name = "Difficult (Lvl: 119+)",     mobName = "Alexander",  mobLevel = 134, hppMod = 200, dropRateBonus = 40, statModMultiplier = 0.85, personalLoot = { remCount = 3, remItemCount = 2 } },
-            { name = "Very Difficult (Lvl: ???)", mobName = "Alexander", mobLevel = 140, hppMod = 366.7, dropRateBonus = 90, statModMultiplier = 1.0, personalLoot = { remCount = 4, remItemCount = 2 } },
+            { name = "Difficult (Lvl: 119+)",     mobName = "Alexander",  mobLevel = 134, hppMod = 200, dropRateBonus = 40, statModMultiplier = 0.85, personalLoot = { remCount = 3, remItemCount = 1 } },
+            { name = "Very Difficult (Lvl: ???)", mobName = "Alexander", mobLevel = 140, hppMod = 366.7, dropRateBonus = 90, statModMultiplier = 1.0, personalLoot = { remCount = 4, remItemCount = 1 } },
         },
         lootDelay = 10, -- Seconds
         loot = {
@@ -261,11 +263,11 @@ local battlefieldConfig = {
             { mod = xi.mod.EVA, val = 1400, target = true },
         },
         difficulties = {
-            { name = "Very Easy (Lvl: 113)",      mobName = "Cait_Sith", mobLevel = 119, hppMod = 0, dropRateBonus = 0, statModMultiplier = 0.5, personalLoot = { remCount = 1, remItemCount = 0 } },
+            { name = "Very Easy (Lvl: 113)",      mobName = "Cait_Sith", mobLevel = 119, hppMod = 0, dropRateBonus = 0, statModMultiplier = 0.5, personalLoot = { remCount = 1, remItemCount = 1 } },
             { name = "Easy (Lvl: 116)",         mobName = "Cait_Sith",  mobLevel = 124, hppMod = 66.7, dropRateBonus = 10, statModMultiplier = 0.6, personalLoot = { remCount = 1, remItemCount = 1 } },
             { name = "Normal (Lvl: 119)",       mobName = "Cait_Sith",  mobLevel = 129, hppMod = 150, dropRateBonus = 20, statModMultiplier = 0.7, personalLoot = { remCount = 2, remItemCount = 1 } },
-            { name = "Difficult (Lvl: 119+)",     mobName = "Cait_Sith",  mobLevel = 134, hppMod = 200, dropRateBonus = 40, statModMultiplier = 0.85, personalLoot = { remCount = 3, remItemCount = 2 } },
-            { name = "Very Difficult (Lvl: ???)", mobName = "Cait_Sith", mobLevel = 140, hppMod = 366.7, dropRateBonus = 90, statModMultiplier = 1.0, personalLoot = { remCount = 4, remItemCount = 2 } },
+            { name = "Difficult (Lvl: 119+)",     mobName = "Cait_Sith",  mobLevel = 134, hppMod = 200, dropRateBonus = 40, statModMultiplier = 0.85, personalLoot = { remCount = 3, remItemCount = 1 } },
+            { name = "Very Difficult (Lvl: ???)", mobName = "Cait_Sith", mobLevel = 140, hppMod = 366.7, dropRateBonus = 90, statModMultiplier = 1.0, personalLoot = { remCount = 4, remItemCount = 1 } },
         },
         lootDelay = 10,
         loot =  {
@@ -532,9 +534,10 @@ local function onConfrontationWin(player)
                     end
 
                     -- Give R/E/M items
-                    if personalLootConfig.remItemCount > 0 and #remUpgradeItems > 0 then
+                    local diffRemItems = remUpgradeItems[difficultyIndex] or {}
+                    if personalLootConfig.remItemCount > 0 and #diffRemItems > 0 then
                         for i = 1, personalLootConfig.remItemCount do
-                            local randomItem = remUpgradeItems[math.random(#remUpgradeItems)]
+                            local randomItem = diffRemItems[math.random(#diffRemItems)]
                             if randomItem then
                                 if not npcUtil.giveItem(p, { { randomItem, 1 } }) then
                                     break -- Stop trying to give items if inventory is full
