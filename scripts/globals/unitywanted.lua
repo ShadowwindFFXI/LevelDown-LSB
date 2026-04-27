@@ -813,52 +813,55 @@ local uwej =
 {17649910, VOSO_3_QM,                    900, 1800, 17649864, VOSO_3, 863, 122},
 }
 
-
-
-
-
-
-
 xi.unitywanted.qmOnTrigger = function(player, npc, mob, target)
-    local function player_level ()
-     local level = player:getMainLvl()
-     --local party = player:getParty()
-     local party = player:getAlliance()
-             for _, partyMember in pairs(party) do
-                         local a, b = partyMember:getMainLvl(), 99
-                    if a~=b then
-                        return true
-                    end
-             end
-                    return false
+    local function player_level()
+        if player:getGMLevel() > 0 then
+            return true
+        end
+
+        local party = player:getAlliance() or {}
+        for _, partyMember in pairs(party) do
+            if partyMember:getMainLvl() ~= 99 then
+                return false
+            end
+        end
+
+        return true
     end
 
-    local function player_rank ()
-     --local party = player:getParty()
-     local party = player:getAlliance()
-             for _, partyMember in pairs(party) do
-                         local a, b = partyMember:getRank(partyMember:getNation()), 10
-                    if a~=b then
-                        return true
-                    end
-             end
-                    return false
-    end
-    local function player_vwnm ()
-     --local party = player:getParty()
-     local party = player:getAlliance()
-             for _, partyMember in pairs(party) do
-                         local a, b = partyMember:getCharVar('[VWNM]TKills'), 66
-                    if a~=b then
-                        return true
-                    end
-             end
-                    return false
+    local function player_rank()
+        if player:getGMLevel() > 0 then
+            return true
+        end
+
+        local party = player:getAlliance() or {}
+        for _, partyMember in pairs(party) do
+            if partyMember:getRank(partyMember:getNation()) ~= 10 then
+                return false
+            end
+        end
+
+        return true
     end
 
-     if player_level() == true or
-        player_rank() == true or
-        player_vwnm() == true then
+    local function player_vwnm()
+        if player:getGMLevel() > 0 then
+            return true
+        end
+
+        local party = player:getAlliance() or {}
+        for _, partyMember in pairs(party) do
+            if partyMember:getCharVar('[VWNM]TKills') ~= 66 then
+                return false
+            end
+        end
+
+        return true
+    end
+
+    if not player_level() or
+        not player_rank() or
+        not player_vwnm() then
              player:printToPlayer('This content is locked behind VWNM completion, if you have completed VWNM then')
              player:printToPlayer('You or a Party member do not meet the requirements to use the Ethereal Junction, Check your level and or Rank!')
      elseif player:getZoneID() == 113 then
@@ -941,7 +944,7 @@ end
 end
 
 
-xi.unitywanted.qmOnEventFinish = function(player, npc, mob, option)
+xi.unitywanted.qmOnEventFinish = function(player, npc, option)
     local amount = player:getCurrency('unity_accolades')
     local level = player:getMainLvl()
     local party = player:getParty() -- getPartyWithTrusts()
