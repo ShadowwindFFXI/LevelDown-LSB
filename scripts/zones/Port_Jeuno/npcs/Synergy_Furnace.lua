@@ -58,6 +58,24 @@ local synergyRecipes = {
         result = xi.item.INCANTERS_TORQUE,
         successRate = 90,
     },
+    {
+        name = "Beast Collar",
+        ingredients = {
+            { id = xi.item.CARVERS_TORQUE, qty = 1 },
+            { id = xi.item.SMITHYS_TORQUE, qty = 1 },
+            { id = xi.item.GOLDSMITHS_TORQUE, qty = 1 },
+            { id = xi.item.WEAVERS_TORQUE, qty = 1 },
+            { id = xi.item.TANNERS_TORQUE, qty = 1 },
+            { id = xi.item.BONEWORKERS_TORQUE, qty = 1 },
+            { id = xi.item.ALCHEMISTS_TORQUE, qty = 1 },
+            { id = xi.item.CULINARIANS_TORQUE, qty = 1 },
+        },
+        result = xi.item.BEAST_COLLAR,
+        successRate = 90,
+        onSuccess = function(player)
+            player:addItem({id=13121, signature="CraftMaster"})
+        end,
+    },
 }
 
 local ambuscadeWeaponsList = {
@@ -365,7 +383,13 @@ entity.onTrade = function(player, npc, trade)
         if roll <= recipeMatched.successRate then
             -- Success! Consume all traded items and give the result
             player:tradeComplete()
-            npcUtil.giveItem(player, recipeMatched.result)
+            
+            if recipeMatched.onSuccess then
+                recipeMatched.onSuccess(player)
+            else
+                npcUtil.giveItem(player, recipeMatched.result)
+            end
+            
             player:printToPlayer(string.format("Synergy was successful! You obtained a %s!", recipeMatched.name), xi.msg.channel.SYSTEM_3)
         else
             -- Failure! Determine how many items are lost
