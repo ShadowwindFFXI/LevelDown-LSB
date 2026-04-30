@@ -1073,26 +1073,7 @@ function handleRewardPurchase(player, npc, itemData, baseCost, itemName, categor
 		return -- Exit function
 	end
 
-	-- 2. Inventory Space Check (skip for currency rewards)
-	if not isCurrencyReward then
-		-- Use a simple inventory check. Since we are giving one item type at a time,
-		-- we only need to check for at least one free slot.
-		if player:getFreeSlotsCount() < 1 then
-			m:logDebug("FAIL: Inventory full.")
-			player:printToPlayer(string.format(MESSAGES.inventoryFull, itemName, TEXT_CURRENCY_NAME), 0, npcName)
-			return -- Exit function
-		end
-	end
-
-	-- 3. All checks passed, execute the transaction
-	player:delCurrency(CURRENCY_NAME, totalCost)
-
-    if setName == "Avatar Rings" or setName == "Empy +1 Mats" or setName == "WoE +1" or (setName == "Special Services" and itemData[1] == "Reset Gorpa") then
-        local bossKills = player:getCharVar('StrongholdMegaBossKills') or 0
-        player:setCharVar('StrongholdMegaBossKills', bossKills - killCost)
-        m:logDebug("SUCCESS: Deducted %d StrongholdMegaBossKills from %s. New total: %d.", killCost, player:getName(), bossKills - killCost)
-    end
-
+	-- 2. Execute the transaction (checking inventory first for standard items)
 	if isCurrencyReward then
 		-- Currency Reward: { "Display Name", "currency_key", Currency_Amount, cost_in_allied_notes }
 		local currencyKey = itemData[2]
@@ -1111,11 +1092,25 @@ function handleRewardPurchase(player, npc, itemData, baseCost, itemName, categor
 	else
 		-- Standard Item Reward
 		local itemID = itemData[2]
-		player:addItem(itemID, quantity)
+		
+		if not npcUtil.giveItem(player, { { itemID, quantity } }) then
+			m:logDebug("FAIL: Inventory full or cannot carry that many items.")
+			player:printToPlayer(string.format(MESSAGES.inventoryFull, itemName, TEXT_CURRENCY_NAME), 0, npcName)
+			return -- Exit function to prevent deduction
+		end
 
 		m:logDebug("SUCCESS: %d %s deducted. Item %d (x%d) given.", totalCost, CURRENCY_NAME, itemID, quantity)
 		player:printToPlayer(string.format(MESSAGES.purchaseSuccess, totalCost, TEXT_CURRENCY_NAME), 0, npcName)
 	end
+
+	-- 3. Deduct Currency and Custom Variables
+	player:delCurrency(CURRENCY_NAME, totalCost)
+
+    if setName == "Avatar Rings" or setName == "Empy +1 Mats" or setName == "WoE +1" or (setName == "Special Services" and itemData[1] == "Reset Gorpa") then
+        local bossKills = player:getCharVar('StrongholdMegaBossKills') or 0
+        player:setCharVar('StrongholdMegaBossKills', bossKills - killCost)
+        m:logDebug("SUCCESS: Deducted %d StrongholdMegaBossKills from %s. New total: %d.", killCost, player:getName(), bossKills - killCost)
+    end
 
 	-- After a successful purchase, refresh the current menu for the player.
 	player:timer(1500, function(playerArg)
