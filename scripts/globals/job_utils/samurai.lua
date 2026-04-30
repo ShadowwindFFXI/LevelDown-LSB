@@ -147,14 +147,21 @@ xi.job_utils.samurai.useHasso = function(player, target, ability)
 end
 
 xi.job_utils.samurai.useMeditate = function(player, target, ability)
-    local amount   = 12
+    local isMainSAM = player:getMainJob() == xi.job.SAM
     local duration = 15 + player:getMod(xi.mod.MEDITATE_DURATION)
+    local amount = isMainSAM and 200 or 120
 
-    if player:getMainJob() == xi.job.SAM then
-        amount = 20 + player:getJobPointLevel(xi.jp.MEDITATE_EFFECT) * 5
+    if isMainSAM then
+        amount = amount + (player:getJobPointLevel(xi.jp.MEDITATE_EFFECT) * 5)
     end
 
-    player:addStatusEffect(xi.effect.MEDITATE, { power = amount, duration = duration, origin = player, tick = 3, icon = 0 })
+    player:addStatusEffect(xi.effect.MEDITATE, {
+        power = amount,
+        duration = duration,
+        tick = 3,
+        origin = player,
+        icon = 0
+    })
 
     return xi.effect.MEDITATE
 end
