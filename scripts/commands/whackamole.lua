@@ -69,6 +69,9 @@ player:printToArea('GM: Help us stop them, We have 10 minutes before they disapp
         groupZoneId = 95,
 		allegiance = 0,
 		widescan = 1,
+        minLevel = 10,
+        maxLevel = 10,
+
 
         onMobSpawn = function(mob, playerArg, optParams)
           mob:setMobMod(xi.mobMod.ROAM_DISTANCE, 45)
@@ -80,17 +83,24 @@ player:printToArea('GM: Help us stop them, We have 10 minutes before they disapp
           mob:addMod(xi.mod.EVA, -500)
           mob:addMod(xi.mod.DEF, -500)
           mob:setUnkillable(true)
-          mob:addStatusEffectEx(xi.effect.ARROW_SHIELD, 0, 1, 0, 0)   
-          mob:addStatusEffectEx(xi.effect.MAGIC_SHIELD, 0, 1, 0, 0)
+          mob:addStatusEffect(xi.effect.PHYSICAL_SHIELD, { power = 1, origin = mob, icon = 0 })
+          mob:addStatusEffect(xi.effect.ARROW_SHIELD, { power = 1, origin = mob, icon = 0 })
+
           mob:setLocalVar('MoleDespawn', os.time() + 600)
         end,
 
         onMobFight = function(mob, target)
              mob:addListener('TAKE_DAMAGE', 'MOLE_TAKE_DAMAGE', function(mob, damage, attacker, attackType, damageType)
-             if damage > 0 then
-                for i = xi.slot.MAIN, xi.slot.BACK do
-                    attacker:unequipItem(i)
-                end
+             if not attacker or not attacker:isPC() then
+                 return
+             end
+             local encumbranceId = xi.effect.EMCUMBRANCE_I or 256
+             if not attacker:hasStatusEffect(xi.effect.EMCUMBRANCE_I) then
+                 local duration = mob:getLocalVar('MoleDespawn') - os.time()
+                 for i = xi.slot.MAIN, xi.slot.BACK do
+                     attacker:unequipItem(i)
+                 end
+                 attacker:addStatusEffect(xi.effect.ENCUMBRANCE_I, { power = 65535, duration = 0, origin = attacker })
              end
             if attackType == xi.attackType.PHYSICAL and
                damageType == xi.damageType.NONE or
@@ -124,6 +134,14 @@ player:printToArea('GM: Help us stop them, We have 10 minutes before they disapp
         end,
 
         onMobDespawn = function(mob, playerArg, optParams)
+            local zone = mob:getZone()
+            local players = zone:getPlayers()
+            local encumbranceId = xi.effect.EMCUMBRANCE_I or 256
+            for _, player in pairs(players) do
+                if player:hasStatusEffect(xi.effect.EMCUMBRANCE_I) then
+                    player:delStatusEffect(xi.effect.EMCUMBRANCE_I)
+                end
+            end
         end,
 
         releaseIdOnDisappear = true,
