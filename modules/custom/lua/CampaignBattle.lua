@@ -23,9 +23,9 @@ local ENABLE_BATTLE_START_LOG = true
 --In game day = 57.5 minutes
 
 -- Battle chance configuration
-local INITIAL_BATTLE_CHANCE = 1    -- Initial chance in percent (e.g., 10%) --1
+local INITIAL_BATTLE_CHANCE = 100    -- Initial chance in percent (e.g., 10%) --1
 local HOURLY_CHANCE_INCREASE = 1    -- Increase in percent per hour if no battle starts --1
-local BATTLE_COOLDOWN_HOURS = 6   -- Cooldown in hours after a battle ends --6
+local BATTLE_COOLDOWN_HOURS = 1   -- Cooldown in hours after a battle ends --6
 local PREP_DURATION_HOURS = 1       -- Duration of the preparation phase --1
 local BATTLE_DURATION_HOURS = 6     -- Duration of the actual FIGHT in game hours --6
 
@@ -78,6 +78,7 @@ local FORTIFICATION_HPP_BUFF_MOD = 200      -- Additional HPP to grant both Comm
 local SAFE_SPAWN_BUFFER = 4         -- Extra padding added to fort width for exclusion zone
 local MOB_Y_OFFSET = 1.5            -- Small offset to place mob slightly above fort center Y
 local MAX_SPAWN_DISTANCE = 25      -- Max distance from fort center (X/Z) mobs will spawn
+local FENCE_BUFFER = 10.0          -- Extra radius added to the fence beyond the max spawn distance
 
 -- =============================================================================
 -- PLAYER CONTRIBUTION CONFIGURATION
@@ -1532,6 +1533,10 @@ end
 local function trackPlayerContribution(player, varName, multiplier)
     -- This check is crucial to ensure we only track real players
     if player and player:isPC() then
+        if player:getLocalVar("CampaignBattle_Forfeited") == 1 then
+            return -- Do not award points if the player has forfeited this battle
+        end
+
         local currentScore = player:getCharVar(varName)
         local newScore = currentScore + multiplier
         player:setCharVar(varName, newScore)
@@ -1637,6 +1642,92 @@ local function applyEndOfBattleReductions(isPlayerVictory)
     end
 end
 
+-- =============================================================================
+-- BATTLEFIELD FENCING & OBJECTIVES
+-- =============================================================================
+
+---Applies the visual fence, objective timer, and bounds tracking to a player.
+---@param player CPlayer
+---@param center table
+---@param radius number
+local function applyCampaignBattleToPlayer(player, center, radius)
+    if not player or not player:isPC() then return end
+    if player:getLocalVar("CampaignBattle_Active") == 1 then return end
+    
+    player:setLocalVar("CampaignBattle_Active", 1)
+    player:setLocalVar("CampaignBattle_OutTime", 0)
+    player:setLocalVar("CampaignBattle_Forfeited", 0)
+
+    local currentBattleDuration = tonumber(GetServerVariable(CURRENT_BATTLE_DURATION_VAR)) or BATTLE_DURATION_HOURS
+    local startHour = GetServerVariable(BATTLE_START_HOUR_VAR) or VanadielHour()
+    local currentHour = VanadielHour()
+    local hoursElapsed = calculateHoursElapsed(startHour, currentHour)
+    local hoursRemaining = currentBattleDuration - hoursElapsed
+    if hoursRemaining < 0 then hoursRemaining = 0 end
+    
+    -- Convert Vana'diel hours to real seconds: 1 Vana'diel hour = 144 real seconds
+    local durationSeconds = hoursRemaining * 144
+
+    local objective = {
+        countdown = {
+            duration = durationSeconds,
+            warning = 60
+        },
+        fence = {
+            pos = { x = center.x, z = center.z },
+            radius = radius,
+            render = 10.00,
+            blue = false
+        },
+    }
+    player:objectiveUtility(objective)
+
+    player:addListener('TICK', LISTENER_ID_PREFIX .. 'FENCE_TICK', function(p)
+        local battleState = GetServerVariable(BATTLE_STATE_VAR) or 0
+        local activeZoneId = GetServerVariable("CampaignBattleZone") or 0
+        
+        if battleState ~= 2 or p:getZoneID() ~= activeZoneId then
+            p:setLocalVar("CampaignBattle_Active", 0)
+            p:setLocalVar("CampaignBattle_OutTime", 0)
+            p:setLocalVar("CampaignBattle_Forfeited", 0)
+            p:objectiveUtility({}) -- Clear objective
+            p:removeListener(LISTENER_ID_PREFIX .. 'FENCE_TICK')
+            return
+        end
+
+        local dist = math.sqrt(math.pow(p:getXPos() - center.x, 2) + math.pow(p:getZPos() - center.z, 2))
+        local isOutside = dist > radius
+
+        if isOutside then
+            local outTime = p:getLocalVar("CampaignBattle_OutTime")
+            if outTime == 0 then
+                p:setLocalVar("CampaignBattle_OutTime", os.time())
+                p:printToPlayer("You have left the battlefield! Return within 30 seconds or forfeit your rewards!", xi.msg.channel.SYSTEM_3)
+            elseif os.time() - outTime >= 30 then
+                -- Forfeit rewards
+                if p:getLocalVar("CampaignBattle_Forfeited") == 0 then
+                    p:setLocalVar("CampaignBattle_Forfeited", 1)
+                    p:printToPlayer("You have abandoned the battlefield. Your accumulated rewards have been forfeited.", xi.msg.channel.SYSTEM_3)
+                    
+                    -- Reset contribution vars
+                    for _, varName in pairs(CONTRIBUTION_VARS) do
+                        p:setCharVar(varName, 0)
+                    end
+                end
+            end
+        else
+            if p:getLocalVar("CampaignBattle_OutTime") > 0 then
+                p:setLocalVar("CampaignBattle_OutTime", 0)
+                if p:getLocalVar("CampaignBattle_Forfeited") == 0 then
+                    p:printToPlayer("You have returned to the battlefield.", xi.msg.channel.SYSTEM_3)
+                else
+                    p:setLocalVar("CampaignBattle_Forfeited", 0)
+                    p:printToPlayer("You have returned to the battlefield and may resume earning rewards.", xi.msg.channel.SYSTEM_3)
+                end
+            end
+        end
+    end)
+end
 
 -- =============================================================================
 -- INACTIVITY AND DEMOTION CONFIGURATION
@@ -2779,6 +2870,15 @@ m:addOverride('xi.zones.' .. EVENT_HOST_ZONE_NAME .. '.Zone.onGameHour', functio
                     -- Spawn the army in the selected zone. This function now sets TOTAL_STARTING_MAX_HP_VAR.
                     spawnArmy(battleZoneObj, selectedZone, selectedUnit, currentHour)
                     
+                    -- *** APPLY FENCING TO ALL PLAYERS IN ZONE ***
+                    local halfSafeWidth = (selectedZone.fortWidth / 2) + SAFE_SPAWN_BUFFER
+                    local battleRadius = halfSafeWidth + MAX_SPAWN_DISTANCE + FENCE_BUFFER
+                    for _, player in pairs(battleZoneObj:getPlayers()) do
+                        if player:isPC() then
+                            applyCampaignBattleToPlayer(player, selectedZone.fortCenterPos, battleRadius)
+                        end
+                    end
+
                     -- *** NEW DEFENDER COUNT ANNOUNCEMENT (After BATTLE START) ***
                     local playersInZone = battleZoneObj:getPlayers()
                     local playerCount = #playersInZone
@@ -2981,5 +3081,40 @@ m:addOverride('xi.zones.' .. EVENT_HOST_ZONE_NAME .. '.Zone.onGameHour', functio
     end
 
 end)
+
+-- =============================================================================
+-- ZONE IN HANDLER FOR FENCING
+-- =============================================================================
+for _, zData in ipairs(BATTLE_ZONES) do
+    m:addOverride('xi.zones.' .. zData.zoneName .. '.Zone.onZoneIn', function(player, prevZone)
+        local ret = nil
+        local ok, result = pcall(function() return super(player, prevZone) end)
+        if ok then
+            ret = result
+        end
+        
+        local battleState = GetServerVariable(BATTLE_STATE_VAR) or 0
+        local activeZoneId = GetServerVariable("CampaignBattleZone") or 0
+        
+        if battleState == 2 and player:getZoneID() == activeZoneId then
+            -- Find the matching zone configuration
+            local selectedZone = nil
+            for _, z in ipairs(BATTLE_ZONES) do
+                if z.zoneID == activeZoneId then
+                    selectedZone = z
+                    break
+                end
+            end
+            
+            if selectedZone then
+                local halfSafeWidth = (selectedZone.fortWidth / 2) + SAFE_SPAWN_BUFFER
+                local battleRadius = halfSafeWidth + MAX_SPAWN_DISTANCE + FENCE_BUFFER
+                applyCampaignBattleToPlayer(player, selectedZone.fortCenterPos, battleRadius)
+            end
+        end
+        
+        return ret
+    end)
+end
 
 return m
