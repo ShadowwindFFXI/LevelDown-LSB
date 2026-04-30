@@ -40,6 +40,14 @@ content.groups =
             end
 
             battlefield:setStatus(xi.battlefield.status.WON)
+
+            local rewardItems = { xi.item.BOULDER_CASE, xi.item.PLUTON_CASE, xi.item.BEITETSU_PARCEL }
+            for _, player in ipairs(players) do
+                local randomItem = rewardItems[math.random(#rewardItems)]
+                npcUtil.giveItem(player, randomItem)
+            end
+
+
             if #players > 0 then
                 players[1]:timer(7000, function(p) -- timer to drop loot
                     local selectedLoot = utils.selectFromLootGroups(p, content.loot)

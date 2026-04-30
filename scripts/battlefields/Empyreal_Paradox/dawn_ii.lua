@@ -32,6 +32,7 @@ content.groups =
         allDeath = function(battlefield, mob)
             -- Spawn Phase 2 using the group index (2) defined below
             local players = battlefield:getPlayers()
+            
             if #players > 0 then
                 players[1]:timer(17000, function(p)
                     local phase2Id = empyrealParadoxID.mob.PROMATHIA_HTBF_2
@@ -54,6 +55,13 @@ content.groups =
         allDeath = function(battlefield, mob)
             local players = battlefield:getPlayers()
             battlefield:setStatus(xi.battlefield.status.WON)
+
+            local rewardItems = { xi.item.BOULDER_CASE, xi.item.PLUTON_CASE, xi.item.BEITETSU_PARCEL }
+            for _, player in ipairs(players) do
+                local randomItem = rewardItems[math.random(#rewardItems)]
+                npcUtil.giveItem(player, randomItem)
+            end
+
             if #players > 0 then
                 players[1]:timer(7000, function(p) -- timer to drop loot
                     local selectedLoot = utils.selectFromLootGroups(p, content.loot)
