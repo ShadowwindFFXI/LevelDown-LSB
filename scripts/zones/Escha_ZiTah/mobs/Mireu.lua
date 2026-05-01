@@ -20,7 +20,8 @@ local function updateSpikes(mob)
         mob:delStatusEffect(xi.effect.BLAZE_SPIKES)
         mob:delStatusEffect(xi.effect.ICE_SPIKES)
         mob:delStatusEffect(xi.effect.DREAD_SPIKES)
-        mob:addStatusEffect(targetEffect, 50, 0, 0, 0, 0):delEffectFlag(xi.effectFlag.DISPELABLE)
+        mob:addStatusEffect(targetEffect, 50, 0, 0, 0, 0)
+        mob:getStatusEffect(targetEffect):delEffectFlag(xi.effectFlag.DISPELABLE)
     end
 end
 
