@@ -5,6 +5,7 @@ require('scripts/globals/teleports')
 require('scripts/events/login_campaign')
 -----------------------------------
 require('scripts/quests/full_speed_ahead')
+local controller = require("scripts/globals/di_controller")
 -----------------------------------
 
 local startingRaceInfo =
@@ -149,6 +150,8 @@ end
 
 -- called by core after a player logs into the server or zones
 xi.player.onGameIn = function(player, firstLogin, zoning)
+
+    controller.resetOnLogIn(player)
     if not zoning then
         -- things checked ONLY during logon go here
         if firstLogin then

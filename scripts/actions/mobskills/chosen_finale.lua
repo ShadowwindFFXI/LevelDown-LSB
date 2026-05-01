@@ -21,10 +21,10 @@ mobskillObject.onMobWeaponSkill = function(target, mob, skill)
 
     if target:isAlive() then
         if target:isTrust() then
-            target:setHP(0)
+            target:die()
             success = true
         elseif target:isPC() and math.random(1, 100) <= 10 then
-            target:setHP(0)
+            target:die()
             success = true
         end
     end

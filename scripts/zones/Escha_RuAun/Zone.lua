@@ -1,6 +1,6 @@
 -----------------------------------
 -- Zone: Escha_RuAun (289)
---local controller = require("scripts/globals/di_controller")
+local controller = require("scripts/globals/di_controller")
 -----------------------------------
 ---@type TZone
 local zoneObject = {}
@@ -32,7 +32,7 @@ zoneObject.onZoneOut = function(player)
 end
 
 zoneObject.onZoneTick = function(zone)
-    --controller.tick()
+    controller.tick()
 end
 
 zoneObject.onConquestUpdate = function(zone, updatetype, influence, owner, ranking, isConquestAlliance)

@@ -18,7 +18,9 @@ zones[xi.zone.ESCHA_ZITAH] =
         LOGIN_NUMBER                  = 7004, -- In celebration of your most recent login (login no. <number>), we have provided you with <number> points! You currently have a total of <number> points.
         MEMBERS_LEVELS_ARE_RESTRICTED = 7024, -- Your party is unable to participate because certain members' levels are restricted.
         AFFI_KEYITEM_OBTAINED         = 7473, -- A pleasure. A bloomin' pleasure.<7F31>
+        RETURN_TO_BATTLEFIELD         = 7650, -- <1F:7B>You have strayed too far from the monster's spawn point, and your evaluation will be reset if you do not return to the field of battle.
         DOMAIN_POINTS_OBTAINED        = 7659, -- <1F:79>{player:name} obtained {0} Domain Points!
+        ESCHA_BEADS_EARNED            = 7710, -- You receive {0} escha beads.
     },
     mob =
     {

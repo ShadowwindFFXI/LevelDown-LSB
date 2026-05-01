@@ -458,6 +458,7 @@ function npcUtil.giveCurrency(player, currency, amount, useTreasurePoolMsg)
         ['domain_points'] = { 'DOMAIN_POINTS_OBTAINED', 1 },
         ['cruor'] = { 'CRUOR_OBTAINED', 1 },
         ['domain_points_daily'] = { 'DOMAIN_POINTS_OBTAINED', 1 },
+        ['escha_beads'] = { 'ESCHA_BEADS_EARNED', 1 },
     }
 
     local currencyType = currencyTypes[currency]

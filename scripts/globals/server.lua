@@ -1,18 +1,32 @@
 -----------------------------------
 require('scripts/events/handler')
+local controller = require("scripts/globals/di_controller")
 -----------------------------------
 xi = xi or {}
 xi.server = xi.server or {}
 
 xi.server.onServerStart = function()
     xi.events.handler.checkSeasonalEvents()
+
+    -- initialize server variables
+    if GetServerVariable("DI_ZONE_INDEX") == 0 then
+        SetServerVariable("DI_ZONE_INDEX", 1)
+    end
+    if GetServerVariable("DI_MIREU_KILLS") == 0 then
+        SetServerVariable("DI_MIREU_KILLS", 0)
+    end
+
+    controller.start()
+
 end
 
 xi.server.onJSTMidnight = function()
     xi.events.handler.checkSeasonalEvents()
+    controller.checkGlobalReset()
 end
 
 xi.server.onTimeServerTick = function()
+    controller.heartbeat()
     xi.chocobo.onTimeServerTick()
 end
 
