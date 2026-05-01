@@ -247,6 +247,7 @@ entity.onTrigger = function(player, npc)
                             p:setCharVar("[Oboro]UpgradeMidnight", 0)
                             p:setCharVar("[Oboro]BaseWeapon", 0)
                             p:setCharVar("[Oboro]MaterialCount", 0)
+                            p:setCharVar("[Oboro]WeaponRegistered", 0)
                             p:printToPlayer("As you wish. The project is abandoned. I return your weapon, but the materials are lost.", 0, "Oboro")
                         end
                     end },
@@ -264,6 +265,22 @@ entity.onTrigger = function(player, npc)
         local currentData = getUpgradeData(weaponRegistered)
         local needed = currentData.qty - player:getCharVar("[Oboro]MaterialCount")
         player:printToPlayer("I am currently waiting on materials for your " .. GetItemByID(weaponRegistered):getName() .. ". Progress: " .. player:getCharVar("[Oboro]MaterialCount") .. " / " .. currentData.qty .. ". (Need " .. needed .. " more).", 0, "Oboro")
+        player:customMenu({
+            title = "Do you wish to abandon this project?",
+            options = {
+                { "Yes, abandon the project.", function(p)
+                    p:setCharVar("[Oboro]WeaponRegistered", 0)
+                    p:setCharVar("[Oboro]MaterialCount", 0)
+                    p:setCharVar("[Oboro]BaseWeapon", 0)
+                    p:setCharVar("[Oboro]UpgradeWeapon", 0)
+                    p:setCharVar("[Oboro]UpgradeMidnight", 0)
+                    p:printToPlayer("As you wish. The project is abandoned. The materials are lost.", 0, "Oboro")
+                end },
+                { "No, I will continue.", function(p)
+                    p:printToPlayer("I shall return to my hammer and anvil, then.", 0, "Oboro")
+                end },
+            }
+        })
         return
     end
 
