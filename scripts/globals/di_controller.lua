@@ -953,6 +953,10 @@ function controller.buildFencing(player)
     local zoneId = player:getZoneID()
     local coords = fencingCoordinates[zoneId]
 
+    if not coords then
+        return
+    end
+
     local objective = {
         fence = {
             pos = { x = coords.x, z = coords.z }, -- center of fence
@@ -972,6 +976,10 @@ local function checkPlayerDIDistance(player)
 
     if player:getObjType() == xi.objType.PC then
         if player:hasStatusEffect(xi.effect.ELVORSEAL) then
+
+            if not coordinates then
+                return
+            end
 
             local isOutside = player:checkDistance(
                 coordinates.x,

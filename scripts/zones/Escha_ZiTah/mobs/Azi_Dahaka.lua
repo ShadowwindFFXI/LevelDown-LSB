@@ -4,7 +4,8 @@ local entity = {}
 
 local function handleAuras(mob)
     if mob:hasStatusEffect(xi.effect.HUNDRED_FISTS) then
-        local players = mob:getEntitiesInRange(15, xi.objType.PC)
+        local targetTypeFlag = xi.targetType.SELF + xi.targetType.ANY_ALLEGIANCE
+        local players = mob:getEntitiesInRange(mob, xi.aoeType.ROUND, xi.aoeRadius.ATTACKER, 15, 0, targetTypeFlag)
 
         for _, player in ipairs(players) do
             if player:isAlive() then
@@ -29,7 +30,7 @@ entity.onMobSpawn = function(mob)
     mob:setLocalVar("hpScaled", 0)
     mob:setLocalVar("battleStarted", 0)
 
-   jobSpecial(mob)
+    jobSpecial(mob)
 
     xi.mix.jobSpecial.config(mob, {
         between = 60,
