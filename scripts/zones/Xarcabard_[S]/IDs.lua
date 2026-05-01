@@ -40,6 +40,8 @@ zones[xi.zone.XARCABARD_S] =
     mob =
     {
         GRAOULLY = GetFirstID('Graoully'),
+        PRINCE_OUROBAS = GetFirstID('Prince Ourobas'),
+
         VOIDWALKER =
         {
             [xi.keyItem.CLEAR_ABYSSITE] =
