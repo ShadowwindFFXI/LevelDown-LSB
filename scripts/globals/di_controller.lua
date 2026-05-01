@@ -2,6 +2,27 @@ local controller = {}
 
 -----------------------------------
 -- Config
+--[[
+Tied to di_controler
+scripts/commands/addelvorseal
+scripts/commands/foma_invasion
+scripts/commands/whereisdi
+scripts/effects/elvorseal
+scripts/global.player - onGameIn
+scripts/globals/server - onServerStart
+scripts/zones/Escha_RuAun/mobs/Mireu
+scripts/zones/Escha_RuAun/mobs/Naga_Raja
+scripts/zones/Escha_RuAun/mobs/Naga_Raja_Lamia
+scripts/zones/Escha_RuAun/Zone - onZoneTick
+scripts/zones/Escha_Zitah/mobs/Mireu
+scripts/zones/Escha_Zitah/mobs/Azi_Dahaka
+scripts/zones/Escha_Zitah/mobs/Azi_Dahaka_Dragon
+scripts/zones/Escha_Zitah/Zone - onZoneTick
+scripts/zones/Reisenjima/mobs/Mireu
+scripts/zones/Reisenjima/mobs/Quetzalcoatl
+scripts/zones/Reisenjima/mobs/Quetzalcoatl_Sibilus
+scripts/zones/Reisenjima/Zone - onZoneTick
+]]--
 -----------------------------------
 controller.zones =
 {
@@ -1210,206 +1231,6 @@ end
 return controller
 
 --[[
-
-
-Actual Problems (these will break or misbehave)
-1. ❌ Incorrect broadcast usage (string vs key)
-
-You’re calling:
-
-broadcast("Domain Invasion forces are gathering!")
-
-But broadcast() expects a message key, not raw text:
-
-local finalMsg = leaderMsgs[key]
-
-So this will silently send nil messages.
-
-✅ Fix
-
-Either:
-
-Add a key in all message tables like:
-['forcesGathering'] = "Domain Invasion forces are gathering!"
-
-and call:
-
-broadcast("forcesGathering")
-
-OR (simpler for system messages):
-Create a fallback inside broadcast():
-
-if not leaderMsgs[key] then
-    finalMsg = key -- treat as raw string
-end
-2. ❌ Same issue here (multiple places)
-
-These are also broken for the same reason:
-
-broadcast("The Domain Invasion dragon will arrive shortly!")
-broadcast("A Domain Invasion dragon has appeared!")
-broadcast("The air begins to tremble...")
-broadcast('Oh wow, good job...')
-broadcast('Weve killed 100 of these so far!')
-
-👉 All of these will currently not display.
-
-3. ❌ Typo bug
-broadcast('Weve killed 100 of these so far!')
-
-Missing apostrophe → minor, but worth fixing.
-
-4. ⚠️ Potential nil crash in handleDespawn
-broadcast("mobDespawned", activeMob)
-
-If both mobs are missing:
-
-activeMob = mob or mireu -- could still be nil
-
-Then inside broadcast:
-
-local zone = mob and mob:getZone() or getZone()
-
-This part is safe, BUT:
-
-local hpp = mob and mob:getHPP() or 100
-
-Also safe.
-
-✅ So not a crash—but message context may be wrong (fallback zone instead of actual).
-
-✔ Recommendation: log when both are nil.
-
-5. ⚠️ GetServerVariable math without defaults
-
-Example:
-
-local streakCount = GetServerVariable("DI_STREAK_COUNT")
-
-If nil:
-
-string.format("%d", streakCount) -- 💥 crash
-✅ Fix
-
-Always guard:
-
-local streakCount = GetServerVariable("DI_STREAK_COUNT") or 0
-
-Apply to:
-
-DI_STREAK_COUNT
-DI_MIREU_KILLS
-any numeric server var
-⚠️ Logic / Design Concerns
-6. Mireu double broadcast
-broadcast("dragonSpawned")
-broadcast("minionsSpawned")
-
-Then inside broadcast:
-
-if isMireu and key == "minionsSpawned" then
-    finalMsg = mireuDescended
-end
-
-✔ Works, but results in:
-
-1 normal spawn message
-1 special Mireu message
-
-👉 Retail behavior is usually one global message
-
-✔ Optional improvement:
-Skip one:
-
-if isMireu then
-    broadcast("minionsSpawned") -- or custom key
-else
-    broadcast("dragonSpawned")
-end
-7. Reset wipes streak every time
-SetServerVariable("DI_STREAK_COUNT", 0)
-
-This happens in:
-
-controller.resetZone()
-
-👉 Meaning streaks never persist across zones
-
-✔ If intended → fine
-❗ If not → move reset to:
-
-failure only
-or daily reset
-8. HP scaling is extremely weak
-mob:addMod(xi.mod.HPP, count)
-
-That’s:
-
-+1% HP per player
-capped at 36% total
-
-👉 Retail DI scales MUCH harder.
-
-✔ Suggest:
-
-mob:addMod(xi.mod.HPP, count * 5) -- 5% per player
-9. Damage tracking filter may exclude legit players
-if (data.damage / hp) >= controller.leechThreshold then
-
-With:
-
-controller.leechThreshold = 0.02
-
-👉 Requires 2% of total HP
-
-⚠️ In large groups:
-
-support jobs may get zero rewards
-
-✔ Suggest:
-
-Lower to 0.005 (0.5%)
-OR include participation flag (enmity/tagging)
-10. broadcast() performance
-for i = 1, 299 do
-
-Every broadcast loops all zones + all players.
-
-⚠️ Not terrible, but:
-
-runs often
-can scale badly
-
-✔ Optional optimization:
-Track active players only or cache zones.
-
-👍 What you did really well
-✔ Clean zone rotation system
-✔ Proper Mireu branching
-✔ Anti-leech filter (good foundation)
-✔ Daily reset system (very solid)
-✔ Despawn safety + global timers
-✔ Listener-based damage tracking (correct approach)
-✔ Fencing system (nice touch, matches retail feel)
-✔ Restart/stop controls (huge for debugging)
-🧠 Overall verdict
-
-Functionally: 8.5/10
-
-Core system is solid and complete
-
-Biggest issue:
-👉 broadcast() misuse (this WILL make system feel broken)
-
-✅ Minimum fixes before using
-Fix broadcast() string/key mismatch
-Add or 0 to all GetServerVariable numeric reads
-Decide on Mireu messaging behavior
-(Optional but recommended) lower leech threshold
-
-
-
-
 🆕 Domain Invasion - Retail Like - Beta Testing Live
 Custom Changes Include -
 Mireu has a chance to spawn multiple times a day
@@ -1418,6 +1239,4 @@ Custom NPC in each zone to warp you to that zones Arena if that zone is schedule
 Custom Player COmmand - !whereisdi
 AntiLeech Filter - You must do a percentage of damage to qualify for points, Damage from trusts and pets count towards you damage percentage
 Personal Loot - you have a chance of obtaining Pluton, Boulder Beitetsu box / case, Heavy Metal Pouch
-
-
 ]]--
