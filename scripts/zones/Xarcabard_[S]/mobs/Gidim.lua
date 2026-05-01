@@ -13,7 +13,7 @@ end
 
 entity.onMobDespawn = function(mob)
     local params = { }
-    xi.mob.phOnDespawn(mob, ID.mob.PRINCE_OUROBAS, 10, 3600, params) -- 1 hour minimum
+    xi.mob.phOnDespawn(mob, ID.mob.PRINCE_OROBAS, 10, 3600, params) -- 1 hour minimum
 end
 
 return entity
