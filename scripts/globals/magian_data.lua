@@ -7404,6 +7404,60 @@ xi.magian.trials =
         },
     },
 
+    [3564] =
+    {
+        previousTrial = 3101,
+        requiredItem  =
+        {
+            itemId = xi.item.MURGLEIS_95,
+        },
+
+        textOffset  = 1329,
+        tradeItem   = xi.item.MULCIBARS_SCORIA,
+        numRequired = 3,
+
+        rewardItem =
+        {
+            itemId = xi.item.MURGLEIS_99,
+        },
+    },
+
+    [3565] =
+    {
+        previousTrial = 3102,
+        requiredItem  =
+        {
+            itemId = xi.item.BURTGANG_95,
+        },
+
+        textOffset  = 1329,
+        tradeItem   = xi.item.MULCIBARS_SCORIA,
+        numRequired = 3,
+
+        rewardItem =
+        {
+            itemId = xi.item.BURTGANG_99,
+        },
+    },
+
+    [3566] =
+    {
+        previousTrial = 3103,
+        requiredItem  =
+        {
+            itemId = xi.item.TIZONA_95,
+        },
+
+        textOffset  = 1329,
+        tradeItem   = xi.item.MULCIBARS_SCORIA,
+        numRequired = 3,
+
+        rewardItem =
+        {
+            itemId = xi.item.TIZONA_99,
+        },
+    },
+
     [3567] =
     {
         previousTrial = 3104,
@@ -7689,6 +7743,60 @@ xi.magian.trials =
         rewardItem =
         {
             itemId = xi.item.EXCALIBUR_99_II,
+        },
+    },
+
+    [3614] =
+    {
+        previousTrial = 3564,
+        requiredItem  =
+        {
+            itemId = xi.item.MURGLEIS_99,
+        },
+
+        textOffset  = 1258,
+        tradeItem   = xi.item.MULCIBARS_SCORIA,
+        numRequired = 150,
+
+        rewardItem =
+        {
+            itemId = xi.item.MURGLEIS_99_II,
+        },
+    },
+
+    [3615] =
+    {
+        previousTrial = 3565,
+        requiredItem  =
+        {
+            itemId = xi.item.BURTGANG_99,
+        },
+
+        textOffset  = 1258,
+        tradeItem   = xi.item.MULCIBARS_SCORIA,
+        numRequired = 150,
+
+        rewardItem =
+        {
+            itemId = xi.item.BURTGANG_99_II,
+        },
+    },
+
+    [3616] =
+    {
+        previousTrial = 3566,
+        requiredItem  =
+        {
+            itemId = xi.item.TIZONA_99,
+        },
+
+        textOffset  = 1258,
+        tradeItem   = xi.item.MULCIBARS_SCORIA,
+        numRequired = 150,
+
+        rewardItem =
+        {
+            itemId = xi.item.TIZONA_99_II,
         },
     },
 
