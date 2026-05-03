@@ -485,7 +485,22 @@ xi.spells.enfeebling.useEnfeeblingSpell = function(caster, target, spell)
         if spellEffect == xi.effect.NONE then
             spell:setMsg(xi.msg.basic.MAGIC_NO_EFFECT)
         else
-            spell:setMsg(xi.msg.basic.MAGIC_ERASE)
+            local count = 1
+
+            if spellId == xi.magic.spell.DISPEL or spellId == xi.magic.spell.DISPELGA then
+                if caster:getLocalVar("EXTRA_DISPEL") == 1 then
+                    if target:dispelStatusEffect() ~= xi.effect.NONE then
+                        count = 2
+                    end
+                end
+            end
+
+            if count == 2 then
+                spell:setMsg(xi.msg.basic.MAGIC_MULTIPLE_ERASE)
+                return count
+            else
+                spell:setMsg(xi.msg.basic.MAGIC_ERASE)
+            end
         end
 
         return spellEffect

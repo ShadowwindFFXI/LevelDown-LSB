@@ -111,6 +111,7 @@ xi.msg.basic =
     MAGIC_ABSORB_AILMENT            = 572, -- <caster> casts <spell>. <caster> absorbs <number> of <target>'s status ailments.
     MAGIC_MUST_ASTRAL_FLOW          = 581, -- Unable to cast <spell>. Astral Flow must be in effect to cast this spell.
     MAGIC_COMPLETE_RESIST           = 655, -- <caster> casts <spell>. <target> completely resists the spell.
+    MAGIC_MULTIPLE_ERASE            = 792, -- <number of effects erased/dispelled> of the <target>'s effects disappear!' (Different that DISAPPEARING_NUM)
 
     -- Weaponskill / Mobskill (0-255 WS, 256+ monster skill)
     SKILL_RECOVERS_HP               = 103, -- The <player> uses .. <target> recovers .. HP.
