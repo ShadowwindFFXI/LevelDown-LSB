@@ -49,7 +49,6 @@ custom/lua/new_player_gear.lua
 custom/lua/homepoint_heal.lua
 custom/lua/af_level_reward.lua
 custom/lua/VWNotMon.lua
-custom/lua/geas_FeteNM.lua
 custom/lua/choc_race.lua
 custom/lua/unitybattle.lua
 custom/lua/freeabby.lua

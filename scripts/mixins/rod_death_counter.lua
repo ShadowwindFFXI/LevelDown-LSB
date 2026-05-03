@@ -145,8 +145,8 @@ g_mixins.rod_death_counter = function(mob)
         return domainInvNM
     end
 
-    local function setDIVar(mob, killer)
-        local zone = killer:getZoneID()
+    local function setDIVar(mob, member)
+        local zone = mob:getZoneID()
         local table = domainInvasionNM[zone]
 
         if not table then
@@ -155,13 +155,29 @@ g_mixins.rod_death_counter = function(mob)
 
         for i = 1, #table do
             if mob:getName() == table[i][1] then
-                killer:setCharVar('[RoD]Kill_Count_'..mob:getName(), killer:getCharVar('[RoD]Kill_Count_'..mob:getName()) +1)
+                member:setCharVar('[RoD]Kill_Count_' .. mob:getName(), member:getCharVar('[RoD]Kill_Count_' .. mob:getName()) + 1)
             end
         end
     end
 
-    local function setGeaFeteNMBit(mob, killer)
-        local zone = killer:getZoneID()
+    local function anyMemberHasTranscendency(member)
+        local party = member:getParty()
+
+        if not party then
+            return false
+        end
+
+        for _, m in ipairs(party) do
+            if m:hasStatusEffect(xi.effect.TRANSCENDENCY) then
+                return true
+            end
+        end
+
+        return false
+    end
+
+    local function setGeaFeteNMBit(mob, member)
+        local zone = mob:getZoneID()
         local tbl = geaFeteNM[zone]
 
         if not tbl then
@@ -169,15 +185,53 @@ g_mixins.rod_death_counter = function(mob)
         end
 
         local varName = '[RoD]GeaFetesDefeated' .. zone
-        local value = killer:getCharVar(varName)
+        local value = member:getCharVar(varName)
+
+        local aeonicVarName = '[Aeonic]progress' .. zone
+        local aeonicValue = member:getCharVar(aeonicVarName)
+
+        -- mobs to skip for aeonic tracking
+        local aeonicSkip = {
+            Puca = true,
+            Alpluachra = true,
+        }
+
+        local aeonicIndex = 0
 
         for i = 1, #tbl do
-            if mob:getName() == tbl[i][1] then
+            local mobName = tbl[i][1]
+
+            -- always set RoD bit normally
+            if mob:getName() == mobName then
                 value = utils.mask.setBit(value, i - 1, true)
+            end
+
+            -- only increment aeonic index if NOT skipped
+            if not aeonicSkip[mobName] then
+                if mob:getName() == mobName then
+                    aeonicValue = utils.mask.setBit(aeonicValue, aeonicIndex, true)
+                end
+                aeonicIndex = aeonicIndex + 1
             end
         end
 
-        killer:setCharVar(varName, value)
+        member:setCharVar(varName, value)
+
+        local aeonicZones = {
+            [1] = xi.zone.ESCHA_ZITAH,
+            [2] = xi.zone.ESCHA_RUAUN,
+            [3] = xi.zone.REISENJIMA,
+        }
+
+        local questStage = member:getCharVar('[Aeonic]QuestActive')
+        local currentZone = member:getZoneID()
+        local blockAeonic = anyMemberHasTranscendency(member)
+
+        if not blockAeonic then
+            if aeonicZones[questStage] == currentZone then
+                member:setCharVar(aeonicVarName, aeonicValue)
+            end
+        end
     end
 
     local function spawnEmblazonedReliquary(mob, killer) -- ***** need to set a variable to not allow player to spawn the same type of chest
@@ -277,14 +331,28 @@ g_mixins.rod_death_counter = function(mob)
     -- NOTE: retail does not break kill counts out between zones, all kills are recorded and presented in all 3 zone Register of Deed NPC's'
     mob:addListener('DEATH', 'DEATH_FUNCTIONS', function(mob, killer)
         if killer then
-            if not mob:isNM() then
-                killer:setCharVar('[RoD]Mob_Counter', killer:getCharVar('[RoD]Mob_Counter') +1 )
-            elseif mob:isNM() then
-                if checkNMType(mob) == false then
-                    killer:setCharVar('[RoD]NM_Counter', killer:getCharVar('[RoD]NM_Counter') +1 )
-                    setGeaFeteNMBit(mob, killer)
-                else
-                    setDIVar(mob, killer)
+            local player = killer
+
+            if player:isPet() or player:isTrust() then
+                player = player:getMaster()
+            end
+
+            if player and player:isPC() then
+                local alliance = player:getAlliance()
+
+                for _, member in pairs(alliance) do
+                    if member:isPC() and member:getZoneID() == mob:getZoneID() then
+                        if not mob:isNM() then
+                            member:setCharVar('[RoD]Mob_Counter', member:getCharVar('[RoD]Mob_Counter') + 1)
+                        elseif mob:isNM() then
+                            if not checkNMType(mob) then
+                                member:setCharVar('[RoD]NM_Counter', member:getCharVar('[RoD]NM_Counter') + 1)
+                                setGeaFeteNMBit(mob, member)
+                            else
+                                setDIVar(mob, member)
+                            end
+                        end
+                    end
                 end
             end
             --[[

@@ -102,9 +102,17 @@ local grislyTrinkets =
         {xi.ki.ZERDES_CUP , 'Zerde' },
         {xi.ki.VINIPATAS_BLADE , 'Vinipata' },
         {xi.ki.SCHAHS_GAMBIT , 'Schah' },
-        {xi.ki.ALBUMENS_FLOWER , 'Albumen' },
+        {xi.ki.ALBUMENS_FLOWER , 'Albumen'},
         {xi.ki.ONYCHOPHORAS_SOIL , 'Onychophora' },
-        {xi.ki.ERINYSS_BEAK , 'Erinys' }, -- has adds
+        {xi.ki.ERINYSS_BEAK , 'Erinys' },
+        --[[
+        {xi.ki.ZERDES_CUP , 'Zerde', 'Zerdes_Haupia', 'Zerdes_Kacamak', 'Zerdes_Drisheen' }, -- not counting all the mobs, 1 mob dies on his own, suppose to spawn 4
+        {xi.ki.VINIPATAS_BLADE , 'Vinipata', 'Vinipatas_Naraka' }, -- suppose to spawn 2
+        {xi.ki.SCHAHS_GAMBIT , 'Schah', 'Schahs_Mantri', 'Schahs_Ratha', 'Schahs_Gaja', 'Schahs_Ashva', 'Schahs_Bhata', 'Schahs_Mantri' }, -- suppose to start spawning after 30 seconds
+        {xi.ki.ALBUMENS_FLOWER , 'Albumen', 'Albumens_Mandragora', 'Albumens_Lycopodium', 'Albumens_Korrigan', 'Albumens_Pachypodium' }, -- Spawns with four adds, Albumen spawns an additional set of four adds at specific time intervals of ~2 minutes apart
+        {xi.ki.ONYCHOPHORAS_SOIL , 'Onychophora', 'Onycophoras_Sandworm' }, -- Spawns Onychophora's Sandworm after any Skillchain is performed on it
+        {xi.ki.ERINYSS_BEAK , 'Erinys', 'Boobrie' }, -- spawns 5 at the begining of the fight
+        ]]--
     }
 }
 
@@ -215,17 +223,16 @@ local function mobScaling(mob)
 
     local delta = lvl - 117 -- adjust deltas below for increased scaling if content level is increased in the future
 
-    local ATT  = 100  + delta * 3
-    local DEF  = 100  + delta * 5
-    local ACC  = 100  + delta * 4
-    local EVA  = 150  + delta * 5
-    local MATT = 150  + delta * 4
-    local MDEF = 150  + delta * 4
-    local MACC = 150  + delta * 9
-    local MEVA = 150  + delta * 4
+    local ATT  = 100  + delta * 70
+    local DEF  = 100  + delta * 22
+    local ACC  = 100  + delta * 40
+    local EVA  = 150  + delta * 13
+    local MATT = 150  + delta * 5
+    local MDEF = 150  + delta * 29
+    local MACC = 150  + delta * 40
+    local MEVA = 150  + delta * 17
     local HASTE = math.floor(6 + delta * 0.5)
 
-    mob:setMobMod(xi.mobMod.IDLE_DESPAWN, 180)
     mob:addMod(xi.mod.ATT, ATT)
     mob:addMod(xi.mod.RATT, ATT)
     mob:addMod(xi.mod.DEF, DEF)
@@ -238,7 +245,7 @@ local function mobScaling(mob)
     mob:addMod(xi.mod.MEVA, MEVA)
     mob:addMod(xi.mod.HASTE_MAGIC, HASTE)
     mob:addMod(xi.mod.DMG, math.floor((lvl - 118) * 250))
-    mob:setMod(xi.mod.HP, math.floor((delta * 250) * mob:getMainLvl()))
+    mob:addMod(xi.mod.HPP, 100)
     mob:updateHealth()
     mob:addHP(mob:getMaxHP())
 
@@ -267,7 +274,7 @@ local function mobScaling(mob)
     end
 
     if lvl >= 126 then
-        local regen = math.floor((lvl - 125) * 4)
+        local regen = math.floor((lvl - 125) * 7)
         mob:addMod(xi.mod.REGEN, regen)
         mob:addMod(xi.mod.REFRESH, regen)
         mob:addMod(xi.mod.FASTCAST, math.floor((lvl - 125) * 0.5))
@@ -277,6 +284,10 @@ local function mobScaling(mob)
         local regain = math.floor((lvl - 130) * 3)
         mob:addMod(xi.mod.REGAIN, regain)
     end
+end
+
+function customMobScaling(mob)
+    mobScaling(mob)
 end
 
 local function getInitialKI(player)
@@ -491,7 +502,7 @@ local function checkPlayerDistance(player) -- possibly move this into the status
                         if playerArg:getLocalVar('[GEASFETE]Status') == 1 then
                             playerArg:delStatusEffect(xi.effect.CONFRONTATION)
                             playerArg:messageSpecial(textID.BATTLE_STATUS_REMOVED)
-                            playerArg:removeListener('MOB_DESPAWN')
+                            playerArg:removeListener('GEASFETE_TICK')
 
                             if playerArg:isPC() then
                                 playerArg:countdown()
@@ -537,26 +548,8 @@ xi.geasFete.setCountDown = function(player, mob, npc)
             if member:isPC() then
                 member:messageSpecial(textID.REMAINING_TIME_MINUTES,15) -- battle time dialog 15 minutes
             end
-
-            member:addListener('TICK', 'MOB_DESPAWN', function(playerArg) -- clear countdown display in event mob despawns
+            member:addListener('TICK', 'GEASFETE_TICK', function(playerArg)
                 checkPlayerDistance(playerArg)
-
-                if not mob:isAlive() and mob:getLocalVar("Transforming") == 0 then
-                    if playerArg:isPC() then
-                        member:countdown()
-                    end
-                    if mob:getHP() > 0 then
-                        if member:isPC() then
-                            member:messageSpecial(textID.MOB_DESPAWNS) -- The monster fades before your eyes, a look of disappointment on its face
-                        end
-                    end
-
-                    if member:hasStatusEffect(xi.effect.CONFRONTATION) then
-                        member:delStatusEffect(xi.effect.CONFRONTATION)
-                    end
-
-                    member:removeListener('MOB_DESPAWN')
-                end
             end)
         end
     end
@@ -573,7 +566,6 @@ xi.geasFete.qmOnTrigger = function(player, npc)
     local alliance = player:getAlliance()
     local leader = player:getLeaderID()
     local initialCS = checkRequirements(player, npc) -- getInitialKI(player)
-
         if initialCS == true and
             paramOne ~= 0 then
                 for _, participant in pairs(alliance) do
@@ -609,121 +601,149 @@ xi.geasFete.qmOnEventFinish = function(player, csid, option, npc)
     local npcZone = npc:getZoneID()
     local textID = geasFeteText[npcZone]
     local escape = bit.band(bit.rshift(option, 6), 0xFFFF) -- 0 for escape 1 for yes spawn mob
-    local alliance = player:getAlliance()
+    local alliance = player:getAlliance() or { player }
 
     if escape == 0 then
         npc:setLocalVar('MobKeyItem', 0)
         return
     end
 
-    local selectedMobs = {}
-    
     npc:setLocalVar('Finished', 0)
     npc:setLocalVar('MobCount', 0)
 
+    local selectedMobs = {}
     for _, erKeyItem in pairs(grislyTrinkets[npcZone]) do
         if erKeyItem[1] == npc:getLocalVar('MobKeyItem') then
             for i = 2, #erKeyItem do
                 local mobList = npc:getZone():queryEntitiesByName(erKeyItem[i])
                 if mobList then
                     for _, mob in pairs(mobList) do
-                        if not mob:isSpawned() then
-                            table.insert(selectedMobs, mob)
-                            npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') +1)
-                            break  -- Only take the first unspawned mob from this group
+                        if mob:isSpawned() then
+                            DespawnMob(mob:getID())
                         end
+                        DisallowRespawn(mob:getID(), true)
+                        table.insert(selectedMobs, mob)
+                        break
                     end
                 end
             end
+            break
         end
     end
 
+    local actualSpawnCount = 0
     for _, mob in ipairs(selectedMobs) do
-        local dx = player:getXPos() + math.random(-1, 1)
-        local dy = player:getYPos()
-        local dz = player:getZPos() + math.random(-1, 1)
+        local dx = player:getXPos() + math.random(-2, 2)
+        local dy = player:getYPos() + 0.1
+        local dz = player:getZPos() + math.random(-2, 2)
 
-        mob:setSpawn(dx, dy, dz) -- GetMobByID(mob:getID()):setSpawn(dx, dy, dz)
-        SpawnMob(mob:getID()):updateClaim(player)
-        mobScaling(mob)
-        mob:addStatusEffect(xi.effect.CONFRONTATION,{ power = 2, origin = mob })
-        mob:setLocalVar("Transforming", 0)
-        mob:setLocalVar("DeathHandled", 0)
-        xi.geasFete.setCountDown(player, mob)
+        mob:setSpawn(dx, dy, dz)
+        local spawnedMob = SpawnMob(mob:getID())
 
-        mob:setLocalVar('Kill_Timer', os.time() + 900) -- set despawn timer for 15 minutes
-        mob:setLocalVar('Kill_Notification', os.time())
-        mob:setMobMod(xi.mobMod.IDLE_DESPAWN, 180)
+        if spawnedMob then
+            actualSpawnCount = actualSpawnCount + 1
+            spawnedMob:updateClaim(player)
+            mobScaling(spawnedMob) -- THIS IS CAUSING MOBS TO DESPAWN
+            spawnedMob:addStatusEffect(xi.effect.CONFRONTATION, { power = 2, origin = spawnedMob })
+            spawnedMob:setLocalVar("Transforming", 0)
+            spawnedMob:setLocalVar("DeathHandled", 0)
+            xi.geasFete.setCountDown(player, spawnedMob)
 
-        mob:addListener('COMBAT_TICK', 'MOB_TIMER_'..mob:getID(), function(mobArg) -- chat dialog for timer
-        xi.geasFete.getTimeofBattle(mobArg)
+            spawnedMob:setLocalVar('Kill_Timer', os.time() + 900)
+            spawnedMob:setLocalVar('Kill_Notification', os.time())
+            spawnedMob:setMobMod(xi.mobMod.IDLE_DESPAWN, 180)
 
-            if mobArg:getLocalVar('Kill_Timer') < os.time() then
-                DespawnMob(mobArg:getID())
-            end
-        end)
-        print("Mob Count: ", npc:getLocalVar('MobCount'))
+            spawnedMob:addListener('COMBAT_TICK', 'MOB_TIMER_' .. spawnedMob:getID(), function(mobArg)
+                xi.geasFete.getTimeOfBattle(mobArg)
 
-mob:addListener('DEATH', 'COUNTDOWN_TIMER'..mob:getID(), function(mobArg)
+                if mobArg:getLocalVar('Kill_Timer') < os.time() then
+                    DespawnMob(mobArg:getID())
+                end
+            end)
 
-    if mobArg:getLocalVar("DeathHandled") == 1 then return end
-    mobArg:setLocalVar("DeathHandled", 1)
+            spawnedMob:addListener('DEATH', 'COUNTDOWN_TIMER' .. spawnedMob:getID(), function(mobArg)
+                if mobArg:getLocalVar("DeathHandled") == 1 then
+                    return
+                end
+                mobArg:setLocalVar("DeathHandled", 1)
 
-    local count = npc:getLocalVar('MobCount') - 1
-    npc:setLocalVar('MobCount', count)
+                local count = npc:getLocalVar('MobCount') - 1
+                npc:setLocalVar('MobCount', count)
 
-    print("Mob Count:", count)
+                if count <= 0 then
+                    if npc:getLocalVar("Finished") == 1 then
+                        return
+                    end
+                    npc:setLocalVar("Finished", 1)
+                    npc:setStatus(xi.status.NORMAL)
 
-    if count == 0 then
-        if npc:getLocalVar("Finished") == 1 then return end
-        npc:setLocalVar("Finished", 1)
+                    local allianceObj = player:getAlliance()
+                    if allianceObj then
+                        for _, member in pairs(allianceObj) do
+                            member:countdown()
+                            member:delStatusEffect(xi.effect.CONFRONTATION)
+                            member:removeListener('GEASFETE_TICK')
+                        end
+                    else
+                        player:countdown()
+                        player:delStatusEffect(xi.effect.CONFRONTATION)
+                        player:removeListener('GEASFETE_TICK')
+                    end
+                end
+            end)
 
-        npc:setStatus(xi.status.NORMAL)
+            spawnedMob:addListener('DESPAWN', 'QM_' .. npc:getID(), function(mobArg)
+                if mobArg:getHP() > 0 and mobArg:getLocalVar("Transforming") == 0 then
+                    local count = npc:getLocalVar('MobCount') - 1
+                    npc:setLocalVar('MobCount', math.max(count, 0))
+                    if count <= 0 then
+                        npc:setLocalVar('MobCount', 0)
+                        npc:setStatus(xi.status.NORMAL)
 
-        local alliance = player:getAlliance()
-
-        if alliance then
-            for _, member in pairs(alliance) do
-                member:countdown()
-                member:delStatusEffect(xi.effect.CONFRONTATION)
-            end
-        else
-            player:countdown()
-            player:delStatusEffect(xi.effect.CONFRONTATION)
+                        local allianceObj = player:getAlliance()
+                        if allianceObj then
+                            for _, member in pairs(allianceObj) do
+                                if member:isPC() then
+                                    member:messageSpecial(textID.MOB_DESPAWNS)
+                                    member:countdown()
+                                end
+                                member:delStatusEffect(xi.effect.CONFRONTATION)
+                                member:removeListener('GEASFETE_TICK')
+                            end
+                        else
+                            if player:isPC() then
+                                player:messageSpecial(textID.MOB_DESPAWNS)
+                                player:countdown()
+                            end
+                            player:delStatusEffect(xi.effect.CONFRONTATION)
+                            player:removeListener('GEASFETE_TICK')
+                        end
+                    end
+                end
+            end)
         end
     end
-end)
 
-        mob:addListener('DESPAWN', 'QM_'..npc:getID(), function(mobArg) -- QM reappear after mob has vanished
-            if mobArg:getHP() > 0 and mobArg:getLocalVar("Transforming") == 0 then -- Only trigger if despawning alive (e.g., timeout)
-                npc:setLocalVar('MobCount', npc:getLocalVar('MobCount') - 1)
-                if npc:getLocalVar('MobCount') <= 0 then
-                    npc:setLocalVar('MobCount', 0)
-                    npc:setStatus(xi.status.NORMAL)
-                end
-            end
-        end)
-    end
-
-    for _, member in pairs(alliance) do
-      --  member:countdown(900)
-        member:setLocalVar('GEASFEAT_QM', npc:getID())
-        member:addListener('DEATH', 'CONFRONTATION_DEATH', function(memberArg)
-            local alliance = memberArg:getAlliance()
-
-            if getMemberCount(memberArg) == getDeadPlayerCount(memberArg) then
-                for _, participant in pairs(alliance) do
-                    participant:messageSpecial(textID.ALL_MEMBERS_DEAD,3) -- all party members dead
-                end
-            end
-        end)
-    end
-
+    npc:setLocalVar('MobCount', actualSpawnCount)
+    npc:setStatus(xi.status.DISAPPEAR)
     player:delKeyItem(npc:getLocalVar('MobKeyItem'))
     deleteInitialKI(player)
-    npc:setStatus(xi.status.DISAPPEAR) -- make QM disappear to prevent spawning at same location
 
+    for _, member in pairs(alliance) do
+        member:setLocalVar('GEASFEAT_QM', npc:getID())
+        member:addListener('DEATH', 'CONFRONTATION_DEATH', function(memberArg)
+            local allianceObj = memberArg:getAlliance()
+
+            if getMemberCount(memberArg) == getDeadPlayerCount(memberArg) then
+                for _, participant in pairs(allianceObj) do
+                    participant:messageSpecial(textID.ALL_MEMBERS_DEAD, 3)
+                end
+            end
+        end)
+    end
 end
+
+--------------------------------------------------------------
 
 --------------------------------------------------------------
 --------- Register of Deeds NPC
@@ -782,7 +802,7 @@ xi.registerOfDeeds.npcOnTrigger = function(player, npc)
     local diMireuKills = player:getCharVar('[RoD]Kill_Count_Mireu')
     local playerZone = player:getZoneID()
     local diBossKill = player:getCharVar('[RoD]Kill_Count_'..domainInvasionNM[playerZone][1][1])
-    print(nmDefeated)
+
     player:startEvent(9708,correctedNMDefeatedTotal, nmDefeated, mobDefeatedTotal, diBossKill, 0, diMireuKills)
 
 end
@@ -2306,8 +2326,6 @@ local function getBits(option)
         results[#results + 1] = bit.band(bit.rshift(option, i), 0xF)
     end
 
-    -- print(table.concat(results, " "))
-
 end
 
 xi.geasFeteNPC.npcOnTrade = function(player, npc, trade)
@@ -2746,8 +2764,6 @@ xi.geasFeteNPC.npcOnEventUpdate = function(player, csid, option, npc)
             end
         end
     end
-     -- print(csid, option)
-
 end
 
 xi.geasFeteNPC.npcOnEventFinish = function(player, csid, option, npc)
