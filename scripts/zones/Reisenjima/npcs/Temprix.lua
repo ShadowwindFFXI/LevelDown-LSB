@@ -116,7 +116,7 @@ entity.onTrigger = function(player, npc)
     local reisinjimaKilled = player:getCharVar('[Aeonic]progress291')
     local nextVanaDay = player:getCharVar('[Aeonic]VanaDay')
     --------remove this gm check when done testing
-    if not player:getGMLevel() > 0 then
+    if player:getGMLevel() < 1 then
         return
     end
 
