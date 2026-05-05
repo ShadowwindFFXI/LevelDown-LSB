@@ -10792,6 +10792,7 @@ xi.item =
 	MERMANS_HARNESS                     = 13766,
 	DEMONS_HARNESS                      = 13767,
 	DEMONS_HARNESS_P1                   = 13768,
+	HARA_ATE_P1							= 13769,
 	WAR_SHINOBI_GI_P1                   = 13770,
 	WAR_AKETON_P1                       = 13771,
 	BLOODY_AKETON                       = 13772,
