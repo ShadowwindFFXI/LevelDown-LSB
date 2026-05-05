@@ -9917,3 +9917,34 @@ REPLACE INTO `item_mods` VALUES (21804,25,10);    -- ACC: 10
 REPLACE INTO `item_mods` VALUES (21804,23,20);    -- ATT: 20
 REPLACE INTO `item_mods` VALUES (21804,840,3);    -- ALL_WSDMG_ALL_HITS: 3%
 -- TODO: ZURIM 40 Pts sets
+
+-- Combatant's Torque
+INSERT INTO `item_mods` VALUES (26015,80,15);    -- H2H
+INSERT INTO `item_mods` VALUES (26015,81,15);    -- Dagger
+INSERT INTO `item_mods` VALUES (26015,82,15);    -- Sword
+INSERT INTO `item_mods` VALUES (26015,83,15);    -- GSword
+INSERT INTO `item_mods` VALUES (26015,84,15);    -- Axe
+INSERT INTO `item_mods` VALUES (26015,85,15);    -- GAxe
+INSERT INTO `item_mods` VALUES (26015,86,15);    -- Scythe
+INSERT INTO `item_mods` VALUES (26015,87,15);    -- Polearm
+INSERT INTO `item_mods` VALUES (26015,88,15);    -- Katana
+INSERT INTO `item_mods` VALUES (26015,89,15);    -- GKatana
+INSERT INTO `item_mods` VALUES (26015,90,15);    -- Club
+INSERT INTO `item_mods` VALUES (26015,91,15);    -- Staff
+INSERT INTO `item_mods` VALUES (26015,104,15);   -- Archery
+INSERT INTO `item_mods` VALUES (26015,105,15);   -- Marksman
+INSERT INTO `item_mods` VALUES (26015,106,15);   -- Throwing
+INSERT INTO `item_mods` VALUES (26015,107,15);   -- Guard
+INSERT INTO `item_mods` VALUES (26015,108,15);   -- Evasion
+INSERT INTO `item_mods` VALUES (26015,109,15);   -- Shield
+INSERT INTO `item_mods` VALUES (26015,110,15);   -- Parry
+INSERT INTO `item_mods` VALUES (26015,73,4);     -- Store TP
+
+-- Incanter's torque
+INSERT INTO `item_mods` VALUES (26016,118,10);    -- Ninjutsu
+INSERT INTO `item_mods` VALUES (26016,119,10);    -- Singing
+INSERT INTO `item_mods` VALUES (26016,120,10);    -- String
+INSERT INTO `item_mods` VALUES (26016,121,10);    -- Wind
+INSERT INTO `item_mods` VALUES (26016,123,10);    -- Geomancy
+INSERT INTO `item_mods` VALUES (26016,124,10);    -- Handbell
+-- need to add Mp not depleted when magic used 1%
