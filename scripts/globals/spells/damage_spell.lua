@@ -635,6 +635,11 @@ xi.spells.damage.calculateMagicBonusDiff = function(caster, target, spellId, ski
 
         -- "Enhances ninjutsu damage" ("Koga Hatsuburi" type gear)
         mab = mab + caster:getMod(xi.mod.NIN_NUKE_BONUS_GEAR)
+
+        -- Ninja Job Point: Futae Effect (+2 MAB per rank)
+        if caster:hasStatusEffect(xi.effect.FUTAE) then
+            mab = mab + caster:getJobPointLevel(xi.jp.FUTAE_EFFECT) * 2
+        end
     end
 
     if math.random(1, 100) <= mabCritChance then
@@ -814,7 +819,7 @@ xi.spells.damage.calculateNinFutaeBonus = function(caster, skillType)
 
     caster:delStatusEffect(xi.effect.FUTAE)
 
-    return 1.5 + caster:getMod(xi.mod.ENHANCES_FUTAE) / 100 + caster:getJobPointLevel(xi.jp.FUTAE_EFFECT) / 20
+    return 1.5 + caster:getMod(xi.mod.ENHANCES_FUTAE) / 100
 end
 
 xi.spells.damage.calculateNinjutsuMultiplier = function(caster, target, skillType)
