@@ -1133,7 +1133,7 @@ local grislyTrinketsTrade =
             [6] = { trade = { { xi.item.CERMET_CHUNK, 2 } }, csid = 9702 },
             [7] = { trade = { { xi.item.TURTLE_BANGLES, 1 } }, csid = 9702 },
             [8] = { trade = { { xi.item.PAMAMA_TART, 1 } }, csid = 9702 }, -- add to enum 4563
-            [9] = { trade = { { xi.item.BHEFHEL_MARLIN, 1 } }, csid = 9702 },
+            [9] = { trade = { { xi.item.BHEFHEL_MARLIN_1, 1 } }, csid = 9702 },
             [10] = { trade = { { xi.item.MHUUFYAS_BEAK, 5 } }, csid = nil, keyItem = xi.ki.AMYMONES_TOOTH }, -- add to enum 9097
             [11] = { trade = { { xi.item.AZRAELS_EYE, 5 } }, csid = nil, keyItem = xi.ki.HANBIS_NAIL }, -- add to enum 9059
             [12] = { trade = { { xi.item.VEDRFOLNIRS_WING, 5 } }, csid = nil, keyItem = xi.ki.KAMMAVACAS_BINDING }, -- add to enum 9031
@@ -2568,7 +2568,7 @@ xi.geasFete.afterZoneIn = function(player)
             removeGeasFeteKIs(player)
         end
     end
-
+--[[
     if eligibleForVorseal(player) then
         player:addStatusEffect(xi.effect.VORSEAL,
         {
@@ -2578,7 +2578,7 @@ xi.geasFete.afterZoneIn = function(player)
             icon     = xi.effect.VORSEAL,
         })
     end
-
+]]--
     player:addListener('EXPERIENCE_POINTS', 'ESCHA_BEADS',
         function(playerObj, mobObj, expGained)
             if playerObj:isDead() then
@@ -2808,8 +2808,11 @@ end
 xi.geasFeteNPC.npcOnEventFinish = function(player, csid, option, npc)
     local itemSelected = bit.rshift(option, 8)
     local npcZone = npc:getZoneID()
-    local keyItemsTable = grislyTrinketsTrade['KEYITEMS'][npcZone][csid]
-    local selectedOp = bit.band(bit.rshift(option,0), 0xFFFF)
+    local keyItemsTable = grislyTrinketsTrade['KEYITEMS']
+        and grislyTrinketsTrade['KEYITEMS'][npcZone]
+        and grislyTrinketsTrade['KEYITEMS'][npcZone][csid]
+
+    local selectedOp = bit.band(bit.rshift(option, 0), 0xFFFF)
 
     if csid >= 9702 and csid <= 9704 then
         if selectedOp == 0 then
@@ -2819,11 +2822,12 @@ xi.geasFeteNPC.npcOnEventFinish = function(player, csid, option, npc)
             return
         end
 
-        if not player:hasKeyItem(keyItemsTable[itemSelected][1]) then
-            npcUtil.giveKeyItem(player, keyItemsTable[itemSelected][1])
+        local entry = keyItemsTable and keyItemsTable[itemSelected]
+        local keyItem = entry and entry[1]
+
+        if keyItem and not player:hasKeyItem(keyItem) then
+            npcUtil.giveKeyItem(player, keyItem)
             player:tradeComplete()
-        else
-            return
         end
     end
 end
