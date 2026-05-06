@@ -253,6 +253,7 @@ function controller.spawn()
 
     SetServerVariable("DI_NEXT_SPAWN", 0)
     SetServerVariable("DI_WARN_TIME", 0)
+    SetServerVariable("DI_DRAGON_SPAWN_TIME_" .. zone:getID(), 0)
 
     zone:setLocalVar("DI_MINION", 0)
     zone:setLocalVar("DI_WYVERN_SPAWNED", 0)
@@ -371,6 +372,10 @@ function controller.handleDespawn(zoneId)
     --  Broadcast ALWAYS (even if mob nil)
     broadcast("mobDespawned", activeMob)
 
+    -- Reset streaks on failure
+    SetServerVariable("DI_MIREU_KILLS", 0)
+    SetServerVariable("DI_STREAK_COUNT", 0)
+
     -- Reset state
     controller.resetZone(zone)
 end
@@ -415,10 +420,6 @@ function controller.resetZone(zone)
     -- Reset globals
     SetServerVariable("DI_IN_PROGRESS", 0)
     SetServerVariable("DomainInvasionActiveZone", 0)
-
-    -- Reset streaks
-    SetServerVariable("DI_MIREU_KILLS", 0)
-    SetServerVariable("DI_STREAK_COUNT", 0)
 
     rotateZone()
     controller.scheduleNext()
@@ -628,6 +629,7 @@ function controller.resetOnLogIn(player)
 
     if playerLast < lastReset then
         player:setCurrency('domain_points_daily', 0)
+        player:setCharVar("DI_MIREU_BONUS", 0)
         player:setCharVar("DI_LAST_RESET", lastReset)
     end
 end
@@ -829,8 +831,8 @@ end
 -----------------------------------
 local highTierReward =
 {
-    [1] = xi.item.PLUTON_CASE,
-    [2] = xi.item.BOULDER_CASE,
+    [1] = xi.item.PLUTON_COFFER,
+    [2] = xi.item.RIFT_BOULDER_COFFER,
     [3] = xi.item.BEITETSU_COFFER,
     [4] = xi.item.HEAVY_METAL_POUCH,
 }
@@ -844,16 +846,16 @@ local lowTierReward =
 }
 
 function controller.givePersonalReward(player)
-    -- Overall 10% chance to be eligible for an additional reward
-    if math.random(1, 100) <= 10 then
+    -- Overall 25% chance to be eligible for an additional reward
+    if math.random(1, 100) <= 25 then
         local roll = math.random(1, 100)
         local item = nil
 
         -- 1% chance to get from High Tier
-        if roll <= 1 then
+        if roll <= 10 then
             item = highTierReward[math.random(1, #highTierReward)]
         -- 25% chance to get from Low Tier (mutually exclusive)
-        elseif roll <= 26 then
+        elseif roll >= 11 and roll <= 100 then
             item = lowTierReward[math.random(1, #lowTierReward)]
         end
 
@@ -903,19 +905,28 @@ function controller.giveDomainPoints(player, playerCount, isMireu, damageDealt, 
 
     if playerLast < lastReset then
         player:setCurrency('domain_points_daily', 0)
+        player:setCharVar("DI_MIREU_BONUS", 0)
         player:setCharVar("DI_LAST_RESET", lastReset)
     end
 
     local basePoints, cap = controller.rewardsBase()
 
     if isMireu then
+        player:setCharVar("DI_MIREU_BONUS", 1)
         basePoints = basePoints * 2
+        cap = controller.mireuCap
+    end
+
+    -- If the player has participated in a Mireu kill today, their daily cap is the higher Mireu cap (300)
+    if player:getCharVar("DI_MIREU_BONUS") == 1 then
         cap = controller.mireuCap
     end
 
     local multiplier = controller.rewardsParticipants(playerCount)
     local pointsRatio = math.max(damageDealt / maxHP, 0)
     local points = math.floor(basePoints * multiplier * (1 + pointsRatio))
+
+    npcUtil.giveCurrency(player, 'escha_silt', math.floor(500 * multiplier))
 
     -- ========================================
     -- DAILY TRACKING
@@ -1192,6 +1203,8 @@ local diMobs =
 function controller.start()
     showDI_Entities()
     SetServerVariable("DI_ACTIVE", 1)
+    SetServerVariable("DI_IN_PROGRESS", 0)
+    SetServerVariable("DomainInvasionActiveZone", 0)
 
     if GetServerVariable("DI_ZONE_INDEX") == 0 then
         SetServerVariable("DI_ZONE_INDEX", 1)
@@ -1213,6 +1226,8 @@ function controller.start()
             zone:setLocalVar("DI_MINION", 0)
             zone:setLocalVar("DI_WYVERN_SPAWNED", 0)
             zone:setLocalVar("DI_RESET_DONE", 0)
+            SetServerVariable("DI_DRAGON_SPAWN_TIME_" .. zoneId, 0)
+            SetServerVariable("DI_DESPAWN_TIME_" .. zoneId, 0)
         end
     end
 
