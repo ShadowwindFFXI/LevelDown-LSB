@@ -435,6 +435,7 @@ xi.geasFete.getTimeOfBattle = function(mob)
     local textID = geasFeteText[zone]
     local target = mob:getTarget()
     if not target then return end
+    if not target:isAlive() then return end
     local alliance = target:getAlliance()
     if not alliance then return end
     local now = os.time()
@@ -551,11 +552,13 @@ xi.geasFete.registerBattleListeners = function(mob, player, npc)
             npc:setLocalVar("Finished", 1)
             npc:setStatus(xi.status.NORMAL)
 
-            local alliance = player:getAlliance() or { player }
-            for _, member in pairs(alliance) do
-                member:countdown()
-                member:delStatusEffect(xi.effect.CONFRONTATION)
-                member:removeListener('GEASFETE_TICK')
+            for _, member in pairs(mobArg:getZone():getPlayers()) do
+                if member:getLocalVar('GEASFEAT_QM') == qmId then
+                    member:countdown()
+                    member:delStatusEffect(xi.effect.CONFRONTATION)
+                    member:removeListener('GEASFETE_TICK')
+                    member:setLocalVar('GEASFEAT_QM', 0)
+                end
             end
         end
     end)
@@ -569,14 +572,16 @@ xi.geasFete.registerBattleListeners = function(mob, player, npc)
                 npc:setLocalVar('MobCount', 0)
                 npc:setStatus(xi.status.NORMAL)
 
-                local alliance = player:getAlliance() or { player }
-                for _, member in pairs(alliance) do
-                    if member:isPC() then
-                        member:messageSpecial(textID.MOB_DESPAWNS)
-                        member:countdown()
+                for _, member in pairs(mobArg:getZone():getPlayers()) do
+                    if member:getLocalVar('GEASFEAT_QM') == qmId then
+                        if member:isPC() then
+                            member:messageSpecial(textID.MOB_DESPAWNS)
+                            member:countdown()
+                        end
+                        member:delStatusEffect(xi.effect.CONFRONTATION)
+                        member:removeListener('GEASFETE_TICK')
+                        member:setLocalVar('GEASFEAT_QM', 0)
                     end
-                    member:delStatusEffect(xi.effect.CONFRONTATION)
-                    member:removeListener('GEASFETE_TICK')
                 end
             end
         end
