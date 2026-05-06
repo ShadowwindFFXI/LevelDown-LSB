@@ -23,9 +23,9 @@ local ENABLE_BATTLE_START_LOG = true
 --In game day = 57.5 minutes
 
 -- Battle chance configuration
-local INITIAL_BATTLE_CHANCE = 100    -- Initial chance in percent (e.g., 10%) --1
+local INITIAL_BATTLE_CHANCE = 1    -- Initial chance in percent (e.g., 10%) --1
 local HOURLY_CHANCE_INCREASE = 1    -- Increase in percent per hour if no battle starts --1
-local BATTLE_COOLDOWN_HOURS = 1   -- Cooldown in hours after a battle ends --6
+local BATTLE_COOLDOWN_HOURS = 6   -- Cooldown in hours after a battle ends --6
 local PREP_DURATION_HOURS = 1       -- Duration of the preparation phase --1
 local BATTLE_DURATION_HOURS = 6     -- Duration of the actual FIGHT in game hours --6
 
@@ -811,7 +811,7 @@ local CAMPAIGN_SCORE_NEUTRAL = 50
 local CAMPAIGN_SCORE_MIN = 0
 local CAMPAIGN_SCORE_MAX = 100
 local CAMPAIGN_SCORE_WIN_MODIFIER = 5
-local CAMPAIGN_SCORE_LOSS_MODIFIER = -7
+local CAMPAIGN_SCORE_LOSS_MODIFIER = -5
 
 -- DYNAMIC REGULAR MOB SPAWN TIER CONFIGURATION (NEW)
 
@@ -2363,6 +2363,11 @@ local function spawnArmy(zone, selectedZone, selectedUnit, battleFightStartHour)
                 onMobFight = function(mob, target)
                     -- Add contribution listeners only if the target is a player
                     if target and target:isPC() then
+                        
+                        -- Apply the campaign battle objective/fencing for late-arriving players
+                        local halfSafeWidth = (selectedZone.fortWidth / 2) + SAFE_SPAWN_BUFFER
+                        local battleRadius = halfSafeWidth + MAX_SPAWN_DISTANCE + FENCE_BUFFER
+                        applyCampaignBattleToPlayer(target, selectedZone.fortCenterPos, battleRadius)
 
                         -- ABILITY_USE: Entity (player), Target (mob), Ability ID/Object, action
                         mob:addListener('ABILITY_TAKE', LISTENER_ID_PREFIX .. 'ABILITY_TAKE', function(caster, mobTarget, ability, action)
