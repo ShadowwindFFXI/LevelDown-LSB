@@ -14,179 +14,179 @@ local jobAFTable =
 
             [ 1] = -- War
             {
-               [52] = { 14089},  -- 
-               [54] = { 13961},  -- 
-               [56] = { 12511},  -- 
-               [58] = { 14214},  -- 
-               [60] = { 12638},  -- 
+               [52] = { xi.item.FIGHTERS_CALLIGAE},  -- 
+               [54] = { xi.item.FIGHTERS_MUFFLERS},  -- 
+               [56] = { xi.item.FIGHTERS_MASK},  -- 
+               [58] = { xi.item.FIGHTERS_CUISSES},  -- 
+               [60] = { xi.item.FIGHTERS_LORICA},  -- 
             },
             [ 2] = -- Mnk
             {
-               [52] = { 14090},  -- 
-               [54] = { 13962},  -- 
-               [56] = { 12512},  -- 
-               [58] = { 12639},  -- 
-               [60] = { 14215},  -- 
+               [52] = { xi.item.TEMPLE_GAITERS},  -- 
+               [54] = { xi.item.TEMPLE_GLOVES},  -- 
+               [56] = { xi.item.TEMPLE_CROWN},  -- 
+               [58] = { xi.item.TEMPLE_CYCLAS},  -- 
+               [60] = { xi.item.TEMPLE_HOSE},  -- 
             },
             [ 3] = -- Whm
             {
-               [52] = { 14091},  -- 
-               [54] = { 13855},  -- 
-               [56] = { 14216},  -- 
-               [58] = { 12640},  -- 
-               [60] = { 13963},  -- 
+               [52] = { xi.item.HEALERS_DUCKBILLS},  -- 
+               [54] = { xi.item.HEALERS_CAP},  -- 
+               [56] = { xi.item.HEALERS_PANTALOONS},  -- 
+               [58] = { xi.item.HEALERS_BLIAUT},  -- 
+               [60] = { xi.item.HEALERS_MITTS},  -- 
             },
             [ 4] = -- Blm
             {
-               [52] = { 14092},  -- 
-               [54] = { 13964},  -- 
-               [56] = { 14217},  -- 
-               [58] = { 12641},  -- 
-               [60] = { 13856},  -- 
+               [52] = { xi.item.WIZARDS_SABOTS},  -- 
+               [54] = { xi.item.WIZARDS_GLOVES},  -- 
+               [56] = { xi.item.WIZARDS_TONBAN},  -- 
+               [58] = { xi.item.WIZARDS_COAT},  -- 
+               [60] = { xi.item.WIZARDS_PETASOS},  -- 
             },
             [ 5] = -- Rdm
             {
-               [52] = { 14093},  -- 
-               [54] = { 13965},  -- 
-               [56] = { 14218},  -- 
-               [58] = { 12642},  -- 
-               [60] = { 12513},  -- 
+               [52] = { xi.item.WARLOCKS_BOOTS},  -- 
+               [54] = { xi.item.WARLOCKS_GLOVES},  -- 
+               [56] = { xi.item.WARLOCKS_TIGHTS},  -- 
+               [58] = { xi.item.WARLOCKS_TABARD},  -- 
+               [60] = { xi.item.WARLOCKS_CHAPEAU},  -- 
             },
             [ 6] = -- Thf
             {
-               [52] = { 13966},  -- 
-               [54] = { 12514},  -- 
-               [56] = { 14219},  -- 
-               [58] = { 12643},  -- 
-               [60] = { 14094},  -- 
+               [52] = { xi.item.ROGUES_ARMLETS},  -- 
+               [54] = { xi.item.ROGUES_BONNET},  -- 
+               [56] = { xi.item.ROGUES_CULOTTES},  -- 
+               [58] = { xi.item.ROGUES_VEST},  -- 
+               [60] = { xi.item.ROGUES_POULAINES},  -- 
             },
             [ 7] = -- Pld
             {
-               [52] = { 14095},  -- 
-               [54] = { 13967},  -- 
-               [56] = { 12515},  -- 
-               [58] = { 14220},  -- 
-               [60] = { 12644},  -- 
+               [52] = { xi.item.GALLANT_LEGGINGS},  -- 
+               [54] = { xi.item.GALLANT_GAUNTLETS},  -- 
+               [56] = { xi.item.GALLANT_CORONET},  -- 
+               [58] = { xi.item.GALLANT_BREECHES},  -- 
+               [60] = { xi.item.GALLANT_SURCOAT},  -- 
             },
             [ 8] = -- Drk
             {
-               [52] = { 14096},  -- 
-               [54] = { 13968},  -- 
-               [56] = { 14221},  -- 
-               [58] = { 12645},  -- 
-               [60] = { 12516},  -- 
+               [52] = { xi.item.CHAOS_SOLLERETS},  -- 
+               [54] = { xi.item.CHAOS_GAUNTLETS},  -- 
+               [56] = { xi.item.CHAOS_FLANCHARD},  -- 
+               [58] = { xi.item.CHAOS_CUIRASS},  -- 
+               [60] = { xi.item.CHAOS_BURGEONET},  -- 
             },
             [ 9] = -- Bst
             {
-               [52] = { 14097},  -- 
-               [54] = { 13969},  -- 
-               [56] = { 12517},  -- 
-               [58] = { 12646},  -- 
-               [60] = { 14222},  -- 
+               [52] = { xi.item.BEAST_GAITERS},  -- 
+               [54] = { xi.item.BEAST_GLOVES},  -- 
+               [56] = { xi.item.BEAST_HELM},  -- 
+               [58] = { xi.item.BEAST_JACKCOAT},  -- 
+               [60] = { xi.item.BEAST_TROUSERS},  -- 
             },
             [10] = -- Brd
             {
-               [52] = { 14098},  -- 
-               [54] = { 13857},  -- 
-               [56] = { 14223},  -- 
-               [58] = { 12647},  -- 
-               [60] = { 13970},  -- 
+               [52] = { xi.item.CHORAL_SLIPPERS},  -- 
+               [54] = { xi.item.CHORAL_ROUNDLET},  -- 
+               [56] = { xi.item.CHORAL_CANNIONS},  -- 
+               [58] = { xi.item.CHORAL_JUSTAUCORPS},  -- 
+               [60] = { xi.item.CHORAL_CUFFS},  -- 
             },
             [11] = -- Rng
             {
-               [52] = { 13971},  -- 
-               [54] = { 12518},  -- 
-               [56] = { 14224},  -- 
-               [58] = { 12648},  -- 
-               [60] = { 14099},  -- 
+               [52] = { xi.item.HUNTERS_BRACERS},  -- 
+               [54] = { xi.item.HUNTERS_BERET},  -- 
+               [56] = { xi.item.HUNTERS_BRACCAE},  -- 
+               [58] = { xi.item.HUNTERS_JERKIN},  -- 
+               [60] = { xi.item.HUNTERS_SOCKS},  -- 
             },
             [12] = -- Sam
             {
-               [52] = { 14100},  -- 
-               [54] = { 14225},  -- 
-               [56] = { 13972},  -- 
-               [58] = { 13781},  -- 
-               [60] = { 13868},  -- 
+               [52] = { xi.item.MYOCHIN_SUNE_ATE},  -- 
+               [54] = { xi.item.MYOCHIN_HAIDATE},  -- 
+               [56] = { xi.item.MYOCHIN_KOTE},  -- 
+               [58] = { xi.item.MYOCHIN_DOMARU},  -- 
+               [60] = { xi.item.MYOCHIN_KABUTO},  -- 
             },
             [13] = -- Nin
             {
-               [52] = { 14226},  -- 
-               [54] = { 14101},  -- 
-               [56] = { 13869},  -- 
-               [58] = { 13782},  -- 
-               [60] = { 13973},  -- 
+               [52] = { xi.item.NINJA_HAKAMA},  -- 
+               [54] = { xi.item.NINJA_KYAHAN},  -- 
+               [56] = { xi.item.NINJA_HATSUBURI},  -- 
+               [58] = { xi.item.NINJA_CHAINMAIL},  -- 
+               [60] = { xi.item.NINJA_TEKKO},  -- 
             },
             [14] = -- Drg
             {
-               [52] = { 14227},  -- 
-               [54] = { 14102},  -- 
-               [56] = { 13974},  -- 
-               [58] = { 12649},  -- 
-               [60] = { 12519},  -- 
+               [52] = { xi.item.DRACHEN_BRAIS},  -- 
+               [54] = { xi.item.DRACHEN_GREAVES},  -- 
+               [56] = { xi.item.DRACHEN_FINGER_GAUNTLETS},  -- 
+               [58] = { xi.item.DRACHEN_MAIL},  -- 
+               [60] = { xi.item.DRACHEN_ARMET},  -- 
             },
             [15] = -- Smn
             {
-               [52] = { 14228},  -- 
-               [54] = { 13975},  -- 
-               [56] = { 14103},  -- 
-               [58] = { 12650},  -- 
-               [60] = { 12520},  -- 
+               [52] = { xi.item.EVOKERS_SPATS},  -- 
+               [54] = { xi.item.EVOKERS_BRACERS},  -- 
+               [56] = { xi.item.EVOKERS_PIGACHES},  -- 
+               [58] = { xi.item.EVOKERS_DOUBLET},  -- 
+               [60] = { xi.item.EVOKERS_HORN},  -- 
             },
             [16] = -- Blu
             {
-               [52] = { 15684},  -- 
-               [54] = { 15600},  -- 
-               [56] = { 14928},  -- 
-               [58] = { 14521},  -- 
-               [60] = { 15265},  -- 
+               [52] = { xi.item.MAGUS_CHARUQS},  -- 
+               [54] = { xi.item.MAGUS_SHALWAR},  -- 
+               [56] = { xi.item.MAGUS_BAZUBANDS},  -- 
+               [58] = { xi.item.MAGUS_JUBBAH},  -- 
+               [60] = { xi.item.MAGUS_KEFFIYEH},  -- 
             },
             [17] = -- Cor
             {
-               [52] = { 15601},  -- 
-               [54] = { 14929},  -- 
-               [56] = { 15685},  -- 
-               [58] = { 14522},  -- 
-               [60] = { 15266},  -- 
+               [52] = { xi.item.CORSAIRS_CULOTTES},  -- 
+               [54] = { xi.item.CORSAIRS_GANTS},  -- 
+               [56] = { xi.item.CORSAIRS_BOTTES},  -- 
+               [58] = { xi.item.CORSAIRS_FRAC},  -- 
+               [60] = { xi.item.CORSAIRS_TRICORNE},  -- 
             },
             [18] = -- Pup
             {
-               [52] = { 15602},  -- 
-               [54] = { 15686},  -- 
-               [56] = { 14930},  -- 
-               [58] = { 14523},  -- 
-               [60] = { 15267},  -- 
+               [52] = { xi.item.PUPPETRY_CHURIDARS},  -- 
+               [54] = { xi.item.PUPPETRY_BABOUCHES},  -- 
+               [56] = { xi.item.PUPPETRY_DASTANAS},  -- 
+               [58] = { xi.item.PUPPETRY_TOBE},  -- 
+               [60] = { xi.item.PUPPETRY_TAJ},  -- 
             },
             [19] = -- Dnc
             {
-               [52] = { 15002},  -- 15003
-               [54] = { 16138},  -- 16139
-               [56] = { 15746},  -- 15747
-               [58] = { 15659},  -- 15660
-               [60] = { 14578},  -- 14579
+               [52] = { xi.item.DANCERS_BANGLES_M},  -- xi.item.DANCERS_BANGLES_F
+               [54] = { xi.item.DANCERS_TIARA_M},  -- xi.item.DANCERS_TIARA_F
+               [56] = { xi.item.DANCERS_TOE_SHOES_M},  -- xi.item.DANCERS_TOE_SHOES_F
+               [58] = { xi.item.DANCERS_TIGHTS_M},  -- xi.item.DANCERS_TIGHTS_F
+               [60] = { xi.item.DANCERS_CASAQUE_M},  -- xi.item.DANCERS_CASAQUE_F
             },
             [20] = -- Sch
             {
-               [52] = { 15004},  -- 
-               [54] = { 15748},  -- 
-               [56] = { 16311},  -- 
-               [58] = { 14580},  -- 
-               [60] = { 16140},  -- 
+               [52] = { xi.item.SCHOLARS_BRACERS},  -- 
+               [54] = { xi.item.SCHOLARS_LOAFERS},  -- 
+               [56] = { xi.item.SCHOLARS_PANTS},  -- 
+               [58] = { xi.item.SCHOLARS_GOWN},  -- 
+               [60] = { xi.item.SCHOLARS_MORTARBOARD},  -- 
             },
             [21] = -- Geo
             {
-               [52] = { 16143},  --
-               [54] = { 14583},  --
-               [56] = { 15007},  --
-               [58] = { 16314},  --
-               [60] = { 15751},  --
+               [52] = { xi.item.COBRA_UNIT_HAT},  --
+               [54] = { xi.item.COBRA_UNIT_COAT},  --
+               [56] = { xi.item.COBRA_UNIT_CUFFS},  --
+               [58] = { xi.item.COBRA_UNIT_SLOPS},  --
+               [60] = { xi.item.COBRA_UNIT_PIGACHES},  --
             },
             [22] = -- Run
             {
-               [52] = { 16143},  --
-               [54] = { 14583},  --
-               [56] = { 15007},  --
-               [58] = { 16314},  --
-               [60] = { 15751},  --
+               [52] = { xi.item.COBRA_UNIT_HAT},  --
+               [54] = { xi.item.COBRA_UNIT_COAT},  --
+               [56] = { xi.item.COBRA_UNIT_CUFFS},  --
+               [58] = { xi.item.COBRA_UNIT_SLOPS},  --
+               [60] = { xi.item.COBRA_UNIT_PIGACHES},  --
             },
 }
 
