@@ -76,4 +76,9 @@ custom/lua/Provenance_Mobs.lua
 custom/lua/CampaignBattle.lua
 custom/lua/playerpcarddrops.lua
 custom/lua/Login_campaign.lua
-
+custom/lua/midgarzolom.lua
+custom/lua/announce_player_login.lua
+custom/lua/log_in_announcements.lua
+custom/lua/effectsanitizer.lua
+custom/lua/abygates.lua
+custom/lua/chocoborace.lua
