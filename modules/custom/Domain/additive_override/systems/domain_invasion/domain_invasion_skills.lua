@@ -833,20 +833,20 @@ local skills =
     end,
 }
 
-for skillName, skillFunc in pairs(skills) do
-    local skillPath = string.format("xi.actions.mobskills.%s", skillName)
-    xi.module.ensureTable(skillPath)
-
-    if type(skillFunc) == "table" then
-        m:addOverride(skillPath .. ".onMobWeaponSkill", skillFunc.onMobWeaponSkill)
-        m:addOverride(skillPath .. ".onMobSkillCheck",  skillFunc.onMobSkillCheck)
-
-    else
-        m:addOverride(skillPath .. ".onMobWeaponSkill", skillFunc)
-        m:addOverride(skillPath .. ".onMobSkillCheck", function(target, mob, skill)
-            return 0
-        end)
-    end
-end
+--  for skillName, skillFunc in pairs(skills) do
+--      local skillPath = string.format("xi.actions.mobskills.%s", skillName)
+--      xi.module.ensureTable(skillPath)
+--  
+--      if type(skillFunc) == "table" then
+--          m:addOverride(skillPath .. ".onMobWeaponSkill", skillFunc.onMobWeaponSkill)
+--          m:addOverride(skillPath .. ".onMobSkillCheck",  skillFunc.onMobSkillCheck)
+--  
+--      else
+--          m:addOverride(skillPath .. ".onMobWeaponSkill", skillFunc)
+--          m:addOverride(skillPath .. ".onMobSkillCheck", function(target, mob, skill)
+--              return 0
+--          end)
+--      end
+--  end
 
 return m
