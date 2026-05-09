@@ -41,7 +41,7 @@ local naakual =
         [xi.mod.CHR            ] =  120,
         [xi.mod.AGI            ] =  120,
         [xi.mod.DEX            ] =  140,
-        [xi.mod.ACC            ] = 1000,
+        [xi.mod.ACC            ] = 3600,
     },
 
     effects =
@@ -108,6 +108,15 @@ local function giveTemp(player, itemID)
     player:messageSpecial(ID.text.ITEM_OBTAINED + 9, itemID, 1)
     player:addTempItem(itemID, 1)
 end
+-- Add this mapping at the top of your module or right above the loop
+local worldBossMapping = {
+    ["Ceizak_Battlegrounds"]  = 17846658,
+    ["Foret_de_Hennetiel"]    = 17850783,
+    ["Yorcia_Weald"]          = 17854848,
+    ["Morimar_Basalt_Fields"] = 17863277,
+    ["Marjami_Ravine"]        = 17867043,
+    ["Kamihr_Drifts"]         = 17871084,
+}
 
 local mobs =
 {
@@ -123,18 +132,8 @@ local mobs =
         groupZoneId =  261,
         level       = { 145, 150 },
         shards      =  850,
-        skillList   = 5028,
+        skillList   = 456,
         spellList   =    0,
-        auraShield  =
-        {
-            skillID      = 3005, -- droning_whirlwind
-            shieldAmount = 400,
-            damageType   = xi.damageType.ICE,
-            effects      =
-            {
-                [xi.effect.PERFECT_DODGE] = { 1, 0, 0 },
-            },
-        },
 
         pets        =
         {
@@ -159,8 +158,8 @@ local mobs =
             },
         },
 
-        --         str, vit, int, mnd, agi, dex, chr, ACC, DEFP, RATTP, EVA
-        stats    = { 200,  100,  300,  100,  100,  200,  100, 1000,   150,   750,  900 },
+        --           str,  vit,  int,  mnd,  agi,  dex,  chr,  ACC,  DEFP, RATTP, EVA
+        stats    = { 200,  100,  300,  100,  100,  200,  100, 3600,   150,   750,  900 },
         template = naakual,
         mods     =
         {
@@ -198,14 +197,10 @@ local mobs =
         groupZoneId =  262,
         level       = { 145, 150 },
         shards      =  850,
-        skillList   = 5029,
+        skillList   = 452,
         spellList   =    0,
-        rangedSkill = 3016, -- Marine Mayhem (Will use at 20')
         auraShield  =
         {
-            skillID      = 3014, -- carcharian_verve
-            shieldAmount = 400,
-            damageType   = xi.damageType.THUNDER,
             mods         =
             {
                 [xi.mod.ATT          ] = 250,
@@ -267,7 +262,7 @@ local mobs =
         },
 
                          -- str, vit, int, mnd, agi, dex, chr, ACC, DEFP, RATTP, EVA
-        stats            = { 200,  100,  250,  100,  100,  200,  100, 1000,   250,   750,  900 },
+        stats            = { 200,  100,  250,  100,  100,  200,  100, 3600,   250,   750,  900 },
         template         = naakual,
         additionalEffect = xi.mob.ae.ENWATER,
     },
@@ -284,13 +279,10 @@ local mobs =
         groupZoneId =  265,
         level       = { 145, 150 },
         shards      =  850,
-        skillList   = 5030,
+        skillList   = 461,
         spellList   =    0,
         auraShield  =
         {
-            skillID      = 3020, -- blistering_roar
-            shieldAmount = 400,
-            damageType   = xi.damageType.WATER,
             effects      =
             {
                 [xi.effect.BLAZE_SPIKES] = { math.random(6, 12), 0, 0 },
@@ -344,7 +336,7 @@ local mobs =
         },
 
                          -- str, vit, int, mnd, agi, dex, chr, ACC, DEFP, RATTP, EVA
-        stats            = { 200,  100,  250,  100,  100,  200,  100, 1000,   500,   350,  900 },
+        stats            = { 200,  100,  250,  100,  100,  200,  100, 3600,   500,   350,  900 },
         template         = naakual,
         additionalEffect = xi.mob.ae.ENFIRE,
     },
@@ -362,12 +354,10 @@ local mobs =
 
         level       = { 145, 150 },
         shards      =  850,
-        skillList   = 5031,
+        skillList   = 465,
         spellList   =    0,
         auraShield  =
         {
-            skillID      = 3059, -- uproot
-            shieldAmount = 400,
             damageType   = xi.damageType.WIND,
             effects      =
             {
@@ -415,7 +405,7 @@ local mobs =
         },
 
         --             str, vit, int, mnd, agi, dex, chr, ACC, DEFP, RATTP, EVA
-        stats       = { 200,  100,  250,  100,  100,  200,  100, 1000,   500,   350,  900 },
+        stats       = { 200,  100,  250,  100,  100,  200,  100, 3600,   500,   350,  900 },
         template    = naakual,
 
         additionalEffect = xi.mob.ae.ENSTONE,
@@ -433,13 +423,10 @@ local mobs =
         groupZoneId =  266,
         level       = { 145, 150 },
         shards      =  850,
-        skillList   = 5032,
+        skillList   = 460,
         spellList   =    0,
         auraShield  =
         {
-            skillID      = 3072, -- crashing thunder
-            shieldAmount = 400,
-            damageType   = xi.damageType.EARTH,
             effects      =
             {
                 [xi.effect.SHOCK_SPIKES] = { math.random(6, 12), 0, 0 },
@@ -487,7 +474,7 @@ local mobs =
         },
 
                          -- str, vit, int, mnd, agi, dex, chr, ACC, DEFP, RATTP, EVA
-        stats            = { 200,  100,  205,  200,  100,  200,  100, 1000,   500,   350,  900 },
+        stats            = { 200,  100,  205,  200,  100,  200,  100, 3600,   500,   350,  900 },
         template         = naakual,
         additionalEffect = xi.mob.ae.ENTHUNDER,
     },
@@ -504,13 +491,10 @@ local mobs =
         groupZoneId =  267,
         level       = { 145, 150 },
         shards      =  850,
-        skillList   = 5033,
+        skillList   = 457,
         spellList   =    0,
         auraShield  =
         {
-            skillID      = 3137, -- polar_roar
-            shieldAmount = 400,
-            damageType   = xi.damageType.FIRE,
             effects      =
             {
                 [xi.effect.ICE_SPIKES] = { math.random(6, 12), 0, 0 },
@@ -540,7 +524,7 @@ local mobs =
         },
 
                          -- str, vit, int, mnd, agi, dex, chr, ACC, DEFP, RATTP, EVA
-        stats            = { 200,  100,  250,  200,  100,  200,  100, 1000,   500,   350,  900 },
+        stats            = { 200,  100,  250,  200,  100,  200,  100, 3600,   500,   350,  900 },
         template         = naakual,
 		mods =
         {
@@ -1466,39 +1450,56 @@ for diID, mobInfo in pairs(mobs) do
         setupMob(mob, mobInfo)
     end)
 
-    m:addOverride(zonePath .. ".onZoneTick", function(zone)
-        super(zone)
+m:addOverride(zonePath .. ".onZoneTick", function(zone)
+    super(zone)
 
-        local osTime = os.time()
+    local osTime = os.time()
 
-        if
-            zone:getLocalVar("[Domain]NextSpawnCheck") < osTime or
-            GetServerVariable("[Domain]NMSpawned") == 1 or -- NM is spawned
-            GetServerVariable("[Domain]NM") ~= diID or     -- Wrong NM
-            osTime < GetServerVariable("[Domain]NMToD")    -- NM Cooldown
-        then
-            if
-                zone:getLocalVar("[Domain]NextSpawnCheck") < osTime
-            then
-                zone:setLocalVar("[Domain]NextSpawnCheck", osTime + math.random(30, 60))
-            end
-
-            return
+    if
+        zone:getLocalVar("[Domain]NextSpawnCheck") < osTime or
+        GetServerVariable("[Domain]NMSpawned") == 1 or
+        GetServerVariable("[Domain]NM") ~= diID or
+        osTime < GetServerVariable("[Domain]NMToD")
+    then
+        if zone:getLocalVar("[Domain]NextSpawnCheck") < osTime then
+            zone:setLocalVar("[Domain]NextSpawnCheck", osTime + math.random(30, 60))
         end
+        return
+    end
 
-        local mob = zone:queryEntitiesByName("DE_" .. mobInfo.name)
+    local mob = zone:queryEntitiesByName("DE_" .. mobInfo.name)
 
-        if
-            mob ~= nil and
-            not mob[1]:isSpawned()
-        then
-            -- DEBUG
-            print(fmt("[DOMAIN INVASION]: Spawned [{}] in {} at POS: {}, {}, {}", mobInfo.name, zone:getName(), mobInfo.pos[1], mobInfo.pos[2], mobInfo.pos[3]))
+    if mob ~= nil and not mob[1]:isSpawned() then
+        
+     -- -----------------------------------------------------------
+     -- THE SAFE PURGE (Stable Version)
+     -- -----------------------------------------------------------
+     local targetID = worldBossMapping[mobInfo.area]
+     if targetID then
+         local regularMob = GetMobByID(targetID)
+         
+         if regularMob and regularMob:isSpawned() then
+             -- Check if the mob is engaged OR has a current target
+             local hasTarget = regularMob:getTarget()
+             
+             if regularMob:isEngaged() or hasTarget ~= nil then
+                 -- Someone is fighting it; leave it alone
+                 print(fmt("[DI MODULE]: Regular boss %s is BUSY. Skipping despawn.", regularMob:getName()))
+             else
+                 -- Mob is idle; clear it out
+                 DespawnMob(targetID)
+                 print(fmt("[DI MODULE]: Despawned IDLE regular boss %s.", regularMob:getName()))
+             end
+         end
+     end
+     -- -----------------------------------------------------------
 
-            mob[1]:spawn()
-            mob[1]:setMobMod(xi.mobMod.SKILL_LIST, mobInfo.skillList)
-        end
-    end)
+        print(fmt("[DOMAIN INVASION]: Spawned [{}] in {} at POS: {}, {}, {}", mobInfo.name, zone:getName(), mobInfo.pos[1], mobInfo.pos[2], mobInfo.pos[3]))
+
+        mob[1]:spawn()
+--      mob[1]:setMobMod(xi.mobMod.SKILL_LIST, mobInfo.skillList)
+    end
+end)
 end
 
 ----------------------------------------------------------------------
