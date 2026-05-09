@@ -103,7 +103,8 @@ end
 local function addTempItem(player, itemName, itemID, itemCost)
     if player:addTempItem(itemID) then
         if itemCost ~= nil then
-            player:incrementCharVar("[Domain]Shards", -itemCost)
+            -- CONVERTED: Uses native currency instead of CharVar
+            player:delCurrency('domain_points', itemCost)
         end
 
         player:printToPlayer(string.format("%s obtains the temporary item: %s!", player:getName(), itemName), xi.msg.channel.NS_SAY)
@@ -113,29 +114,28 @@ local function addTempItem(player, itemName, itemID, itemCost)
 end
 
 local function confirmPurchase(player, npc, item)
-    local shards = player:getCharVar("[Domain]Shards")
+    -- CONVERTED: Pulls balance from domain_points currency
+    local points = player:getCurrency('domain_points')
 
-    if shards < item[3] then
+    if points < item[3] then
         npc:facePlayer(player, true)
         player:printToPlayer(string.format("%s : You can't afford that.", npc:getPacketName()))
         return
     end
 
     delaySendMenu(player, {
-        title   = string.format("Buy %s for %u shards?", item[1], item[3]),
+        title   = string.format("Buy %s for %u points?", item[1], item[3]),
         options =
         {
             {
                 "Yes",
                 function()
-                    local ID = zones[player:getZoneID()]
-
                     if type(item[2]) == "table" then
-                        for _, tempItem in pairs(item[2]) do
-                            addTempItem(player, tempItem[1], tempItem[2])
+                        for _, tempItemData in pairs(item[2]) do
+                            addTempItem(player, tempItemData[1], tempItemData[2])
                         end
-
-                        player:incrementCharVar("[Domain]Shards", -item[3])
+                        -- CONVERTED: Deducts from native currency
+                        player:delCurrency('domain_points', item[3])
                     else
                        addTempItem(player, item[1], item[2], item[3])
                     end
@@ -238,10 +238,10 @@ local function onTriggerShop(player, npc)
         return
     end
 
-    local shards = player:getCharVar("[Domain]Shards")
+    local points = player:getCurrency('domain_points')
 
     npc:facePlayer(player, true)
-    omixi.util.simpleShop(player, npc, tempItems, confirmPurchase, fmt("Purchase temp items ({} shards):", shards))
+    omixi.util.simpleShop(player, npc, tempItems, confirmPurchase, fmt("Purchase temp items ({} points):", points))
 end
 
 
