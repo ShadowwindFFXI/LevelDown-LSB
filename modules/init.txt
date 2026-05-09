@@ -35,6 +35,13 @@
 # Will load only custom/cpp/custom_module.cpp and custom/lua/claim_shield.lua.
 #
 # Live example:
+#  DOMAIN - Omi
+# ---------------------
+custom/domain/cpp
+custom/domain/enum
+custom/domain/complete_overrides/
+custom/domain/additive_override/
+# ---------------------
 custom/sql/
 custom/commands/
 custom/lua/hangout/
